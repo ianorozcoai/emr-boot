@@ -1,0 +1,17 @@
+.student-image {
+	padding-top: 10px;
+}
+
+ul.student-summary {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+li.student-summary-item {
+	display: block;
+	width: 260px;
+}
+
+li.student-summary-item > i {
+	vertical-align: text-bottom;
+}

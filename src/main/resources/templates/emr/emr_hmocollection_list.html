@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+	
+	<title>EHR - EMR</title>	
+	
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+	<!-- /Main Navbar -->
+					
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->		
+		
+		
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">HMO Collection</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<div class="row">
+					<div class="col-xl-12">					
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header bg-dark text-white header-elements-inline">
+								<h5 class="card-title">Uncollected HMO List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                				
+				                		<button type="button" class="btn btn-outline-primary markAllAsPaidBtn">Mark All Checked as PAID</button>
+				                	</div>
+			                	</div>
+							</div>
+
+							<form id="markAllAsPaidForm" th:action="@{/hmoCollection}" method="post" class="form-horizontal">
+								<table class="table datatable-basic" id="dataTables-hmoCollectionList" >
+									<thead>
+										<tr>
+											<th><div class="pull-left"><input type="checkbox" id="selectAllCheckBox" value=""></div></th>
+											<th>Consultation Date</th>
+											<th>Patient Name</th>
+											<th>HMO Name</th>
+										</tr>
+									</thead>
+									<tbody>
+										<th:block th:each="consultation : ${unpaidHMOConsultations}">
+											<tr>
+												<td><input type="checkbox" class="checkbox1" th:name="${'consultationIdList[' + consultationStat.index + ']'}" th:value="${consultation.id}" /></td>
+												<td th:text="${#temporals.format(consultation.consultationDate,'MMMM d, yyyy hh:mm a')}">September 9 2020 02:30 PM</td>
+												<td id="hmoName" th:text="${consultation.patient.fullName}" width="40%;">Patient name</td>
+												<td th:text="${consultation.hmoName}" width="30%;">HmoName</td>
+											</tr>
+										</th:block>
+									</tbody>
+								</table>
+							</form>
+
+						</div>
+						<!-- /basic datatable -->						
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-xl-12">					
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header bg-success text-white header-elements-inline">
+								<h5 class="card-title">Collected HMO List</h5>								
+							</div>							
+		
+							<table class="table datatable-basic" id="dataTables-hmoCollectionList" >
+								<thead>
+									<tr>
+										<th>Consultation Date</th>	
+										<th>Patient Name</th>																			
+										<th>HMO Name</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="consultation : ${paidHMOConsultations}">
+										<tr>
+											<td th:text="${#temporals.format(consultation.consultationDate,'MMMM d, yyyy hh:mm a')}">September 9 2020 02:30 PM</td>
+											<td id="hmoName" th:text="${consultation.patient.fullName}" width="40%;">Patient name</td>
+											<td th:text="${consultation.hmoName}" width="30%;">HmoName</td>											
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+														
+						</div>
+						<!-- /basic datatable -->						
+					</div>
+				</div>
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+			<!-- Main sidebar -->
+			<div th:replace="fragments/common::emr-footer"></div>
+			<!-- /Main sidebar -->
+			
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	
+    <script th:inline="javascript">
+	    
+	    $(document).ready(function() {     
+	    	
+	    	$(".nav-link").removeClass("active");
+			$("#emrHMOCollectionNav").addClass("active");
+			
+			$('#selectAllCheckBox').click(function(event) {  //on click 
+		        if(this.checked) { // check select status
+		            $('.checkbox1').each(function() { //loop through each checkbox
+		                this.checked = true;  //select all checkboxes with class "checkbox1"               
+		            });
+		        }else{
+		            $('.checkbox1').each(function() { //loop through each checkbox
+		                this.checked = false; //deselect all checkboxes with class "checkbox1"
+		            });         
+		        }
+		    });
+
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+
+			if(msgCode === 'ERROR'){
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: msgDesc,
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+	    	   	
+	    });
+
+	    $(document).on("click", ".markAllAsPaidBtn", function(){
+
+			swal({
+			  title: "Confirmation?",
+			  text: "Are you sure you want to mark selected as paid?",
+			  icon: "info",
+			  buttons: ["Yes", "No"],
+			  dangerMode: false,
+			})
+			.then((selectNo) => {
+			  if (selectNo) {
+				  //No Response
+				  console.log("selected no");
+
+			  } else {
+			  	 console.log("selected yes");
+			  	 $("#markAllAsPaidForm").submit();
+			  }
+			});
+
+		});
+
+		$(document).on("change", ".checkbox1, #selectAllCheckBox", function(){
+
+			$(".markAllAsPaidBtn").prop('disabled', $(".checkbox1:checkbox:checked").length < 1);
+
+		});
+    
+    </script>
+
+</body>
+</html>

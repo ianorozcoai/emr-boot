@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - EMR</title>
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar-patient-record-emr"></div>
+	<!-- /Main Navbar -->
+	
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::emr-secondary-navbar-patient-record"></div>
+	<!-- /secondary navbar -->
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Content area -->
+			<div class="content">
+			
+				<!-- Inner container -->
+				<div class="d-md-flex align-items-md-start">
+
+					<!-- Left sidebar component -->
+					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
+					<!-- /left sidebar component -->
+
+					<!-- Right content -->
+					<div class="tab-content w-100">
+						<div class="tab-pane fade active show" id="profile">
+							<!-- Patient Profile Content -->
+							<div class="row">
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-header header-elements-inline">
+											<h6 class="card-title">Patient Information Summary</h6>											
+										</div>
+			
+										<div class="card-body">
+											<ul class="nav nav-tabs">
+												<li class="nav-item"><a href="#basic-tab1" class="nav-link active" data-toggle="tab">Profile</a></li>
+												<li class="nav-item"><a href="#basic-tab2" class="nav-link" data-toggle="tab">Medical History</a></li>
+											</ul>
+			
+											<div class="tab-content">
+												<!-- 1st Tab -->
+												<div class="tab-pane fade show active" id="basic-tab1">
+													<div class="col-md-12">
+														<form th:action="@{/emrpatientprofile}" method="post" th:object="${patient}">
+															<input type="hidden" th:field="*{doctorId}" name="doctorId" id="doctorId">
+															<input type="hidden" th:field="*{isActive}" name="isActive" id="isActive">
+															<input type="hidden" th:field="*{id}" id="id" name="id" >
+															<input type="hidden" th:field="*{patientPhoto}" />
+															<div class="modal-body">
+																<div class="form-group">
+																	<div class="row">
+																		<div class="col-sm-6">
+																			<label for="firstName">First name</label>
+																			<span class="validationError text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+																			<input id="firstName" name="firstName" th:field="*{firstName}" placeholder="First name" type="text" class="form-control" >
+																		</div>
+														                
+														                
+																		<div class="col-sm-6">
+																			<label for="lastName">Last name</label>
+																			<span class="validationError text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+																			<input id="lastName" name="lastName" th:field="*{lastName}" placeholder="Last name" type="text" class="form-control" >
+																		</div>
+														            </div>
+																</div>
+																
+																<div class="form-group">
+																	<div class="row">
+																		<div class="col-sm-6">
+																			<label for="nickName">Nick name</label>
+																			<input id="nickName" name="nickName" th:field="*{nickName}" placeholder="Nick name" type="text" class="form-control" >
+																		</div>                
+														                
+																		<div class="col-sm-6">
+														                        <label for="maritalStatus">Marital Status</label>
+														                        <select class="form-control" name="maritalStatus" id="maritalStatus" th:field="*{maritalStatus}">
+																					<option value="SINGLE">SINGLE</option>
+																					<option value="MARRIED">MARRIED</option>
+																					<option value="WIDOWED">WIDOWED</option>
+																					<option value="SEPARATED">SEPARATED</option>
+																				</select>
+														                    </div>
+														            </div>
+																</div>
+																
+																<div class="form-group">
+																	<div class="row">       
+														                    <div class="col-sm-6">
+														                        <label for="gender">Gender</label>
+														                        <select id="gender" name="gender" class="form-control" th:field="*{gender}">
+														                            <option value="MALE" selected="selected">MALE</option>
+														                            <option value="FEMALE">FEMALE</option>
+														                        </select>
+														                    </div>
+														                    
+														                
+														                    <div class="col-sm-6">
+														                        <label for="birthdate">Birthdate</label>
+														                        <input type="date" class="form-control" id="birthdate" name="birthdate" th:field="*{birthdate}" placeholder="enter your birthday" title="enter your birthday" />
+														                    </div>
+														            </div>
+																</div>
+							
+																<div class="form-group">
+																	<div class="row">    
+														                    <div class="col-sm-6">
+														                        <label for="contactNumber">Mobile</label>
+														                        <input id="contactNumber" name="contactNumber" title="enter your mobile number if any." th:field="*{contactNumber}" placeholder="enter mobile number" type="text" class="form-control">
+														                    </div>
+														                    
+														                    <div class="col-sm-6">
+														                        <label for="emailAddress">Email</label>
+														                        <input id="emailAddress" name="emailAddress" title="enter your email." th:field="*{email}" placeholder="Email Address" type="email" class="form-control" >
+														                    </div>
+														           </div>
+																</div>
+																
+																<div class="form-group">
+																	<div class="row">    
+														                    <div class="col-sm-6">
+														                        <label for="profession">Profession</label>
+														                        <input type="text" class="form-control" name="profession" th:field="*{profession}" id="profession" placeholder="Profession" />
+														                    </div>
+														                    
+														                    <div class="col-sm-6">
+														                        <label for="seniorCitizenNumber">Senior Citizen Number</label>
+														                        <input type="text" class="form-control" name="seniorCitizenNumber" id="seniorCitizenNumber" th:field="*{seniorCitizenNumber}" placeholder="Senior Citizen Number" />
+														                    </div>
+														           </div>
+																</div>
+																
+																<div class="form-group">
+																	<div class="row">    
+														                    <div class="col-sm-6">
+														                        <label for="province">Province</label>
+														                        <select class="form-control" name="province" id="province" th:field="*{province}" onchange="loadCities('city', this.value)">
+									
+																				</select>
+														                    </div>
+														                    
+														                    <div class="col-sm-6">
+														                        <label for="city">City</label>
+														                        <select class="form-control" name="city" id="city" th:field="*{city}" onchange="loadCities('city', this.value)">
+									
+																				</select>
+														                    </div>
+														           </div>
+																</div>
+							
+																<div class="form-group">
+																	<div class="row">         
+														                    <div class="col-sm-12">
+														                        <label for="street">Street</label>
+														                        <input id="street" name="street" th:field="*{street}" placeholder="Street" type="text" class="form-control" >
+														                    </div>
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<div class="row">    
+														                    <div class="col-sm-6">
+														                        <label for="emergencyContactName">Emergency Contact Name</label>
+														                        <input id="emergencyContactName" name="emergencyContactName" th:field="*{emergencyContactName}" title="enter your emergency Contact Name if any." placeholder="Emergency Contact Name" type="text" class="form-control">
+														                    </div>
+														                    
+														                    <div class="col-sm-6">
+														                        <label for="emergencyContactNumber">Emergency Contact Number</label>
+														                        <input id="emergencyContactNumber" name="emergencyContactNumber" th:field="*{emergencyContactNumber}" title="enter your emergency Contact Number if any." placeholder="Emergency Contact Number" type="text" class="form-control">
+														                    </div>
+														           </div>
+																</div>
+							
+																<div class="form-group">
+																	<div class="row">         
+														                    <div class="col-sm-12">
+														                        <label for="emergencyContactAddress">Emergency Contact Address</label>
+														                        <input id="emergencyContactAddress" name="emergencyContactAddress" th:field="*{emergencyContactAddress}" placeholder="Emergency Contact Address" type="text" class="form-control" >
+														                    </div>
+																	</div>
+																</div>									
+							
+																<div class="form-group">
+																	<div class="row">         
+														                    <div class="col-sm-12">
+														                        <label for="notes">Notes</label>
+														                        <input id="notes" name="notes" th:field="*{notes}" placeholder="Notes" type="text" class="form-control" >
+														                    </div>
+																	</div>
+																</div>	
+																
+																<div class="form-group">
+																	<div class="row">    
+														                    <div class="col-sm-6">
+														                        <label for="mothersname">Mother&apos;s Name</label>
+														                        <input id="mothersname" name="mothersname" title="enter your Mothers Name" th:field="*{mothersname}" placeholder="Mother&apos;s Name" type="text" class="form-control">
+														                    </div>
+														                    
+														                    <div class="col-sm-6">
+														                        <label for="mothersoccupation">Mother&apos;s Occupation</label>
+														                        <input id="mothersoccupation" name="mothersoccupation" title="enter your Mothers Occupation" th:field="*{mothersoccupation}" placeholder="Mother&apos;s Occupation" type="text" class="form-control">
+														                    </div>
+														           </div>
+																</div>
+																
+																<div class="form-group">
+																	<div class="row">    
+														                    <div class="col-sm-6">
+														                        <label for="fathersname">Father&apos;s Name</label>
+														                        <input id="fathersname" name="fathersname" title="enter your Fathers Name" th:field="*{fathersname}" placeholder="Father&apos;s Name" type="text" class="form-control">
+														                    </div>
+														                    
+														                    <div class="col-sm-6">
+														                        <label for="fathersoccupation">Father&apos;s Occupation</label>
+														                        <input id="fathersoccupation" name="fathersoccupation" title="enter your Fathers Occupation" th:field="*{fathersoccupation}" placeholder="Father&apos;s Occupation" type="text" class="form-control">
+														                    </div>
+														           </div>
+																</div>
+															</div>
+							
+															<div class="modal-footer">									
+																<button type="submit" class="btn bg-primary">Save Info</button>
+															</div>
+														</form>
+													</div>
+												</div>
+												<!-- /1st Tab -->
+												<!-- 2nd Tab -->
+												<div class="tab-pane fade" id="basic-tab2">
+													<form th:action="@{/emrPatientMedicalHistory}" method="post" th:object="${patientMedicalHistory}" id="patientMedHistoryForm">
+														<input type="hidden" id="patientId" name="patient.id" th:value="${patient.id}" >
+														<input type="hidden" th:field="*{id}" id="id" name="id" >
+														<!-- Past Medical History -->
+														<div class="card">
+															<div class="card-header header-elements-inline">
+																<h5 class="card-title">Past Medical History</h5>
+															</div>
+															<div class="card-body">									
+																<div class="modal-body">
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{heartDisease}" />
+																				<label for="heartDiseaseNotes">Heart Disease/Chest Pain</label>																				
+																				<input th:field="*{heartDiseaseNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{earNoseThroat}" />
+																				<label for="earNoseThroatNotes">Ear, Nose, Throat</label>																				
+																				<input th:field="*{earNoseThroatNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{hypertension}" />
+																				<label for="hypertensionNotes">Hypertension</label>																				
+																				<input th:field="*{hypertensionNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{bp}" />
+																				<label for="bpNotes">B.P</label>																				
+																				<input th:field="*{bpNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>																		
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{eyeVisual}" />
+																				<label for="eyeVisualNotes">Eye Visual Acuity</label>																				
+																				<input th:field="*{eyeVisualNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{lungDisease}" />
+																				<label for="lungDiseaseNotes">Lung Disease</label>																				
+																				<input th:field="*{lungDiseaseNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{asthma}" />
+																				<label for="asthmaNotes">Asthma</label>																				
+																				<input th:field="*{asthmaNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{gastro}" />
+																				<label for="gastroNotes">Gastrointestinal</label>																				
+																				<input th:field="*{gastroNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{liverDisease}" />
+																				<label for="liverDiseaseNotes">Live Disease/Hepatitis</label>																				
+																				<input th:field="*{liverDiseaseNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{thyroid}" />
+																				<label for="thyroidNotes">Thyriod Diseases</label>																				
+																				<input th:field="*{thyroidNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{kidneyDisease}" />
+																				<label for="kidneyDiseaseNotes">Kidney Disease</label>																				
+																				<input th:field="*{kidneyDiseaseNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{uti}" />
+																				<label for="utiNotes">UTI</label>																				
+																				<input th:field="*{utiNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{diabetes}" />
+																				<label for="diabetesNotes">Diabetes</label>																				
+																				<input th:field="*{diabetesNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{bleedingDisorder}" />
+																				<label for="bleedingDisorderNotes">Bleeding Disorders</label>																				
+																				<input th:field="*{bleedingDisorderNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{allergy}" />
+																				<label for="allergyNotes">Allergy</label>																				
+																				<input th:field="*{allergyNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{cancer}" />
+																				<label for="cancerNotes">Cancer</label>																				
+																				<input th:field="*{cancerNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{skinDisease}" />
+																				<label for="skinDiseaseNotes">Skin Disease/Keloids</label>																				
+																				<input th:field="*{skinDiseaseNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{currentMedications}" />
+																				<label for="currentMedicationsNotes">Current Medications</label>																				
+																				<input th:field="*{currentMedicationsNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{other}" />
+																				<label for="otherNotes">Other</label>																				
+																				<input th:field="*{otherNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			
+																		</div>
+																	</div>
+																</div>															
+															</div>
+														</div>
+														<!-- /Past Medical History -->
+														<!-- Family History -->
+														<div class="card">
+															<div class="card-header header-elements-inline">
+																<h5 class="card-title">Family History</h5>
+															</div>
+															<div class="card-body">															
+																<div class="modal-body">
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{heartDiseaseFamily}" />
+																				<label for="heartDiseaseNotesFamily">Heart Disease/Chest Pain</label>																				
+																				<input th:field="*{heartDiseaseNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{earNoseThroatFamily}" />
+																				<label for="earNoseThroatNotesFamily">Ear, Nose, Throat</label>																				
+																				<input th:field="*{earNoseThroatNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{hypertensionFamily}" />
+																				<label for="hypertensionNotesFamily">Hypertension</label>																				
+																				<input th:field="*{hypertensionNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{skinDiseaseFamily}" />
+																				<label for="skinDiseaseNotesFamily">Skin Disease/Keloids</label>																				
+																				<input th:field="*{skinDiseaseNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>		
+																			
+																		</div>																		
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{eyeVisualFamily}" />
+																				<label for="eyeVisualNotesFamily">Eye Visual Acuity</label>																				
+																				<input th:field="*{eyeVisualNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{lungDiseaseFamily}" />
+																				<label for="lungDiseaseNotesFamily">Lung Disease</label>																				
+																				<input th:field="*{lungDiseaseNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{asthmaFamily}" />
+																				<label for="asthmaNotesFamily">Asthma</label>																				
+																				<input th:field="*{asthmaNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{gastroFamily}" />
+																				<label for="gastroNotesFamily">Gastrointestinal</label>																				
+																				<input th:field="*{gastroNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{liverDiseaseFamily}" />
+																				<label for="liverDiseaseNotesFamily">Live Disease/Hepatitis</label>																				
+																				<input th:field="*{liverDiseaseNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{thyroidFamily}" />
+																				<label for="thyroidNotesFamily">Thyriod Diseases</label>																				
+																				<input th:field="*{thyroidNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{kidneyDiseaseFamily}" />
+																				<label for="kidneyDiseaseNotesFamily">Kidney Disease</label>																				
+																				<input th:field="*{kidneyDiseaseNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{utiFamily}" />
+																				<label for="utiNotesFamily">UTI</label>																				
+																				<input th:field="*{utiNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-3">
+																				<input type="checkbox" class="checkbox1" th:field="*{diabetesFamily}" />
+																				<label for="diabetesNotesFamily">Diabetes</label>																				
+																				<input th:field="*{diabetesNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																		
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{bleedingDisorderFamily}" />
+																				<label for="bleedingDisorderNotesFamily">Bleeding Disorders</label>																				
+																				<input th:field="*{bleedingDisorderNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{allergyFamily}" />
+																				<label for="allergyNotesFamily">Allergy</label>																				
+																				<input th:field="*{allergyNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{cancerFamily}" />
+																				<label for="cancerNotesFamily">Cancer</label>																				
+																				<input th:field="*{cancerNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																																				
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{currentMedicationsFamily}" />
+																				<label for="currentMedicationsNotesFamily">Current Medications</label>																				
+																				<input th:field="*{currentMedicationsNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-3">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{otherFamily}" />
+																				<label for="otherNotesFamily">Other</label>																				
+																				<input th:field="*{otherNotesFamily}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			
+																		</div>
+																	</div>
+																</div>															
+															</div>
+														</div>
+														<!-- /Family History -->
+														<!-- Personal and Social History -->
+														<div class="card">
+															<div class="card-header header-elements-inline">
+																<h5 class="card-title">Personal and Social History</h5>
+															</div>
+															<div class="card-body">															
+																<div class="modal-body">
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-2">
+																				<input type="checkbox" class="checkbox1" th:field="*{smoker}" />
+																				<label for="smoker">Smoker</label>																				
+																				<input th:field="*{packsPerDay}" type="text" placeholder="Packs/Day" class="form-control">
+																				<label for="packsPerDay">Packs/Day</label>
+																				<input th:field="*{yrsInUse}" type="text" placeholder="Years of Use" class="form-control">
+																				<label for="yrsInUse">Years of Use</label>		
+																			</div>																		
+																				
+																			<div class="col-sm-5">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{substanceAbuse}" />
+																				<label for="substanceAbuseNotes">Substance Abuse</label>																				
+																				<input th:field="*{substanceAbuseNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-5">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{alcoholDrinker}" />
+																				<label for="alcoholDrinkerNotes">Alcoholic Beverage Drinker</label>																				
+																				<input th:field="*{alcoholDrinkerNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			
+																		</div>																		
+																	</div>
+																</div>
+															</div>
+														</div>
+														<!-- /Personal and Social History -->
+														<!-- Obstetric History -->
+														<div class="card">
+															<div class="card-header header-elements-inline">
+																<h5 class="card-title">Obstetric History</h5>
+															</div>
+															<div class="card-body">															
+																<div class="modal-body">
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-4">
+																				<input type="checkbox" class="checkbox1" th:field="*{menarche}" />
+																				<label for="menarcheNotes">Menarche</label>																				
+																				<input th:field="*{menarcheNotes}" type="text" placeholder="Notes..." class="form-control">																				
+																			</div>																		
+																				
+																			<div class="col-sm-4">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{pmp}" />
+																				<label for="pmpNotes">PMP</label>																				
+																				<input th:field="*{pmpNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>
+																				
+																			<div class="col-sm-4">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{lmp}" />
+																				<label for="lmpNotes">Alcoholic Beverage Drinker</label>																				
+																				<input th:field="*{lmpNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																			
+																		</div>																		
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-4">
+																				<input type="checkbox" class="checkbox1" th:field="*{aog}" />
+																				<label for="aogNotes">AOG</label>																				
+																				<input th:field="*{aogNotes}" type="text" placeholder="Notes..." class="form-control">																				
+																			</div>																		
+																				
+																			<div class="col-sm-4">																	
+																				<input type="checkbox" class="checkbox1" th:field="*{edd}" />
+																				<label for="eddNotes">EDD</label>																				
+																				<input th:field="*{eddNotes}" type="text" placeholder="Notes..." class="form-control">
+																			</div>																																	
+																		</div>																		
+																	</div>
+																	<div class="form-group">
+																		<div class="row">
+																			<div class="col-sm-12">																				
+																				<label for="reviewOfSystem">Review of System</label>																				
+																				<textarea rows="3" th:field="*{reviewOfSystem}" class="form-control" name="reviewOfSystem" id="reviewOfSystem" placeholder="Review of System" cols="50" maxlength="950" ></textarea>																			
+																			</div>																																													
+																		</div>																		
+																	</div>
+																</div>
+															</div>
+														</div>
+														<!-- /Obstetric History -->
+														
+														<div class="modal-footer">													
+															<button type="submit" class="btn bg-primary">Save Info</button>
+														</div>
+													</form>
+												</div>
+												<!-- /2nd Tab -->
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							</div>
+						
+						
+						
+						
+						
+							
+
+							
+
+					    </div>				    	
+					</div>
+					<!-- /right content -->
+
+				</div>
+				<!-- /inner container -->
+				
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+	
+	    $(document).ready(function() {	    		    				
+			
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
+			$("#emrPatientProfile2ndNav").addClass("bg-slate-300");
+
+// start update profile photo
+			const fileSelect = document.getElementById('fileSelect');
+		    const profilePhoto = document.getElementById('profilePhoto');
+			fileSelect.addEventListener('click', (e) => {
+	        	if (profilePhoto) {
+	        		profilePhoto.click();
+	        	}
+	        }, false);
+		    profilePhoto.addEventListener('change', previewImage, false);
+		    
+        	let uploadUrl = /*[[${#request.getContextPath() + '/file/upload/profilePhoto'}]]*/'';
+        	let fileUploadForm = document.getElementById('fileUploadForm');
+		    fileUploadForm.onsubmit = async (e) => {
+		    	e.preventDefault();
+		    	let fd = new FormData(fileUploadForm);
+		    	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
+		    	let response = await fetch(uploadUrl, {
+		    		method: 'POST',
+		    		body: fd
+		    	});
+		    	
+		    	if(response.ok){
+		    		swal({
+						title: "Success!",
+						text: "Patient Photo successfully saved.",
+						icon: "success",
+						buttons: false,
+			            timer: 2000,
+					}).then(() => window.location.reload());
+		    	} else {
+		    		swal({
+						title: "Upload Failure!",
+						text: "Patient Photo not uploaded successfully.",
+						icon: "error",
+						buttons: false,
+			            timer: 2000,
+					});
+		    	}
+		    };
+		    
+		    function previewImage() {
+				let input = document.getElementById('profilePhoto');
+				let img = document.getElementById('photoPreview');
+				if (input.files && input.files[0]) {
+	        		var reader = new FileReader();
+	        		reader.onload = function(e) {
+	        			img.src = e.target.result;
+	        		}
+	        		reader.readAsDataURL(input.files[0]);
+	        	}
+			}
+// end update profile photo
+
+	    	$(".nav-link").removeClass("active");
+			$("#emrDoctorProfileNav").addClass("active");
+	    	
+	    	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';	    	
+	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Profile successfully saved.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+	    	
+	    	
+	    	
+	    });
+	</script>
+
+</body>
+</html>

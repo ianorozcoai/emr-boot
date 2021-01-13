@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - Electronic Hospital Records</title>
+
+
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar"></div>
+	<!-- /Main Navbar -->
+
+
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::secondary-navbar-admin"></div>
+	<!-- /secondary navbar -->	
+
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">Health Maintenance Organizations</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+			
+			
+			<!-- Vertical form modal -->
+			<div id="modal_form_vertical" class="modal fade" tabindex="-1" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-primary">
+							<h5 class="modal-title">HMO Details</h5>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<form th:action="@{/hmos}" method="post" class="form-horizontal" th:object="${hmo}">
+							<input type="hidden" th:field="*{id}" id="id"/>
+							<div class="modal-body">
+								<div class="form-group row">									
+									<label class="col-form-label col-sm-3">HMO Name</label>
+									<div class="col-sm-9">
+										<span class="validationError text-danger" th:if="${#fields.hasErrors('hmoName')}" th:errors="*{hmoName}"></span>
+										<input type="text" th:field="*{hmoName}" placeholder="Ex. Maxicare" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label class="col-form-label col-sm-3">Email</label>
+									<div class="col-sm-9">
+										<input type="text" th:field="*{email}" placeholder="Ex. maxicare@gmail.com" class="form-control">
+										<span class="form-text text-muted">example@domain.com</span>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label class="col-form-label col-sm-3">Contact #</label>
+									<div class="col-sm-9">
+										<input type="text" th:field="*{contactNumber}" placeholder="+99-99-9999-9999" data-mask="+99-99-9999-9999" class="form-control">
+										<span class="form-text text-muted">+99-99-9999-9999</span>
+									</div>
+								</div>
+								
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+								<button type="submit" class="btn bg-primary">Submit form</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- /Vertical form modal -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-xl-12">
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">HMO List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                		
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add HMO</button>				                		
+				                	</div>
+			                	</div>
+							</div>
+		
+							<div class="card-body">
+								This table shows the list of HMO. This list shows all HMO and their email and contact no.
+							</div>
+		
+							<table class="table datatable-basic" id="dataTables-hmoList" >
+								<thead>
+									<tr>
+										<th>HMO Name</th>
+										<th>Email</th>										
+										<th>Contact No.</th>										
+										<th class="text-center">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="hmo : ${hmoList}">
+										<tr>
+											<td id="hmoName" th:text="${hmo.hmoName}">HMO name</td>
+											<td th:text="${hmo.email}">Email</td>										
+											<td th:text="${hmo.contactNumber}" width="200px;">Contact number</td>										
+											<td class="text-center" width="40px;">
+												<button id="editHmoButton" type="button" class="showHmoDetails btn btn-primary" 
+													th:data-row-hmoName="${hmo.hmoName}"
+													th:data-row-email="${hmo.email}"
+													th:data-row-contactNumber="${hmo.contactNumber}"
+													th:data-row-id="${hmo.id}"
+													data-toggle="modal" data-target="#modal_form_vertical">Edit</button>
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+						<!-- /basic datatable -->					
+					</div>
+				</div>
+				
+				
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->    
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+	<script th:inline="javascript">
+	
+		$(document).ready(function() {
+			$(".nav-link").removeClass("bg-slate-600");
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");	    	
+			$("#adminModuleNav").addClass("bg-slate-600");
+			$("#hmo2ndNav").addClass("bg-slate-300");
+			
+			
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "HMO successfully saved.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+			
+			
+		});
+		
+		$(document).on("click", ".showHmoDetails", function() {
+
+			var id = $(this).attr('data-row-id');
+			var hmoName = $(this).attr('data-row-hmoName');
+			var email = $(this).attr('data-row-email');
+			var contactNumber = $(this).attr('data-row-contactNumber');
+			
+			$("#modal_form_vertical").find("#id").val(id);
+			$("#modal_form_vertical").find("#hmoName").val(hmoName);
+			$("#modal_form_vertical").find("#email").val(email);
+			$("#modal_form_vertical").find("#contactNumber").val(contactNumber);
+		});
+	</script>
+</body>
+</html>

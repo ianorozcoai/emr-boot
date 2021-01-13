@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <link rel="stylesheet" th:href="@{/js/jquery.flexdatalist.min.css}">
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - EMR</title>
+	
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar-patient-record-emr"></div>
+	<!-- /Main Navbar -->
+	
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::emr-secondary-navbar-patient-record"></div>
+	<!-- /secondary navbar -->
+
+	
+	<!-- Vertical form modal -->
+				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-primary">
+								<h5 class="modal-title">Medication Information</h5>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<form th:action="@{/emrpatientMedication}" th:object="${emrPatientMedicationForm}" method="post">
+								<input type="hidden" th:field="*{emrPatientMedication.id}" id="id"/>
+							    <input type="hidden" name="emrPatientMedication.patient.id" th:value="${patient.id}" />
+								<div class="modal-body" id="medicineFormContainer">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-12">
+												<label for="dateCreated">Date</label>
+												<input id="dateCreated" name="dateCreated" th:field="*{emrPatientMedication.dateCreated}" placeholder="Date" type="datetime-local" class="form-control" >
+											</div>
+							            </div>
+									</div>
+									
+									<div id="medicationFormRow" class="medicationFormRow" th:each="med, i : ${emrPatientMedicationForm.emrPatientMedicationItems}">
+										<input type="hidden" th:field="*{emrPatientMedicationItems[__${i.index}__].id}" id="id"/>
+										<div class="form-group">
+											<div class="row">
+												<div class="col-sm-4">
+													<label for="genericName0">Generic name</label>
+													<select id="genericName0" name="genericName" th:field="*{emrPatientMedicationItems[__${i.index}__].genericName}" class="form-control genericName" >
+														<option value=''>- Select Generic Name -</option>
+														<option th:each="generics : ${emrGenericsLookupList}" 
+															th:value="${generics}" 
+															th:text="${generics}">Generic Name</option>
+													</select>
+												</div>
+												
+												<div class="col-sm-4">
+													<label for="brandName0">Brand name</label>
+													<select id="brandName0" name="brandName" th:field="*{emrPatientMedicationItems[__${i.index}__].brandName}" class="form-control brandName" >
+														<option disabled="disabled" value=" " selected>- Select Brand Name -</option>
+													</select>
+								                </div>
+								                <div class="col-sm-4">
+													<label for="dosage0">Dosage</label>
+													<select id="dosage0" name="dosage" th:field="*{emrPatientMedicationItems[__${i.index}__].dosage}" class="form-control dosage" >
+														<option value=''>- Select Dosage -</option>
+														<option th:each="d : ${dosages}" 
+															th:value="${d}" 
+															th:text="${d}">Dosage</option>
+													</select>
+								                </div>
+								            </div>
+										</div>
+										
+										<div class="form-group">
+											<div class="row">       
+												<div class="col-sm-12">
+													<label for="remarks0">Prescription Notes</label>
+													<textarea id="remarks0" name="remarks" th:field="*{emrPatientMedicationItems[__${i.index}__].remarks}" class="form-control remarks" rows="4"></textarea>
+												</div>                    
+								            </div>
+										</div>							
+									</div>
+									
+								</div>
+
+								<div class="modal-footer">
+									<button onclick="resetRowNum()" type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+									<button onclick="addMedicine()" type="button" class="btn bg-primary">Add Medicine</button>
+									<button type="submit" class="btn bg-success">Save Info</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+	<!-- /vertical form modal -->
+				
+				
+	<!-- admit form modal -->
+	<div id="modal_form_admit" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-primary">
+					<h5 class="modal-title">Consultation Details</h5>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<form th:action="@{/emrconsultations}" th:object="${emrConsultation}" method="post" id="admit-form">
+				    <input type="hidden" th:field="*{id}" id="emrConsultationId">
+				    <input type="hidden" th:field="*{patient.id}">
+				    <input type="hidden" th:field="*{consultationStatus}">
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-sm-6">
+				                    <label for="consultationDate">Consultation Date</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('consultationDate')}" th:errors="*{consultationDate}"></span>
+							        <input id="consultationDate" th:field="*{consultationDate}" placeholder="Consultation Date" type="date" class="form-control" >
+				                </div>
+				                <div class="col-sm-6">
+				                    <label for="paymentType">Payment Type</label>
+				                    <select th:field="*{paymentType}" id="paymentType" class="form-control">																		
+										<option value='CASH'>CASH</option>
+										<option value='HMO'>HMO</option>														
+									</select>
+				                </div>
+				            </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">       
+				                <div class="col-sm-6">
+				                    <label for="hmoName">HMO Name</label>
+				                    <select th:field="*{hmoName}" id="hmoName" class="form-control">																		
+										<option value=''>- Select Service Provider -</option>
+										<option th:each="hmo : ${hmos}" 
+											th:value="${hmo.hmoName}" 
+											th:text="${hmo.hmoName}"
+											th:selected="${hmo.hmoName==emrConsultation.hmoName}">HMO</option>
+									</select>
+				                </div>
+				                <div class="col-sm-6">
+				                    <label for="consultationFee">Consultation Fee</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></span>
+							        <input id="consultationFee" th:field="*{consultationFee}" placeholder="Consultation Fee" type="text" class="form-control" >
+				                </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-3">
+				                    <label for="temperature">Temp (&deg;C)</label>
+				                    <input id="temperature" th:field="*{temperature}" placeholder="0.0" type="text" class="form-control" >
+				                </div>
+				                <div class="col-sm-3">
+				                    <label for="weight">Weight (Kg)</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></span>
+							        <input id="weight" th:field="*{weight}" placeholder="0.0" type="text" class="form-control" >
+				                </div>
+				                <div class="col-sm-3">
+				                    <label for="height">Height (cm)</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
+							        <input id="height" th:field="*{height}" placeholder="0.0" type="text" class="form-control" >
+				                </div>
+				                <div class="col-sm-3">
+				                    <label for="bloodPressure">BP</label>
+				                    <input id="bloodPressure" th:field="*{bloodPressure}"  placeholder="0/0" type="text" class="form-control" >
+				                </div>
+				            </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-12">
+				                    <label for="symptoms">Complaints/Symptoms</label>
+				                    <textarea rows="3" class="form-control" th:field="*{symptoms}" placeholder="Complaints" cols="50" maxlength="950" ></textarea>
+				                </div>							                    
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-12">
+				                    <label for="physical">Physical Examination (PE)</label>
+				                    <textarea rows="3" class="form-control" th:field="*{physical}" id="physical" placeholder="Physical Examination (PE)" cols="50" maxlength="950" ></textarea>
+				                </div>							                    
+				            </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-12">
+				                    <label for="diagnosis">Diagnosis</label>
+				                    <!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
+				                    <input type="text" class="form-control flexdatalist" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
+	                                   th:data-data="@{/icd/datalist}"
+	                                   data-search-in="description"
+	                                   data-search-by-word="true"
+	                                   data-min-length="1"
+	                                   multiple="multiple"
+	                                   data-selection-required="true"
+	                                   data-visible-properties='["code","description"]'
+	                                   data-text-property="{code} - {description}"
+	                                   data-value-property='["id","code","description"]'>
+				                </div>							                    
+				            </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-12">
+				                    <label for="intervention">Intervention</label>
+				                    <textarea rows="3" class="form-control" th:field="*{intervention}" placeholder="Intervention" cols="50" maxlength="950" ></textarea>
+				                </div>							                    
+				            </div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn bg-primary">Save Info</button>
+						<button type="submit" class="btn bg-primary" onclick="setConsultationStatus()">Save Info and Mark as PROCESSED</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /admit form modal -->			
+
+	<!-- Page content -->
+	<div class="page-content">	
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Content area -->
+			<div class="content">
+			
+				<!-- Inner container -->
+				<div class="d-md-flex align-items-md-start">
+
+					<!-- Left sidebar component -->
+					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
+					<!-- /left sidebar component -->
+
+
+					<!-- Right content -->
+					<div class="tab-content w-100">
+						<div class="tab-pane fade active show" id="profile">
+						
+							<!-- Consultation Table -->
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- Basic datatable -->
+									<div class="card">
+										<div class="card-header header-elements-inline">
+											<h5 class="card-title">Consultation List</h5>
+											<div class="header-elements">
+												<div class="list-icons">				                				
+							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_admit" id="addConsultationButton">Add Consultation</button>		                		
+							                	</div>
+						                	</div>
+										</div>
+					
+										<div class="card-body">
+											<table class="table table-bordered table-hover" id="consultation-list">
+												<thead>
+													<tr>
+														<th>Date</th>
+														<th>Complaints</th>
+														<th>Physical Examination</th>
+														<th>Diagnosis</th>
+														<th>Intervention</th>
+														<th class="text-center">Actions</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="ec : ${emrConsultations}">
+														<td>
+															<div class="d-flex align-items-center">
+																<div>
+																	<a href="#" class="text-default font-weight-semibold" th:text="${#temporals.format(ec.consultationDate,'MMM d, yyyy')}">2020-12-06</a>																											
+																</div>
+															</div>
+														</td>	
+														<td>
+															<div class="d-flex align-items-center">
+																<div>
+																	<a href="#" class="text-default font-weight-semibold" th:text="${ec.symptoms}">2020-12-06</a>													
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="d-flex align-items-center">
+																<div>
+																	<a href="#" class="text-default font-weight-semibold" th:text="${ec.physical}">2020-12-06</a>													
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="d-flex align-items-center">
+																<div>
+																	<a href="#" class="text-default font-weight-semibold" th:each="ecd : ${ec.diagnosis}" 
+																	    th:text="|${ecd.description}, |">2020-12-06</a>													
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="d-flex align-items-center">
+																<div>
+																	<a href="#" class="text-default font-weight-semibold" th:text="${ec.intervention}">2020-12-06</a>													
+																</div>
+															</div>
+														</td>
+														<td class="text-center">
+															<button th:onclick="|setValuesInForm('${ec.id}')|" class="btn btn-primary" th:id="|viewConsultationButton${ec.id}|"
+															    data-toggle="modal" data-target="#modal_form_admit" 
+															    th:data-id="${ec.id}"
+															    th:data-consultationDate="${ec.consultationDate}"
+															    th:data-paymentType="${ec.paymentType}"
+															    th:data-hmoName="${ec.hmoName}"
+															    th:data-hmoPaid="${ec.hmoPaid}"
+															    th:data-consultationFee="${ec.consultationFee}"
+															    th:data-consultationStatus="${ec.consultationStatus}"
+															    th:data-temperature="${ec.temperature}"
+															    th:data-weight="${ec.weight}"
+															    th:data-height="${ec.height}"
+															    th:data-bloodPressure="${ec.bloodPressure}"
+															    th:data-symptoms="${ec.symptoms}"
+															    th:data-physical="${ec.physical}"
+															    th:data-intervention="${ec.intervention}"
+															    th:data-diagnosisJSON="${ec.diagnosisJSON}"
+															    >View Record</button>
+														</td>
+													</tr>								
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- /basic datatable -->					
+								</div>
+							</div>
+							<!-- /Consultation Table -->
+
+							<!-- Medication Table -->
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- Basic datatable -->
+									<div class="card">
+										<div class="card-header header-elements-inline">
+											<h5 class="card-title">Medication List</h5>
+											<div class="header-elements">
+												<div class="list-icons">				                				
+							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton" onclick="clearMedications()">Add Medication</button>		                		
+							                	</div>
+						                	</div>
+										</div>
+					
+										<div class="card-body">
+											<table class="table table-bordered table-hover" id="system-user-list">
+												<thead>
+													<tr>
+														<th>Date</th>
+														<th>Medication Given</th>
+														<th>Action</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="emrPatientMedication : ${emrPatientMedicationList}">
+														<td th:text="${#temporals.format(emrPatientMedication.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>	
+														<td>
+															<div th:each="med : ${emrPatientMedication.emrPatientMedicationItems}">
+																<ul>
+																	<li th:text="${med.genericName}+' ('+${med.brandName}+') - '+${med.dosage} + ' ml'"></li>
+																</ul>
+															</div>
+														</td>
+														<td><button class="btn btn-primary showMedicationDetails" 
+																th:data-row-med="${emrPatientMedication}"
+																th:data-row-date="${emrPatientMedication.dateCreated}"
+																th:data-row-id="${emrPatientMedication.id}"
+																th:data-row-items="${emrPatientMedication.emrPatientMedicationItems}"
+																data-toggle="modal" data-target="#modal_form_vertical" id="editMedication">View</button></td>
+														<td><button class="btn btn-primary">Print</button></td>
+													</tr>								
+												</tbody>
+											</table>
+										</div>
+					
+										
+									</div>
+									<!-- /basic datatable -->					
+								</div>
+							</div>
+							<!-- /Medication Table -->
+							
+
+					    </div>				    	
+					</div>
+					<!-- /right content -->
+
+				</div>
+				<!-- /inner container -->
+				
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	<script th:src="@{/js/jquery.flexdatalist.min.js}"></script>
+	<script th:inline="javascript">
+	
+		var i = 0;
+		var brandNameArr = [];
+		
+		function resetRowNum() {
+			i = 0;
+		}
+	
+	    $(document).ready(function() {	    		    				
+			$('.flexdatalist').flexdatalist();
+			
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
+			$("#emrPatientDashboard2ndNav").addClass("bg-slate-300");
+			
+			if ($('#paymentType').val() === 'HMO') {
+				$('#hmoName').prop('disabled', false);
+			} else {
+				$('#hmoName').val('');
+				$('#hmoName').prop('disabled', true);
+			}
+			
+			$(document).on('change', 'select#paymentType', function(e) {
+				if (e.target.value === 'HMO') {
+					$('#hmoName').prop('disabled', false);
+				} else {
+					$('#hmoName').val('');
+					$('#hmoName').prop('disabled', true);
+				}
+			});
+	    	
+			const fileSelect = document.getElementById('fileSelect');
+		    const profilePhoto = document.getElementById('profilePhoto');
+			fileSelect.addEventListener('click', (e) => {
+	        	if (profilePhoto) {
+	        		profilePhoto.click();
+	        	}
+	        }, false);
+		    profilePhoto.addEventListener('change', previewImage, false);
+		    
+		    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+        	let uploadUrl = contextRoot + '/file/upload/profilePhoto';
+        	let fileUploadForm = document.getElementById('fileUploadForm');
+		    fileUploadForm.onsubmit = async (e) => {
+		    	e.preventDefault();
+		    	let fd = new FormData(fileUploadForm);
+		    	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
+		    	let response = await fetch(uploadUrl, {
+		    		method: 'POST',
+		    		body: fd
+		    	});
+		    	
+		    	if(response.ok){
+		    		swal({
+						title: "Success!",
+						text: "Patient Photo successfully saved.",
+						icon: "success",
+						buttons: false,
+			            timer: 2000,
+					});
+		    	} else {
+		    		swal({
+						title: "Upload Failure!",
+						text: "Patient Photo not uploaded successfully.",
+						icon: "error",
+						buttons: false,
+			            timer: 2000,
+					});
+		    	}
+		    	
+		    	
+		    	//document.getElementById('photoPreview').src = contextRoot + result.downloadUri;
+		    };
+		    
+		    $('[id="medicationFormRow"]').each(function() {
+				var rowNumbered = "medicationFormRow"+i;
+				$(this).attr("id", rowNumbered);
+				i++;
+			});
+	    });
+	    
+	    $(document).on("click", ".showMedicationDetails", function() {
+
+	    	// clear all medication forms
+	    	$(".medicationFormRow").remove();
+	    	resetRowNum();
+	    	brandNameArr = [];
+	    	
+			var id = $(this).attr('data-row-id');
+			var emrPatientMedication = $(this).attr('data-row-med');
+			var medDate = $(this).attr('data-row-date');
+			var str = $(this).attr('data-row-items');
+			console.log(str);
+			
+			var medicationItems = str.replaceAll("=", ":").replaceAll("EMRPatientMedicationItem(", "{").replaceAll(")", "}").replaceAll("},", "};").replaceAll("[", "").replaceAll("]", "");
+			var itemSplit = medicationItems.split(";");
+			
+			var rowNum = 0;
+			var generic = "";
+			var brand = "";
+			
+			for (var item of itemSplit) {
+				var itemFields = item.split(",");
+				
+				// add medication form row
+				addMedicine();
+				
+				for (var i = 0; i < itemFields.length; i++) {
+					var field = itemFields[i].split(":");
+					var fieldName = field[0].replaceAll("{", "").trim();
+					var fieldVal = field[1].replaceAll("}", "");
+					
+					var rowId = fieldName+rowNum;
+					
+					console.log("rowNumAA: " + rowNum + " - " + rowId + " - " + fieldVal);
+					
+					if (fieldName == "genericName") {
+						generic = fieldVal;
+					}
+					
+					if (fieldName == "brandName") {
+						brandNameArr[rowNum] = fieldVal;
+						$("#modal_form_vertical").find("#genericName"+rowNum).trigger("change");
+					}
+					$("#modal_form_vertical").find("#"+rowId).val(fieldVal);
+				}
+				rowNum++;
+			}
+			$("#modal_form_vertical").find("#id").val(id);
+			$("#modal_form_vertical").find("#dateCreated").val(medDate);
+		});
+	    
+	    let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+		let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+		
+		if(msgCode === 'ERROR'){
+			$('#modal_form_vertical').modal('show');
+			swal({
+				title: "Error!",
+				text: msgDesc,
+				icon: "error",
+				buttons: false,
+	            timer: 2000,
+			});
+		} else if(msgCode === 'SUCCESS'){
+			swal({
+				title: "Success!",
+				text: "Patient Info successfully saved.",
+				icon: "success",
+				buttons: false,
+	            timer: 2000,
+			});
+		} else if(msgCode === 'ERRORCONSULT'){
+			$('#modal_form_admit').modal('show');
+			swal({
+				title: "Error!",
+				text: msgDesc,
+				icon: "error",
+				buttons: false,
+	            timer: 2000,
+			});
+		} else if(msgCode === 'SUCCESSCONSULT'){
+			swal({
+				title: "Success!",
+				text: "Patient info saved successfully.",
+				icon: "success",
+				buttons: false,
+	            timer: 2000,
+			})
+			.then((value) => {
+				window.location.href = /*[[${#request.getContextPath() + '/emrdashboard'}]]*/"";						
+			});
+		}
+		
+		function clearMedications() {
+			$(".medicationFormRow").remove();
+	    	resetRowNum();
+	    	addMedicine();
+	    	brandNameArr = [];
+		}
+		
+		// Add Medicine Form
+	    function addMedicine() {
+			 
+			 let generics = /*[[${emrGenericsLookupList}]]*/[];
+			 
+			 var options = generics.reduce(
+				(a,g) => a+=`<option value="${g}">${g}</option>`
+               	, ''
+			 )
+			 
+			 let dosages = /*[[${dosages}]]*/[];
+			 
+			 var dosageOptions = dosages.reduce(
+				(a,d) => a+=`<option value="${d}">${d}</option>`
+               	, ''
+			 )
+			 
+			 var medicationFormRowWrapper = 
+				 $(`
+					<div id="medicationFormRow`+i+`" class="medicationFormRow">
+						<hr/>
+						<div class="form-group">
+						<input type="hidden" name="emrPatientMedicationItems[`+i+`].id}" id="id`+i+`"/>
+							<!-- Remove Button -->	
+							${i == 0 ? '' : '<span class="float-right"><i class="icon-trash delete-medication"></i></span>'}	
+							<div class="row">
+								<!-- Generic Name -->
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label for="emrPatientMedicationItems[`+i+`].genericName">Generic name</label>
+										<select name="emrPatientMedicationItems[`+i+`].genericName" id="genericName`+i+`" class="form-control genericName">
+											<option selected> - Select Generic Name - </option>
+											${options}
+										</select>
+									</div>
+								</div>
+								
+								<!-- Brand Name -->
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label for="emrPatientMedicationItems[`+i+`].brandName">Brand name</label>
+										<select name="emrPatientMedicationItems[`+i+`].brandName" id="brandName`+i+`" class="form-control brandName">
+											<option disabled="disabled" selected> - Select Brand Name - </option>
+											
+										</select>
+									</div>
+								</div>
+								
+								<!-- Dosage -->
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label for="emrPatientMedicationItems[`+i+`].dosage">Dosage</label>
+										<select name="emrPatientMedicationItems[`+i+`].dosage" id="dosage`+i+`" class="form-control dosage" >
+											<option value=''>- Select Dosage -</option>
+											${dosageOptions}
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Prescription Notes -->
+						<div class="form-group">
+							<div class="row">
+								<div class="col-sm-12">
+									<label for="emrPatientMedicationItems[`+i+`].remarks">Prescription Notes</label>
+									<textarea name="emrPatientMedicationItems[`+i+`].remarks" id="remarks`+i+`" class="form-control remarks" rows="4"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				 `);
+			 
+			 $("#medicineFormContainer").append(medicationFormRowWrapper);
+			 i++;
+		 }
+	    
+		function setConsultationStatus() {
+			$('#consultationStatus').val('PROCESSED');
+		}
+		
+		function setValuesInForm(id) {
+			let viewConsultationButton = document.querySelector('#viewConsultationButton'+id);
+			$('#emrConsultationId').val(viewConsultationButton.dataset.id);
+			$('#consultationDate').val(viewConsultationButton.dataset.consultationdate);
+			$('#paymentType').val(viewConsultationButton.dataset.paymenttype);
+			$('#hmoName').val(viewConsultationButton.dataset.hmoname);
+			//$('#hmoPaid').val(viewConsultationButton.dataset.hmoPaid);
+			$('#consultationFee').val(viewConsultationButton.dataset.consultationfee);
+			$('#consultationStatus').val(viewConsultationButton.dataset.consultationstatus);
+			$('#temperature').val(viewConsultationButton.dataset.temperature);
+			$('#weight').val(viewConsultationButton.dataset.weight);
+			$('#height').val(viewConsultationButton.dataset.height);
+			$('#bloodPressure').val(viewConsultationButton.dataset.bloodpressure);
+			$('#symptoms').val(viewConsultationButton.dataset.symptoms);
+			$('#physical').val(viewConsultationButton.dataset.physical);
+			$('#intervention').val(viewConsultationButton.dataset.intervention);
+			$('#diagnosisJSON').val(viewConsultationButton.dataset.diagnosisjson);
+			
+			if ($('#paymentType').val() === 'HMO') {
+				$('#hmoName').prop('disabled', false);
+			} else {
+				$('#hmoName').val('');
+				$('#hmoName').prop('disabled', true);
+			}
+		}
+		
+		function previewImage() {
+			let input = document.getElementById('profilePhoto');
+			let img = document.getElementById('photoPreview');
+			if (input.files && input.files[0]) {
+        		var reader = new FileReader();
+        		reader.onload = function(e) {
+        			img.src = e.target.result;
+        		}
+        		reader.readAsDataURL(input.files[0]);
+        	}
+		}
+		
+		function uploadProfilePhoto() {
+			let formData = new FormData();
+        	formData.append('profilePhoto', profilePhoto.files[0]);
+        	formData.append('patientId', document.getElementById('patient.id').value);
+        	
+        	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+        	let uploadUrl = contextRoot + '/file/upload';
+        	let promise = fetch(uploadUrl, {
+        		method: 'POST',
+        		credentials: 'include',
+                body: formData
+        	})
+        	.then(res => res.json())
+        	.then(json => document.getElementById('photoPreview').src = json.downloadUri)
+        	.catch(err => console.log('HTTP-Error: ' + err));
+		}
+		
+		$('#medicineFormContainer').on('change','.genericName',
+			function() {
+				var genericName = $(this).val();
+				var rowNum = 0;
+				rowNum = $(this).attr("id").replace("genericName", "");
+				
+				$.getJSON("http://localhost:8080/ehr/api/generics/search/findByGenericName?genericName=" + genericName , {
+	                ajax : 'true'
+	            }, function(data) {
+	            	var html = '<option value=""> - Select Brand Name - </option>';
+	                var brands = data._embedded.generics;
+	                
+	                var brandOptions = brands.reduce(
+	                	(a,b) => a+=`<option value="${b.brandName}">${b.brandName}`
+	                	, ''
+	                	)
+	                	
+	                html += brandOptions;
+	                
+	                $("#brandName"+rowNum).html(html);
+	                
+	                console.log("---" + brandNameArr[rowNum]);
+	                if (brandNameArr[rowNum] != "") {
+	                	$("#modal_form_vertical").find("#brandName"+rowNum).val(brandNameArr[rowNum]);
+	                }
+	            });
+        });
+		
+		$(document).on('click', '.delete-medication', function(e) {
+			   e.preventDefault();
+			   $(this).closest('.medicationFormRow').remove();
+			   return false;
+		});
+		
+	</script>
+
+</body>
+</html>

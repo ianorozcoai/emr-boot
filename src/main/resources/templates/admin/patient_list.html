@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - Electronic Hospital Records</title>
+
+
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar"></div>
+	<!-- /Main Navbar -->
+
+
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::secondary-navbar-admin"></div>
+	<!-- /secondary navbar -->
+
+	<!-- Vertical form modal -->
+				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-primary">
+								<h5 class="modal-title">Patient Information</h5>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<form action="#">
+								<div class="modal-body">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-6">
+							                        <label for="firstName">First name</label>
+							                        <input id="firstName" name="firstName" placeholder="First name" type="text" class="form-control" >
+							                    </div>
+							                
+							                
+							                    <div class="col-sm-6">
+							                        <label for="lastName">Last name</label>
+							                        <input id="lastName" name="lastName" placeholder="Last name" type="text" class="form-control" >
+							                    </div>
+							            </div>
+									</div>
+									
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-6">
+							                        <label for="nickName">Nick name</label>
+							                        <input id="nickName" name="nickName" placeholder="Nick name" type="text" class="form-control" >
+							                    </div>
+							                
+							                
+							                    <div class="col-sm-6">
+							                        <label for="maritalStatus">Marital Status</label>
+							                        <select class="form-control" name="maritalStatus" id="maritalStatus">
+														<option value="SINGLE">SINGLE</option>
+														<option value="MARRIED">MARRIED</option>
+														<option value="WIDOWED">WIDOWED</option>
+														<option value="SEPARATED">SEPARATED</option>
+													</select>
+							                    </div>
+							            </div>
+									</div>
+									
+									<div class="form-group">
+										<div class="row">       
+							                    <div class="col-sm-6">
+							                        <label for="gender">Gender</label>
+							                        <select id="gender" name="gender" class="form-control">
+							                            <option value="MALE" selected="selected">MALE</option>
+							                            <option value="FEMALE">FEMALE</option>
+							                        </select>
+							                    </div>
+							                    
+							                
+							                    <div class="col-sm-6">
+							                        <label for="birthdate">Birthdate</label>
+							                        <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="enter your birthday"	title="enter your birthday" />
+							                    </div>
+							            </div>
+									</div>
+
+									<div class="form-group">
+										<div class="row">    
+							                    <div class="col-sm-6">
+							                        <label for="contactNumber">Mobile</label>
+							                        <input id="contactNumber" name="contactNumber" title="enter your mobile number if any." placeholder="enter mobile number" type="text" class="form-control">
+							                    </div>
+							                    
+							                    <div class="col-sm-6">
+							                        <label for="emailAddress">Email</label>
+							                        <input id="emailAddress" name="emailAddress" title="enter your email." placeholder="Email Address" type="email" class="form-control" >
+							                    </div>
+							           </div>
+									</div>
+									
+									<div class="form-group">
+										<div class="row">    
+							                    <div class="col-sm-6">
+							                        <label for="profession">Profession</label>
+							                        <input type="text" class="form-control" name="profession"	id="profession" placeholder="Profession" />
+							                    </div>
+							                    
+							                    <div class="col-sm-6">
+							                        <label for="seniorCitizenNumber">Senior Citizen Number</label>
+							                        <input type="text" class="form-control" name="seniorCitizenNumber" id="seniorCitizenNumber" placeholder="Senior Citizen Number" />
+							                    </div>
+							           </div>
+									</div>
+									
+									<div class="form-group">
+										<div class="row">    
+							                    <div class="col-sm-6">
+							                        <label for="province">Province</label>
+							                        <select class="form-control" name="province" id="province"	onchange="loadCities('city', this.value)">
+		
+													</select>
+							                    </div>
+							                    
+							                    <div class="col-sm-6">
+							                        <label for="city">City</label>
+							                        <select class="form-control" name="city" id="city"	onchange="loadCities('city', this.value)">
+		
+													</select>
+							                    </div>
+							           </div>
+									</div>
+
+									<div class="form-group">
+										<div class="row">         
+							                    <div class="col-sm-12">
+							                        <label for="street">Street</label>
+							                        <input id="street" name="street" placeholder="Street" type="text" class="form-control" >
+							                    </div>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<div class="row">    
+							                    <div class="col-sm-6">
+							                        <label for="emergencyContactName">Emergency Contact Name</label>
+							                        <input id="emergencyContactName" name="emergencyContactName" title="enter your emergency Contact Name if any." placeholder="Emergency Contact Name" type="text" class="form-control">
+							                    </div>
+							                    
+							                    <div class="col-sm-6">
+							                        <label for="emergencyContactNumber">Emergency Contact Number</label>
+							                        <input id="emergencyContactNumber" name="emergencyContactNumber" title="enter your emergency Contact Number if any." placeholder="Emergency Contact Number" type="text" class="form-control">
+							                    </div>
+							           </div>
+									</div>
+
+									<div class="form-group">
+										<div class="row">         
+							                    <div class="col-sm-12">
+							                        <label for="emergencyContactAddress">Emergency Contact Address</label>
+							                        <input id="emergencyContactAddress" name="emergencyContactAddress" placeholder="Emergency Contact Address" type="text" class="form-control" >
+							                    </div>
+										</div>
+									</div>									
+
+									<div class="form-group">
+										<div class="row">         
+							                    <div class="col-sm-12">
+							                        <label for="notes">Notes</label>
+							                        <input id="notes" name="notes" placeholder="Notes" type="text" class="form-control" >
+							                    </div>
+										</div>
+									</div>	
+									
+									<div class="form-group">
+										<div class="row">    
+							                    <div class="col-sm-6">
+							                        <label for="mothersname">Mother&apos;s Name</label>
+							                        <input id="mothersname" name="mothersname" title="enter your Mothers Name" placeholder="Mother&apos;s Name" type="text" class="form-control">
+							                    </div>
+							                    
+							                    <div class="col-sm-6">
+							                        <label for="mothersoccupation">Mother&apos;s Occupation</label>
+							                        <input id="mothersoccupation" name="mothersoccupation" title="enter your Mothers Occupation" placeholder="Mother&apos;s Occupation" type="text" class="form-control">
+							                    </div>
+							           </div>
+									</div>
+									
+									<div class="form-group">
+										<div class="row">    
+							                    <div class="col-sm-6">
+							                        <label for="fathersname">Father&apos;s Name</label>
+							                        <input id="fathersname" name="fathersname" title="enter your Fathers Name" placeholder="Father&apos;s Name" type="text" class="form-control">
+							                    </div>
+							                    
+							                    <div class="col-sm-6">
+							                        <label for="fathersoccupation">Father&apos;s Occupation</label>
+							                        <input id="fathersoccupation" name="fathersoccupation" title="enter your Fathers Occupation" placeholder="Father&apos;s Occupation" type="text" class="form-control">
+							                    </div>
+							           </div>
+									</div>
+
+									
+								</div>
+
+								<div class="modal-footer">
+									<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn bg-primary">Save Info</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /vertical form modal -->
+	
+
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">Patient List</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-xl-12">
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">Patient List</h5>								
+							</div>
+		
+							<div class="card-body">
+								This table shows the list of patients. This list shows all patients and basic information.
+							</div>
+		
+							<table class="table table-bordered table-hover" id="dataTables-patientList">							
+								<thead>
+									<tr>
+										<th>Patient Name</th>
+										<th>Email</th>
+										<th>Gender</th>
+										<th>Contact No.</th>
+										<th>Action</th>						
+									</tr>
+								</thead>
+								<tbody>
+									
+								</tbody>
+							</table>
+						</div>
+						<!-- /basic datatable -->					
+					</div>
+				</div>
+				
+				
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->    
+
+			
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+		function admitPatient(id){
+			//Set Id in Modal for CJ
+			alert("admitPatient() Patient Id: " + id);		
+		}
+		
+		function viewRecord(id){
+			//Redirect to Patient Record
+			let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+			window.location.href = contextRoot + "/view_patient/" + id;			
+		}
+	</script>
+
+    <script th:inline="javascript">
+    
+	    $(document).ready(function() {     
+	    	
+	    	$(".nav-link").removeClass("bg-slate-600");
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");	    	
+			$("#adminModuleNav").addClass("bg-slate-600");
+			$("#patient2ndNav").addClass("bg-slate-300");
+	    	
+	    	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+	    	
+	    	displayPatientListDatatable();
+	    	
+		    function displayPatientListDatatable(){
+				
+				var dataTable = $('#dataTables-patientList').DataTable({	    			
+					"ajax" : {
+						url : contextRoot + "/api/patients",
+						dataSrc: "_embedded.patients",
+					},	    			
+					"lengthMenu": [10, 25, 50],
+					"ordering": false,
+		            "columnDefs": [
+					    { "width": "60%", "targets": 0 }
+					],
+					"columns": [
+						{ 
+							data: "fullName",
+							render : function(data, type, row, meta) {	    						
+								return "<div class='d-flex align-items-center'><div><a class='text-default font-weight-semibold letter-icon-title'>" + data + "</a></div></div>";		    						
+							}
+						},
+						{ 
+							data: "email",
+							render : function(data, type, row, meta) {	    						
+								return "<div class='d-flex align-items-center'><div><a class='text-default font-weight-semibold letter-icon-title'>" + data + "</a></div></div>";		    						
+							}
+						},
+						{ 
+							data: "gender",
+							render : function(data, type, row, meta) {	    						
+								return "<div class='d-flex align-items-center'><div><a class='text-default font-weight-semibold letter-icon-title'>" + data + "</a></div></div>";		    						
+							}
+						},
+						{ 
+							data: "contactNumber",
+							render : function(data, type, row, meta) {	    						
+								return "<div class='d-flex align-items-center'><div><a class='text-default font-weight-semibold letter-icon-title'>" + data + "</a></div></div>";		    						
+							}
+						},
+						
+	    				{
+							data: "id",
+							render: function(data, type, row, meta) {								
+								return (`
+                                    <div onclick="viewRecord('${data}')" class="btn btn-primary" style="cursor: pointer;">
+                                      View Record
+                                    </div>
+                                `);
+							}
+						}
+					]
+				});  		
+			} //end displaySubjectListDatatable()
+	    	
+	    });
+    
+    </script>
+
+</body>
+</html>

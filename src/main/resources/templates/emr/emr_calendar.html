@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+
+    <!-- Additional js goes here -->
+    <script th:src="@{/global_assets/js/plugins/ui/fullcalendar/core/main.min.js}"></script>
+    <script th:src="@{/global_assets/js/plugins/ui/fullcalendar/daygrid/main.min.js}"></script>
+    <script th:src="@{/global_assets/js/plugins/ui/fullcalendar/timegrid/main.min.js}"></script>
+    <script th:src="@{/global_assets/js/plugins/ui/fullcalendar/interaction/main.min.js}"></script>
+
+    <title>Calendar</title>
+
+
+</head>
+
+<body>
+
+<!-- Main Navbar -->
+<div th:replace="fragments/common::emr-main-navbar"></div>
+<!-- /Main Navbar -->
+
+<!-- Page content -->
+<div class="page-content">
+
+    <!-- Main sidebar -->
+    <div th:replace="fragments/common::emr-main-sidebarnav"></div>
+    <!-- /Main sidebar -->
+
+    <!-- Main content -->
+    <div class="content-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <div class="page-header-content header-elements-md-inline">
+                <div class="page-title d-flex">
+                    <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">My Calendar</span></h4>
+                    <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- /page header -->
+
+
+        <!-- Content area -->
+        <div class="content pt-0">
+
+            <!-- Event colors -->
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h5 class="card-title">Patient Consultation</h5>
+                    <div class="header-elements">
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                            <a class="list-icons-item" data-action="reload"></a>
+                            <a class="list-icons-item" data-action="remove"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="color-legends">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <a href="#" class="btn rounded-round btn-icon btn-sm" style="background-color: Green;">
+                                            <span class="letter-icon">&nbsp;</span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="text-default font-weight-semibold letter-icon-title">Processed</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <a href="#" class="btn rounded-round btn-icon btn-sm" style="background-color: Blue;">
+                                            <span class="letter-icon">&nbsp;</span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="text-default font-weight-semibold letter-icon-title">On Queue</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <a href="#" class="btn rounded-round btn-icon btn-sm" style="background-color: Red;">
+                                            <span class="letter-icon">&nbsp;</span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="text-default font-weight-semibold letter-icon-title">Cancelled</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fullcalendar-event-colors" style="margin-top: 30px;"></div>
+
+                </div>
+            </div>
+            <!-- /event colors -->
+
+        </div>
+        <!-- /content area -->
+
+        <!-- Footer -->
+        <div th:replace="fragments/common::footer"></div>
+        <!-- /Footer -->
+
+    </div>
+    <!-- /main content -->
+
+</div>
+<!-- /page content -->
+
+<script th:inline="javascript">
+		function setPatientIdInForm(id){
+			//Set Id in Modal for CJ
+			console.log($('#patientId').val());
+			$('#patientId').val(id);
+			console.log(document.getElementById('patientId').value);
+		}
+
+		function viewRecord(id){
+			//Redirect to Patient Record
+			let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+			window.location.href = contextRoot + "/emrpatientrecord/" + id;
+		}
+	</script>
+
+<script th:inline="javascript">
+
+	    $(document).ready(function() {
+
+	        let eventCalendarList = /*[[${eventCalendarDtoList == null ? null : eventCalendarDtoList}]]*/'';
+
+	        renderEventCalendar(eventCalendarList);
+
+	    	$(".nav-link").removeClass("active");
+			$("#emrMyCalendarNav").addClass("active");
+
+	    	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+
+			if(msgCode === 'ERROR'){
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: msgDesc,
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+
+	    });
+
+	    function renderEventCalendar(eventArray){
+
+            if (typeof FullCalendar == 'undefined') {
+                console.warn('Warning - Fullcalendar files are not loaded.');
+                return;
+            }
+
+            var calendarEventColorsElement = document.querySelector('.fullcalendar-event-colors');
+
+            // Initialize
+            if(calendarEventColorsElement) {
+
+                var calendarEventColorsInit = new FullCalendar.Calendar(calendarEventColorsElement, {
+                    plugins: [ 'dayGrid', 'interaction' ],
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                    },
+                    //editable: true,
+                    events: eventArray
+                }).render();
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

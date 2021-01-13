@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - EMR</title>
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar-patient-record-emr"></div>
+	<!-- /Main Navbar -->
+	
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::emr-secondary-navbar-patient-record"></div>
+	<!-- /secondary navbar -->
+
+	
+	<!-- Vertical form modal -->
+				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-primary">
+								<h5 class="modal-title">Medical Certificate Information</h5>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<form id="uploadImgForm" th:action="@{/emrPatientMedicalCertificate}" method="post" enctype="multipart/form-data" th:object="${emrMedicalCertificate}">
+							    <input type="hidden" th:field="*{id}" id="id"/>
+							    <input type="hidden" name="patient.id" th:value="${patient.id}" />
+								<div class="modal-body">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-12">
+												<label for="dateRequested">Date</label>
+												<span class="validationError text-danger" th:if="${#fields.hasErrors('dateRequested')}" th:errors="*{dateRequested}"></span>
+												<input th:field="*{dateRequested}" placeholder="Date" type="datetime-local" class="form-control" >
+											</div>									
+							            </div>
+									</div>				
+									<div class="form-group">
+										<div class="row">       
+											<div class="col-sm-12">
+												<label for="history">History</label>
+												<span class="validationError text-danger" th:if="${#fields.hasErrors('history')}" th:errors="*{history}"></span>
+												<textarea th:field="*{history}" class="form-control instructions" rows="4"></textarea>
+											</div>                    
+							            </div>
+									</div>	
+									<div class="form-group">
+										<div class="row">       
+											<div class="col-sm-12">
+												<label for="diagnosis">Diagnosis</label>
+												<span class="validationError text-danger" th:if="${#fields.hasErrors('diagnosis')}" th:errors="*{diagnosis}"></span>
+												<textarea th:field="*{diagnosis}" class="form-control instructions" rows="4"></textarea>
+											</div>                    
+							            </div>
+									</div>	
+									<div class="form-group row">
+										
+											<div class="col-sm-12">
+												<label for="recommendation">Recommendation</label>
+												<span class="validationError text-danger" th:if="${#fields.hasErrors('recommendation')}" th:errors="*{recommendation}"></span>
+												<textarea th:field="*{recommendation}" class="form-control instructions" rows="4"></textarea>
+											</div>                    
+							            
+									</div>
+									<div class="form-group">
+										<div class="row">       
+											<div class="col-sm-12">
+												<label for="medication">Medication</label>
+												<span class="validationError text-danger" th:if="${#fields.hasErrors('medication')}" th:errors="*{medication}"></span>
+												<textarea th:field="*{medication}" class="form-control instructions" rows="4"></textarea>
+											</div>                    
+							            </div>
+									</div>				
+								</div>
+
+								<div class="modal-footer">
+									<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn bg-primary">Save Info</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /vertical form modal -->
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Content area -->
+			<div class="content">
+			
+				<!-- Inner container -->
+				<div class="d-md-flex align-items-md-start">
+
+					<!-- Left sidebar component -->
+					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
+					<!-- /left sidebar component -->
+
+					<!-- Right content -->
+					<div class="tab-content w-100">
+						<div class="tab-pane fade active show" id="profile">
+						
+							<!-- Consultation Table -->
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- Basic datatable -->
+									<div class="card">
+										<div class="card-header header-elements-inline">
+											<h5 class="card-title">Medical Certificate List</h5>
+											<div class="header-elements">
+												<div class="list-icons">				                				
+							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addImagingButton">Add Record</button>		                		
+							                	</div>
+						                	</div>
+										</div>
+					
+										<div class="card-body">
+											<table class="table table-bordered table-hover" id="system-user-list">
+												<thead>
+													<tr>
+														<th>Date</th>
+														<th>History</th>
+														<th>Diagnosis</th>
+														<th>Recommendation</th>
+														<th>Medication</th>
+														<th class="text-center">Actions</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="mc : ${emrMedicalCertificateList}">
+														<td th:text="${#temporals.format(mc.dateRequested,'MMM d, yyyy')}">Date</td>								
+														<td th:text="${mc.history}">History</td>
+														<td th:text="${mc.diagnosis}">Diagnosis</td>
+														<td th:text="${mc.recommendation}">Recommendation</td>
+														<td th:text="${mc.medication}">Medication</td>
+														<td class="text-center">
+															<button id="editMedicalCertificateButton" type="button" class="showMedicalCertificateDetails btn btn-primary" 
+																	th:data-row-history="${mc.history}"
+																	th:data-row-diagnosis="${mc.diagnosis}"
+																	th:data-row-recommendation="${mc.recommendation}"
+																	th:data-row-medication="${mc.medication}"
+																	th:data-row-id="${mc.id}"
+																	data-toggle="modal" data-target="#modal_form_vertical">Edit</button>
+														</td>
+													</tr>								
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- /basic datatable -->					
+								</div>
+							</div>
+							<!-- /Consultation Table -->
+					    </div>				    	
+					</div>
+					<!-- /right content -->
+				</div>
+				<!-- /inner container -->
+			</div>
+			<!-- /content area -->
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+	    $(document).ready(function() {	    		    				
+			
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
+			$("#emrPatientMedicalForms2ndNav").addClass("bg-slate-300");
+			
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Medical Certificate Record successfully saved.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+			
+	    });	 
+	    
+	    $(document).on("click", ".showMedicalCertificateDetails", function() {
+
+			var id = $(this).attr('data-row-id');
+			var history = $(this).attr('data-row-history');
+			var diagnosis = $(this).attr('data-row-diagnosis');
+			var recommendation = $(this).attr('data-row-recommendation');
+			var medication = $(this).attr('data-row-medication');
+			
+			$("#modal_form_vertical").find("#id").val(id);
+			$("#modal_form_vertical").find("#history").val(history);
+			$("#modal_form_vertical").find("#diagnosis").val(diagnosis);
+			$("#modal_form_vertical").find("#recommendation").val(recommendation);
+			$("#modal_form_vertical").find("#medication").val(medication);
+		});
+	    
+	</script>
+	
+	
+    
+    
+</body>
+</html>

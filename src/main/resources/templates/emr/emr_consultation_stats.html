@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+	
+	<title>EHR - EMR</title>	
+	
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+	<!-- /Main Navbar -->
+					
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->		
+		
+		
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">Consultation Statistics</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+				<div class="row">
+					<div class="col-xl-12">					
+						<!-- Summary datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">Search Parameters</h5>
+							</div>		
+							<div class="card-body">
+								<form th:action="@{/consultationStatistics}" method="post" th:object="${dto}" class="editPersonnelForm">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-5">													    
+												<label for="dateFrom">Date From</label>									                    
+												<input th:field="*{dateFrom}" type="date" class="form-control" >
+											</div>									                
+									                
+											<div class="col-sm-5">									                    
+												<label for="dateTo">Date To</label>									                    
+												<input th:field="*{dateTo}" type="date" class="form-control" >
+											</div>
+											
+											<div class="col-sm-2">									                    
+												<label for="email">&nbsp;</label>
+												<button class="btn btn-success btn-block" style="margin-top: 0px;" type="submit">View Statistics</button>		
+											</div>
+										</div>
+									</div>	
+	                            </form>
+							</div>				
+						</div>
+					</div>
+				</div>
+				
+
+				<div class="row">
+					<div class="col-xl-12">					
+						<!-- Summary datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">Summary</h5>
+							</div>							
+		
+							<table class="table datatable-basic">
+								<thead>
+									<tr>										           
+                                    	<th>Date From</th>           
+										<th>Date To</th>	
+										<th>Total Patients</th>																			
+										<th>Male</th>
+										<th>Female</th>
+										<th>HMO</th>
+										<th>Cash</th>
+										<th>Cash Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td th:text="${#temporals.format(dto.dateFrom,'MMMM d, yyyy')}">September 9, 2020</td>
+										<td th:text="${#temporals.format(dto.dateTo,'MMMM d, yyyy')}">September 9, 2020</td>
+										<td th:text="${dto.totalPatients}">0</td>
+										<td th:text="${dto.totalMale}">0</td>
+										<td th:text="${dto.totalFemale}">0</td>
+										<td th:text="${dto.totalHmo}">0</td>
+										<td th:text="${dto.totalCash}">0</td>
+										<td th:text="${dto.totalCashAmount}">0</td>								
+									</tr>
+								</tbody>
+							</table>
+														
+						</div>
+						<!-- /Summary datatable -->						
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-xl-12">					
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">Consultation Statistics</h5>								
+							</div>							
+		
+							<table class="table datatable-basic" id="dataTables-hmoCollectionList" >
+								<thead>
+									<tr>
+										<th>Date</th>	
+										<th>Patient Name</th>																			
+										<th>Gender</th>
+										<th>Mode of Payment</th>
+										<th>Amount</th>										
+										<th>Diagnosis</th>										
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="consultation : ${dto.emrConsultations}">
+										<tr>
+											<td th:text="${#temporals.format(consultation.consultationDate,'MMMM d, yyyy')}">September 9 2020 02:30 PM</td>
+											<td th:text="${consultation.patient.fullName}">Patient name</td>
+											<td th:text="${consultation.patient.gender}" >gender</td>	
+											<td th:text="${consultation.paymentType}" >paymentType</td>	
+											<td th:text="${consultation.consultationFee}" >paymentType</td>											
+											<td><span th:each="ecd : ${consultation.diagnosis}" th:text="|${ecd.description}, |"></span></td>																		
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+														
+						</div>
+						<!-- /basic datatable -->						
+					</div>
+				</div>
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+			<!-- Main sidebar -->
+			<div th:replace="fragments/common::emr-footer"></div>
+			<!-- /Main sidebar -->
+			
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	
+    <script th:inline="javascript">
+	    
+	    $(document).ready(function() {     
+	    	
+	    	$(".nav-link").removeClass("active");
+			$("#emrConsultationStatNav").addClass("active");
+			
+			let dateFrom = /*[[${dto.dateFrom == null ? '' : dto.dateFrom} ]]*/'';	
+			let dateTo = /*[[${dto.dateTo == null ? '' : dto.dateTo} ]]*/'';
+			
+			$("#dateFrom").val(dateFrom);
+	    	$("#dateTo").val(dateTo);
+	    	   	
+	    });
+    
+    </script>
+
+</body>
+</html>

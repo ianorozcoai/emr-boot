@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <link rel="stylesheet" th:href="@{/js/jquery.flexdatalist.min.css}">
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    <script th:src="@{/js/jquery.flexdatalist.min.js}"></script>
+	<title>EHR - EMR</title>
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar-patient-record-emr"></div>
+	<!-- /Main Navbar -->
+	
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::emr-secondary-navbar-patient-record"></div>
+	<!-- /secondary navbar -->
+
+	
+	<!-- Vertical form modal -->
+				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-primary">
+								<h5 class="modal-title">Vaccination Information</h5>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<form th:action="@{/emrpatientVaccination}" th:object="${emrPatientVaccination}" method="post" enctype="multipart/form-data">
+								<input type="hidden" th:field="*{id}" />
+							    <input type="hidden" name="patient.id" th:value="${patient.id}" />
+							    <datalist id="vaccines">
+								  <option th:each="vn : ${vaccineNameList}" th:value="${vn.name}"></option>
+								</datalist>
+								<div class="modal-body">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-12">
+												<label for="dateCreated">Date</label>
+												<input th:field="*{dateCreated}" placeholder="Date" type="datetime-local" class="form-control" >
+											</div>
+							            </div>
+									</div>
+									
+									<div class="form-group">
+							            <div class="row">
+											<div class="col-sm-12">
+												<label for="vaccineName">Vaccine Name</label>
+												<input list="vaccines" th:field="*{vaccineName}" placeholder="Vaccine name" type="text" class="form-control flexdatalist"
+		                                               data-search-by-word="true"
+		                                               data-min-length="1"
+		                                               multiple="multiple"
+		                                               data-selection-required="true"
+		                                               >
+											</div>
+							            </div>
+										<div class="row">       
+											<div class="col-sm-12">
+												<label for="remarks">Remarks</label>
+												<textarea th:field="*{remarks}" class="form-control remarks" rows="4"></textarea>
+											</div>                    
+							            </div>
+										<div class="row">       
+											<div class="col-sm-12">
+												<label for="vaccineFiles">Photos</label>
+												<input type="file" id="vaccineFiles" name="vaccineFiles" class="form-control file" multiple="multiple" accept="image/*"
+												    data-theme="fas"
+												    data-show-browse="false"
+													data-show-upload="false"
+													data-show-remove="false"
+													data-show-caption="false"
+													data-browse-on-zone-click="true"
+													data-initial-preview-as-data="true"
+												    />
+											</div>                    
+							            </div>
+									</div>							
+								</div>
+
+								<div class="modal-footer">
+									<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn bg-success">Save Info</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+	<!-- /vertical form modal -->
+				
+				
+	
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Content area -->
+			<div class="content">
+			
+				<!-- Inner container -->
+				<div class="d-md-flex align-items-md-start">
+
+					<!-- Left sidebar component -->
+					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
+					<!-- /left sidebar component -->
+
+					<!-- Right content -->
+					<div class="tab-content w-100">
+						<div class="tab-pane fade active show" id="profile">
+						
+							<!-- Consultation Table -->
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- Basic datatable -->
+									<div class="card">
+										<div class="card-header header-elements-inline">
+											<h5 class="card-title">Vaccination List</h5>
+											<div class="header-elements">
+												<div class="list-icons">				                				
+							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addVaccinationButton">Add Vaccination</button>		                		
+							                	</div>
+						                	</div>
+										</div>
+					
+										<div class="card-body">
+											<table class="table table-bordered table-hover" id="system-user-list">
+												<thead>
+													<tr>
+														<th>Date</th>
+														<th>Vaccine Name</th>
+														<th>Notes</th>
+														<th class="text-center">Actions</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="vaccination : ${emrPatientVaccinationList}">
+														<td th:text="${#temporals.format(vaccination.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>								
+														<td th:text="${vaccination.vaccineName}"></td>
+														<td th:text="${vaccination.remarks}"></td>
+														<td class="text-center" width="40px;">
+															<button th:id="|editVaccinationButton${vaccination.id}|" type="button" class="showVaccinationDetails btn btn-primary" 
+																th:data-row-id="${vaccination.id}"
+																th:data-row-date-created="${vaccination.dateCreated}"
+																th:data-row-vaccine-name="${vaccination.vaccineName}"
+																th:data-row-remarks="${vaccination.remarks}"
+																data-toggle="modal" data-target="#modal_form_vertical">Edit</button>
+														</td>
+													</tr>								
+												</tbody>
+											</table>
+										</div>
+					
+										
+									</div>
+									<!-- /basic datatable -->					
+								</div>
+							</div>
+							<!-- /Consultation Table -->
+
+								
+
+					    </div>				    	
+					</div>
+					<!-- /right content -->
+
+				</div>
+				<!-- /inner container -->
+				
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+	    $(document).ready(function() {	    		    				
+	    	//$('#vaccineFiles').fileinput({
+	    	//	theme: 'fas'
+	    	//});
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
+			$("#emrPatientVaccination2ndNav").addClass("bg-slate-300");
+	    	
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: msgDesc,
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+			
+		});
+		
+		$(document).on("click", ".showVaccinationDetails", function() {
+			var id = $(this).attr('data-row-id');
+			var dateCreated = $(this).attr('data-row-date-created');
+			var vaccineName = $(this).attr('data-row-vaccine-name');
+			var remarks = $(this).attr('data-row-remarks');
+			
+			$("#modal_form_vertical").find("#id").val(id);
+			$("#modal_form_vertical").find("#dateCreated").val(dateCreated);
+			$("#modal_form_vertical").find("#vaccineName").val(vaccineName);
+			$("#modal_form_vertical").find("#remarks").val(remarks);
+			
+			let contextRoot = /*[[${#request.getContextPath()}]]*/'';
+			let promise = fetch(contextRoot + '/api/patientVaccination/'+id)
+			    .then(res => res.json())
+			    .then(data => {
+			    	let fiOpts = $('#vaccineFiles').data('fileinput');
+			    	$('#vaccineFiles').fileinput('destroy').fileinput({
+			    		theme: 'fas',
+			    	    showUpload: false,
+	                    showRemove: false,
+	                    showBrowse: false,
+	                    showCaption: false,
+	                    browseOnZoneClick: true,
+	                    allowedFileExtensions: ['jpg', 'png', 'gif', 'pdf', 'txt'],
+	                    initialPreview: data.vaccineFileUrls,
+	                    initialPreviewConfig: [],
+	                    initialPreviewAsData: true,
+	                    maxFileSize: 1024 * 10,
+	                    previewZoomButtonClasses: {
+	                        toggleheader: 'btn btn-light btn-icon btn-header-toggle btn-sm',
+	                        fullscreen: 'btn btn-light btn-icon btn-sm',
+	                        borderless: 'btn btn-light btn-icon btn-sm',
+	                        close: 'btn btn-light btn-icon btn-sm'
+	                    },
+	                    previewZoomButtonIcons: {
+	                        prev: '<i class="icon-arrow-left32"></i>',
+	                        next: '<i class="icon-arrow-right32"></i>',
+	                        toggleheader: '<i class="icon-menu-open"></i>',
+	                        fullscreen: '<i class="icon-screen-full"></i>',
+	                        borderless: '<i class="icon-alignment-unalign"></i>',
+	                        close: '<i class="icon-cross2 font-size-base"></i>'
+	                    },
+	                    fileActionSettings: {
+	                    	zoomIcon: '<i class="icon-zoomin3"></i>',
+	                    },
+	                    initialPreviewShowDelete: false
+			    	});
+			    })
+			    .catch(err => console.log(err));
+			
+		});
+		
+// start update profile photo
+			const fileSelect = document.getElementById('fileSelect');
+		    const profilePhoto = document.getElementById('profilePhoto');
+			fileSelect.addEventListener('click', (e) => {
+	        	if (profilePhoto) {
+	        		profilePhoto.click();
+	        	}
+	        }, false);
+		    profilePhoto.addEventListener('change', previewImage, false);
+		    
+        	let uploadUrl = /*[[${#request.getContextPath() + '/file/upload/profilePhoto'}]]*/'';
+        	let fileUploadForm = document.getElementById('fileUploadForm');
+		    fileUploadForm.onsubmit = async (e) => {
+		    	e.preventDefault();
+		    	let fd = new FormData(fileUploadForm);
+		    	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
+		    	let response = await fetch(uploadUrl, {
+		    		method: 'POST',
+		    		body: fd
+		    	});
+		    	
+		    	if(response.ok){
+		    		swal({
+						title: "Success!",
+						text: "Patient Photo successfully saved.",
+						icon: "success",
+						buttons: false,
+			            timer: 2000,
+					});
+		    	} else {
+		    		swal({
+						title: "Upload Failure!",
+						text: "Patient Photo not uploaded successfully.",
+						icon: "error",
+						buttons: false,
+			            timer: 2000,
+					});
+		    	}
+		    };
+		    
+		    function previewImage() {
+				let input = document.getElementById('profilePhoto');
+				let img = document.getElementById('photoPreview');
+				if (input.files && input.files[0]) {
+	        		var reader = new FileReader();
+	        		reader.onload = function(e) {
+	        			img.src = e.target.result;
+	        		}
+	        		reader.readAsDataURL(input.files[0]);
+	        	}
+			}
+// end update profile photo
+        $('#addVaccinationButton').click(() => {
+			//clear values in form
+        	$('#id').val(0);
+        	$('#dateCreated').val(moment(new Date()).format('YYYY-MM-DDThh:mm'));
+        	//$('#dateCreated').val(new Date().toISOString().substring(0,16));
+        	$('#vaccineName').val('');
+        	$('#remarks').val('');
+        	$('#vaccineFiles').fileinput('refresh');
+		});
+    </script>
+</body>
+</html>

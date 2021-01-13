@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+	
+	<title>EHR - Electronic Hospital Records</title>
+	
+</head>
+
+<body>
+
+	<div th:replace="fragments/common::main-navbar"></div>
+    <div th:replace="fragments/common::secondary-navbar-admin"></div>
+
+
+	<!-- Vertical form modal -->
+	<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-primary">
+					<h5 class="modal-title">System User Information</h5>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<form th:action="@{/personnels}" method="post" th:object="${personnel}">
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-sm-6">								    
+				                    <label for="firstName">First name</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+				                    <input id="firstName" th:field="*{firstName}" placeholder="First name" type="text" class="form-control" >
+				                </div>
+				                
+				                
+				                <div class="col-sm-6">				                    
+				                    <label for="lastName">Last name</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+				                    <input id="lastName" th:field="*{lastName}" placeholder="Last name" type="text" class="form-control" >
+				                </div>
+				            </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">       
+				                <div class="col-sm-6">
+				                    <label for="gender">Gender</label>
+				                    <select id="gender" th:field="*{gender}" class="form-control">
+				                        <option value="M" th:selected="*{gender == 'M'}">MALE</option>
+				                        <option value="F" th:selected="*{gender == 'F'}">FEMALE</option>
+				                    </select>
+				                </div>
+				                
+				                
+				                <div class="col-sm-6">				                    
+				                    <label for="contactNumber">Mobile</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('contactNumber')}" th:errors="*{contactNumber}"></span>
+				                    <input id="contactNumber" th:field="*{contactNumber}" title="enter your mobile number if any." placeholder="enter mobile number" type="text" class="form-control">
+				                </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-6">				                    
+				                    <label for="username">Username</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+				                    <input id="username" th:field="*{username}" title="enter your username." placeholder="Username" type="text" class="form-control" >
+				                </div>
+				                
+				                <div class="col-sm-6">				                    
+				                    <label for="password">Password</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+				                    <input id="password" th:field="*{password}" title="enter your password." placeholder="Password" type="password" class="form-control" >
+				                </div>
+				           </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-6">				                    
+				                    <label for="email">Email</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+				                    <input id="email" th:field="*{email}" title="enter your email." placeholder="Email Address" type="email" class="form-control" >
+				                </div>
+				                
+				                <div class="col-sm-6">
+				                    <label for="userType">Role</label>
+				                    <select id="userType" th:field="*{userType}" class="form-control">
+				                        <option th:selected="*{userType == 'ROLE_DOCTOR_EMR'}" value="ROLE_DOCTOR_EMR">Doctor with EMR Access</option>
+				                        <option th:selected="*{userType == 'ROLE_DOCTOR'}" value="ROLE_DOCTOR" selected="selected">Doctor</option>
+				                        <option th:selected="*{userType == 'ROLE_NURSE'}" value="ROLE_NURSE">Nurse</option>
+				                        <option th:selected="*{userType == 'ROLE_MED_TECH'}" value="ROLE_MED_TECH">Medical Technician</option>
+				                        <option th:selected="*{userType == 'ROLE_STAFF'}" value="ROLE_STAFF">Doctors Staff</option>
+				                        <option th:selected="*{userType == 'ROLE_ADMIN'}" value="ROLE_ADMIN">Admin</option>
+				                    </select>
+				                </div>
+				           </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">         
+				                <div class="col-sm-12">
+				                    <label for="departmentId">Department</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></span>
+				                    <select id="departmentId" th:field="*{department.id}" class="form-control">
+				                        <option value="0">- Select Department -</option>
+				                        <option th:each="d : ${allDepartments}"
+				                            th:value="${d.id}" th:text="${d.departmentName}"
+				                            th:with="did=*{department.id}"
+				                            th:selected="${d.id == did}">
+				                    </select>
+				                </div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">         
+				                <div class="col-sm-12">
+				                    <label for="address">Address</label>
+				                    <input id="address" th:field="*{address}" placeholder="Address" type="text" class="form-control" >
+				                </div>
+							</div>
+						</div>
+						
+						<hr>
+						<h6 class="font-weight-semibold">Doctors Info</h6>
+						<p>Please fill up the info below if you are encoding to doctors access.</p>									
+						
+						<div class="form-group">
+							<div class="row">
+				                <div class="col-sm-12">
+				                    <label for="credentials">Credentials</label>
+				                    <input id="credentials" name="credentials" placeholder="Credentials" type="text" class="form-control" >
+				                </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">
+				                <div class="col-sm-6">
+				                    <label for="specialization">Specialization</label>
+				                    <input id="specialization" th:field="*{specialization}" placeholder="Specialization" type="text" class="form-control" >
+				                </div>
+				                    
+				                    <div class="col-sm-6">
+				                        <label for="licenseNumber">License No.</label>
+				                        <input id="licenseNumber" th:field="*{licenseNumber}" placeholder="License No." type="text" class="form-control" >
+				                    </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">
+				                    <div class="col-sm-6">
+				                        <label for="ptrNumber">PTR No.</label>
+				                        <input id="ptrNumber" th:field="*{ptrNumber}" placeholder="PTR No." type="text" class="form-control" >
+				                    </div>
+				                    <div class="col-sm-6">
+				                        <label for="sNumber">S2 No.</label>
+				                        <input id="sNumber" th:field="*{sNumber}" placeholder="S2 No." type="text" class="form-control" >
+				                    </div>
+				             </div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn bg-primary">Save Info</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /vertical form modal -->
+	
+	<!-- modal form edit -->
+    <div id="modal_form_edit" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-primary">
+					<h5 class="modal-title">System User Information</h5>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<form th:action="@{/personnels/edit}" method="post" th:object="${personnelDto}" class="editPersonnelForm">
+				    <input type="hidden" th:field="*{id}" id="personnelId">
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-sm-6">								    
+				                    <label for="_firstName">First name</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+				                    <input id="_firstName" th:field="*{firstName}" placeholder="First name" type="text" class="form-control" >
+				                </div>
+				                
+				                
+				                <div class="col-sm-6">				                    
+				                    <label for="_lastName">Last name</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+				                    <input id="_lastName" th:field="*{lastName}" placeholder="Last name" type="text" class="form-control" >
+				                </div>
+				            </div>
+						</div>
+						
+						<div class="form-group">
+							<div class="row">       
+				                <div class="col-sm-6">
+				                    <label for="_gender">Gender</label>
+				                    <select id="_gender" th:field="*{gender}" class="form-control">
+				                        <option value="M" th:selected="*{gender == 'M'}">MALE</option>
+				                        <option value="F" th:selected="*{gender == 'F'}">FEMALE</option>
+				                    </select>
+				                </div>
+				                
+				                
+				                <div class="col-sm-6">				                    
+				                    <label for="_contactNumber">Mobile</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('contactNumber')}" th:errors="*{contactNumber}"></span>
+				                    <input id="_contactNumber" th:field="*{contactNumber}" title="enter your mobile number if any." placeholder="enter mobile number" type="text" class="form-control">
+				                </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">    
+				                <div class="col-sm-6">				                    
+				                    <label for="_email">Email</label>
+				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+				                    <input id="_email" th:field="*{email}" title="enter your email." placeholder="Email Address" type="email" class="form-control" >
+				                </div>
+				                
+				                <div class="col-sm-6">
+				                    <label for="_userType">Role</label>
+				                    <select id="_userType" th:field="*{userType}" class="form-control">
+				                    	<option th:selected="*{userType == 'ROLE_DOCTOR_EMR'}" value="ROLE_DOCTOR_EMR">Doctor with EMR Access</option>
+				                        <option th:selected="*{userType == 'ROLE_DOCTOR'}" value="ROLE_DOCTOR">Doctor</option>				                        
+				                        <option th:selected="*{userType == 'ROLE_NURSE'}" value="ROLE_NURSE">Nurse</option>
+				                        <option th:selected="*{userType == 'ROLE_MED_TECH'}" value="ROLE_MED_TECH">Medical Technician</option>
+				                        <option th:selected="*{userType == 'ROLE_STAFF'}" value="ROLE_STAFF">Doctors Staff</option>
+				                        <option th:selected="*{userType == 'ROLE_ADMIN'}" value="ROLE_ADMIN">Admin</option>
+				                    </select>
+				                </div>
+				           </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">         
+				                <div class="col-sm-12">
+				                    <label for="_departmentId">Department</label>
+				                    <select id="_departmentId" th:field="*{department.id}" class="form-control">
+				                        <option th:each="d : ${allDepartments}" 
+				                            th:value="${d.id}" th:text="${d.departmentName}"
+				                            th:with="did=*{department.id}"
+				                            th:selected="${d.id == did}">
+				                    </select>
+				                </div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">         
+				                <div class="col-sm-12">
+				                    <label for="_address">Address</label>
+				                    <input id="_address" th:field="*{address}" placeholder="Address" type="text" class="form-control" >
+				                </div>
+							</div>
+						</div>
+						
+						<hr>
+						<h6 class="font-weight-semibold">Doctors Info</h6>
+						<p>Please fill up the info below if you are encoding to doctors access.</p>									
+						
+						<div class="form-group">
+							<div class="row">
+				                    
+				                    <div class="col-sm-12">
+				                        <label for="_credentials">Credentials</label>
+				                        <input id="_credentials" name="credentials" placeholder="Credentials" type="text" class="form-control" >
+				                    </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">
+				                    <div class="col-sm-6">
+				                        <label for="_specialization">Specialization</label>
+				                        <input id="_specialization" th:field="*{specialization}" placeholder="Specialization" type="text" class="form-control" >
+				                    </div>
+				                    
+				                    <div class="col-sm-6">
+				                        <label for="_licenseNumber">License No.</label>
+				                        <input id="_licenseNumber" th:field="*{licenseNumber}" placeholder="License No." type="text" class="form-control" >
+				                    </div>
+				            </div>
+						</div>
+
+						<div class="form-group">
+							<div class="row">
+				                    <div class="col-sm-6">
+				                        <label for="_ptrNumber">PTR No.</label>
+				                        <input id="_ptrNumber" th:field="*{ptrNumber}" placeholder="PTR No." type="text" class="form-control" >
+				                    </div>
+				                    <div class="col-sm-6">
+				                        <label for="_sNumber">S2 No.</label>
+				                        <input id="_sNumber" th:field="*{sNumber}" placeholder="S2 No." type="text" class="form-control" >
+				                    </div>
+				             </div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn bg-primary">Save Info</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- modal form edit -->
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">System Users</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+            
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-xl-12">
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">System User List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                				
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton">Add System User</button>		                		
+				                	</div>
+			                	</div>
+							</div>
+		
+							<div class="card-body">
+								This table shows the list of system users. This list shows all users and what department, role they have.
+							</div>
+		
+							<table class="table table-bordered table-hover" id="system-user-list">
+								<thead>
+									<tr>
+										<th>Personnel Name</th>
+										<th>Department</th>
+										<th>Designation</th>
+										<th>Gender</th>
+										<th>Contact No.</th>
+										<th>Status</th>
+										<th class="text-center">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="personnel : ${personnels}">
+										<td>
+											<div class="d-flex align-items-center">												
+												<div>
+													<a href="#" class="text-default font-weight-semibold" th:text="${personnel.fullName}">Chris Macintyre</a>													
+												</div>
+											</div>
+										</td>
+										<td th:text="${personnel.department.departmentName}"></td>
+										<td>
+											<div th:switch="${personnel.userType}" class="mr-3">
+												<span th:case="'ROLE_DOCTOR_EMR'" class="badge bg-success-400">Doctor</span>
+												<span th:case="'ROLE_DOCTOR'" class="badge bg-success-400">Doctor</span>
+												<span th:case="'ROLE_NURSE'" class="badge bg-warning-400">Nurse</span>
+												<span th:case="'ROLE_MED_TECH'" class="badge bg-violet-400">Medical Technician</span>
+												<span th:case="'ROLE_STAFF'" class="badge bg-violet-400">Doctors Staff</span>
+												<span th:case="'ROLE_ADMIN'" class="badge bg-violet-400">Admin</span>
+											</div>
+										</td>
+										<td>
+											<div th:switch="${personnel.gender}" class="mr-3">
+												<span th:case="'M'">Male</span>
+												<span th:case="'F'">Female</span>
+											</div>
+										</td>
+										<td th:text="${personnel.contactNumber}">09154270248</td>
+										<td><span class="badge badge-success" th:text="${personnel.status}">Active</span></td>
+										<td class="text-center">
+											<button th:onclick="|setPersonnelIdInForm('${personnel.id}')|" class="btn btn-primary" th:id="|editPersonnelButton${personnel.id}|"
+											    data-toggle="modal" data-target="#modal_form_edit"
+											    th:data-firstName="${personnel.firstName}"
+											    th:data-lastName="${personnel.lastName}"
+											    th:data-gender="${personnel.gender}"
+											    th:data-address="${personnel.address}"
+											    th:data-contactNumber="${personnel.contactNumber}"
+											    th:data-email="${personnel.email}"
+											    th:data-status="${personnel.status}"
+											    th:data-userType="${personnel.userType}"
+											    th:data-credentials="${personnel.credentials}"
+											    th:data-licenseNumber="${personnel.licenseNumber}"
+											    th:data-specialization="${personnel.specialization}"
+											    th:data-ptrNumber="${personnel.ptrNumber}"
+											    th:data-sNumber="${personnel.sNumber}"
+											    th:data-departmentId="${personnel.department.id}"
+											    >Edit</button>
+										</td>
+									</tr>								
+								</tbody>
+							</table>
+						</div>
+						<!-- /basic datatable -->					
+					</div>
+				</div>
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->    
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+        function setPersonnelIdInForm(id) {
+        	console.log($('.editPersonnelForm').attr('action'));
+        	$('#personnelId').val(id);
+        	console.log('personnelId: ', id);
+        	let editPersonnelButton = document.querySelector('#editPersonnelButton'+id);
+        	console.log(editPersonnelButton.dataset);
+        	$('#_firstName').val(editPersonnelButton.dataset.firstname);
+        	$('#_lastName').val(editPersonnelButton.dataset.lastname);
+        	$('#_gender').val(editPersonnelButton.dataset.gender);
+        	$('#_address').val(editPersonnelButton.dataset.address);
+        	$('#_contactNumber').val(editPersonnelButton.dataset.contactnumber);
+        	$('#_email').val(editPersonnelButton.dataset.email);
+        	$('#_userType').val(editPersonnelButton.dataset.usertype);
+        	$('#_credentials').val(editPersonnelButton.dataset.credentials);
+        	$('#_licenseNumber').val(editPersonnelButton.dataset.licensenumber);
+        	$('#_specialization').val(editPersonnelButton.dataset.specialization);
+        	$('#_ptrNumber').val(editPersonnelButton.dataset.ptrnumber);
+        	$('#_sNumber').val(editPersonnelButton.dataset.snumber);
+        	$('#_departmentId').val(editPersonnelButton.dataset.departmentid);
+        }
+        
+	    $(document).ready(function() {
+	    	
+	    	$(".nav-link").removeClass("bg-slate-600");
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");	    	
+			$("#adminModuleNav").addClass("bg-slate-600");
+			$("#personnel2ndNav").addClass("bg-slate-300");
+			
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Personnel successfully saved.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+	    	
+			$('#system-user-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false,
+                "columnDefs": [
+				    { "width": "70%", "targets": 0 }
+				],
+			});
+			
+			if (/*[[${isValidationErrorOnAdd}]]*/ false) {
+	    		$('#addSystemUserButton').click();
+	    	}
+			if (/*[[${isValidationErrorOnEdit}]]*/ false) {
+	    		$('#editPersonnelButton'+/*[[${personnelDto.id}]]*/'').click();
+	    	}
+	    });
+	    
+	</script>
+
+</body>
+</html>

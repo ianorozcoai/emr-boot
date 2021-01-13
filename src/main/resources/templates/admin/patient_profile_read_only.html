@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+	
+	<!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - Electronic Hospital Records</title>
+	
+	<script>
+		function endorse(){
+			swal({
+				  title: "Are you sure?",
+				  text: "Are you sure you want to mark the patient as discharged and admitted?",
+				  icon: "info",
+				  buttons: ["Yes", "No"],
+				  dangerMode: false,
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+				      //No Response						      
+					  
+				  } else {
+					 $("#status5").html("Admitted");
+					 $("#status5").removeClass("badge-warning");
+					 $("#status5").addClass("badge-info");
+					 
+					 swal({
+						title: "SUCCESS",
+						text: "Patient successfully marked as admitted.",							             
+						icon: "success",
+						buttons: false,
+						timer: 1000,
+					});
+				  }			
+				});
+		}
+		
+		function discharge(){
+			swal({
+				  title: "Are you sure?",
+				  text: "Are you sure you want to mark the patient as discharged?",
+				  icon: "info",
+				  buttons: ["Yes", "No"],
+				  dangerMode: false,
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+				      //No Response						      
+					  
+				  } else {
+					 $("#status4").html("Discharged");
+					 $("#status4").removeClass("badge-warning");
+					 $("#status4").addClass("badge-success");
+					 
+					 swal({
+						title: "SUCCESS",
+						text: "Patient successfully marked as discharged.",							             
+						icon: "success",
+						buttons: false,
+						timer: 1000,
+					});
+					 
+				  }			
+				});
+		}
+	</script>
+
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar"></div>
+	<!-- /Main Navbar -->
+
+	<!-- Page content -->
+	<div class="page-content">	
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span th:text="'Patient Name: ' + ${#strings.toUpperCase(patient.lastName)} + ', ' + ${#strings.toUpperCase(patient.firstName)}" class="font-weight-semibold">Patient Name: DALISAY, RICARDO</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h6 class="card-title">Patient Information Summary</h6>
+								<div class="header-elements">
+									<div class="list-icons">
+				                		<a class="list-icons-item" data-action="collapse"></a>
+				                		<a class="list-icons-item" data-action="reload"></a>
+				                		<a class="list-icons-item" data-action="remove"></a>
+				                	</div>
+			                	</div>
+							</div>
+
+							<div class="card-body">
+								<ul class="nav nav-tabs">
+									<li class="nav-item"><a href="#basic-tab1" class="nav-link active" data-toggle="tab">Profile</a></li>
+									<li class="nav-item"><a href="#basic-tab2" class="nav-link" data-toggle="tab">Medical History</a></li>
+									
+								</ul>
+
+								<div class="tab-content">
+									<div class="tab-pane fade show active" id="basic-tab1">
+										<div class="col-md-12">
+											<form th:action="@{/patients}" method="post" th:object="${patient}">
+												<input type="hidden" th:field="*{id}" id="id" name="id" >
+												<div class="modal-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-6">
+																	<label for="firstName">First name</label>
+																	<input id="firstName" name="firstName" th:field="*{firstName}" placeholder="First name" type="text" class="form-control" readonly>
+																</div>
+															
+															
+																<div class="col-sm-6">
+																	<label for="lastName">Last name</label>
+																	<input id="lastName" name="lastName" th:field="*{lastName}" placeholder="Last name" type="text" class="form-control" readonly>
+																</div>
+														</div>
+													</div>
+													
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-6">
+																	<label for="nickName">Nick name</label>
+																	<input id="nickName" name="nickName" th:field="*{nickName}" placeholder="Nick name" type="text" class="form-control" readonly>
+																</div>
+															
+															
+																<div class="col-sm-6">
+																	<label for="maritalStatus">Marital Status</label>
+																	<input th:field="*{maritalStatus}" class="form-control" name="maritalStatus" id="maritalStatus" readonly>
+																</div>
+														</div>
+													</div>
+													
+													<div class="form-group">
+														<div class="row">       
+																<div class="col-sm-6">
+																	<label for="gender">Gender</label>
+																	<select id="gender" th:field="*{gender}" name="gender" class="form-control" readonly>
+																		<option value="MALE" selected="selected">MALE</option>
+																		<option value="FEMALE">FEMALE</option>
+																	</select>
+																</div>
+																
+															
+																<div class="col-sm-6">
+																	<label for="birthdate">Birthdate</label>
+																	<input type="date" class="form-control" th:field="*{birthdate}" id="birthdate" name="birthdate" placeholder="enter your birthday" title="enter your birthday" readonly>
+																</div>
+														</div>
+													</div>
+				
+													<div class="form-group">
+														<div class="row">    
+																<div class="col-sm-6">
+																	<label for="contactNumber">Mobile</label>
+																	<input id="contactNumber" name="contactNumber" th:field="*{contactNumber}" title="enter your mobile number if any." placeholder="enter mobile number" type="text" class="form-control" readonly>
+																</div>
+																
+																<div class="col-sm-6">
+																	<label for="emailAddress">Email</label>
+																	<input id="emailAddress" name="emailAddress" th:field="*{email}" title="enter your email." placeholder="Email Address" type="email" class="form-control" readonly>
+																</div>
+													   </div>
+													</div>
+													
+													<div class="form-group">
+														<div class="row">    
+																<div class="col-sm-6">
+																	<label for="profession">Profession</label>
+																	<input class="form-control" name="profession" id="profession" th:field="*{profession}" placeholder="Profession" type="text" readonly>
+																</div>
+																
+																<div class="col-sm-6">
+																	<label for="seniorCitizenNumber">Senior Citizen Number</label>
+																	<input class="form-control" name="seniorCitizenNumber" id="seniorCitizenNumber" th:field="*{seniorCitizenNumber}" placeholder="Senior Citizen Number" type="text" readonly>
+																</div>
+													   </div>
+													</div>
+													
+													<div class="form-group">
+														<div class="row">    
+																<div class="col-sm-6">
+																	<label for="province">Province</label> 
+																	<select class="form-control" name="province" id="province" th:field="*{province}" onchange="loadCities('city', this.value)" disabled="disabled">
+																		<option value="MM">Metro Manila</option>
+																		<option value="ABR">Abra</option>
+																		<option value="APA">Apayao</option>
+																		<option value="BEN">Benguet</option>
+																		<option value="IFU">Ifugao</option>
+																		<option value="KAL">Kalinga</option>
+																		<option value="MOU">Mountain Province</option>
+																		<option value="ILN">Ilocos Norte</option>
+																		<option value="ILS">Ilocos Sur</option>
+																		<option value="LUN">La Union</option>
+																		<option value="PAN">Pangasinan</option>
+																		<option value="BTN">Batanes</option>
+																		<option value="CAG">Cagayan</option>
+																		<option value="ISA">Isabela</option>
+																		<option value="NUV">Nueva Vizcaya</option>
+																		<option value="QUI">Quirino</option>
+																		<option value="AUR">Aurora</option>
+																		<option value="BAN">Bataan</option>
+																		<option value="BUL">Bulacan</option>
+																		<option value="NUE">Nueva Ecija</option>
+																		<option value="PAM">Pampanga</option>
+																		<option value="TAR">Tarlac</option>
+																		<option value="ZMB">Zambales</option>
+																		<option value="BTG">Batangas</option>
+																		<option value="CAV">Cavite</option>
+																		<option value="LAG">Laguna</option>
+																		<option value="QUE">Quezon</option>
+																		<option value="RIZ">Rizal</option>
+																		<option value="MAD">Marinduque</option>
+																		<option value="MDC">Occidental Mindoro</option>
+																		<option value="MDR">Oriental Mindoro</option>
+																		<option value="PLW">Palawan</option>
+																		<option value="ROM">Romblon</option>
+																		<option value="ALB">Albay</option>
+																		<option value="CAN">Camarines Norte</option>
+																		<option value="CAS">Camarines Sur</option>
+																		<option value="CAT">Catanduanes</option>
+																		<option value="MAS">Masbate</option>
+																		<option value="SOR">Sorsogon</option>
+																		<option value="AKL">Aklan</option>
+																		<option value="ANT">Antique</option>
+																		<option value="CAP">Capiz</option>
+																		<option value="GUI">Guimaras</option>
+																		<option value="ILI">Iloilo</option>
+																		<option value="NEC">Negros Occidental</option>
+																		<option value="BOH">Bohol</option>
+																		<option value="CEB">Cebu</option>
+																		<option value="NER">Negros Oriental</option>
+																		<option value="SIG">Siquijor</option>
+																		<option value="BIL">Biliran</option>
+																		<option value="EAS">Eastern Samar</option>
+																		<option value="LEY">Leyte</option>
+																		<option value="NSA">Northern Samar</option>
+																		<option value="WSA">Samar</option>
+																		<option value="SLE">Southern Leyte</option>
+																		<option value="ZAN">Zamboanga del Norte</option>
+																		<option value="ZAS">Zamboanga del Sur</option>
+																		<option value="ZSI">Zamboanga Sibugay</option>
+																		<option value="BUK">Bukidnon</option>
+																		<option value="CAM">Camiguin</option>
+																		<option value="LAN">Lanao del Norte</option>
+																		<option value="MSC">Misamis Occidental</option>
+																		<option value="MSR">Misamis Oriental</option>
+																		<option value="COM">Compostela Valley</option>
+																		<option value="DAV">Davao del Norte</option>
+																		<option value="DAS">Davao del Sur</option>
+																		<option value="DAC">Davao Occidental</option>
+																		<option value="DAO">Davao Oriental</option>
+																		<option value="NCO">Cotabato</option>
+																		<option value="SAR">Sarangani</option>
+																		<option value="SCO">South Cotabato</option>
+																		<option value="SUK">Sultan Kudarat</option>
+																		<option value="AGN">Agusan del Norte</option>
+																		<option value="AGS">Agusan del Sur</option>
+																		<option value="DIN">Dinagat Islands</option>
+																		<option value="SUN">Surigao del Norte</option>
+																		<option value="SUR">Surigao del Sur</option>
+																		<option value="BAS">Basilan</option>
+																		<option value="LAS">Lanao del Sur</option>
+																		<option value="MAG">Maguindanao</option>
+																		<option value="SLU">Sulu</option>
+																		<option value="TAW">Tawi-tawi</option>
+																</select>
+															</div>
+																
+																<div class="col-sm-6">
+																	<label for="city">City</label>
+																	<select class="form-control" name="city" id="city" th:field="*{city}" onchange="loadCities('city', this.value)" disabled="disabled">
+						
+																	</select>
+																</div>
+													   </div>
+													</div>
+				
+													<div class="form-group">
+														<div class="row">         
+																<div class="col-sm-12">
+																	<label for="street">Street</label>
+																	<input id="street" name="street" placeholder="Street" th:field="*{street}" type="text" class="form-control" readonly>
+																</div>
+														</div>
+													</div>
+													
+													<div class="form-group">
+														<div class="row">    
+																<div class="col-sm-6">
+																	<label for="emergencyContactName">Emergency Contact Name</label>
+																	<input id="emergencyContactName" name="emergencyContactName" title="enter your emergency Contact Name if any." th:field="*{emergencyContactName}" placeholder="Emergency Contact Name" type="text" class="form-control" readonly>
+																</div>
+																
+																<div class="col-sm-6">
+																	<label for="emergencyContactNumber">Emergency Contact Number</label>
+																	<input id="emergencyContactNumber" name="emergencyContactNumber" title="enter your emergency Contact Number if any." th:field="*{emergencyContactNumber}" placeholder="Emergency Contact Number" type="text" class="form-control" readonly>
+																</div>
+													   </div>
+													</div>
+				
+													<div class="form-group">
+														<div class="row">         
+																<div class="col-sm-12">
+																	<label for="emergencyContactAddress">Emergency Contact Address</label>
+																	<input id="emergencyContactAddress" name="emergencyContactAddress" placeholder="Emergency Contact Address" th:field="*{emergencyContactAddress}" type="text" class="form-control" readonly>
+																</div>
+														</div>
+													</div>									
+				
+													<div class="form-group">
+														<div class="row">         
+																<div class="col-sm-12">
+																	<label for="notes">Notes</label>
+																	<input id="notes" name="notes" placeholder="Notes" th:field="*{notes}" type="text" class="form-control" readonly>
+																</div>
+														</div>
+													</div>	
+													
+													<div class="form-group">
+														<div class="row">    
+																<div class="col-sm-6">
+																	<label for="mothersname">Mother's Name</label>
+																	<input id="mothersname" name="mothersname" title="enter your Mothers Name" th:field="*{mothersname}" placeholder="Mother's Name" type="text" class="form-control" readonly>
+																</div>
+																
+																<div class="col-sm-6">
+																	<label for="mothersoccupation">Mother's Occupation</label>
+																	<input id="mothersoccupation" name="mothersoccupation" title="enter your Mothers Occupation" th:field="*{mothersoccupation}" placeholder="Mother's Occupation" type="text" class="form-control" readonly>
+																</div>
+													   </div>
+													</div>
+													
+													<div class="form-group">
+														<div class="row">    
+																<div class="col-sm-6">
+																	<label for="mothersname">Father's Name</label>
+																	<input id="mothersname" name="mothersname" title="enter your Fathers Name" th:field="*{fathersname}" placeholder="Father's Name" type="text" class="form-control" readonly>
+																</div>
+																
+																<div class="col-sm-6">
+																	<label for="fathersoccupation">Father's Occupation</label>
+																	<input id="fathersoccupation" name="fathersoccupation" title="enter your Fathers Occupation" th:field="*{fathersoccupation}" placeholder="Father's Occupation" type="text" class="form-control" readonly>
+																</div>
+													   </div>
+													</div>
+				
+													
+												</div>
+				
+												<div class="modal-footer">
+													<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+<!-- 													<button type="submit" class="btn bg-primary">Save Info</button> -->
+												</div>
+											</form>
+										</div>
+									</div>
+
+									<div class="tab-pane fade" id="basic-tab2">
+										<img src="images/medical_history.jpg" alt="" width="934" height="880">
+									</div>
+
+									
+
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+								
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div class="navbar navbar-expand-lg navbar-light">
+				<div class="text-center d-lg-none w-100">
+					<button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse" data-target="#navbar-footer">
+						<i class="icon-unfold mr-2"></i>
+						Footer
+					</button>
+				</div>
+
+				<div class="navbar-collapse collapse" id="navbar-footer">
+					<span class="navbar-text">
+						&copy; 2020 <a href="#">Electronic Hospital Records</a> by <a href="http://cdsi.ph" target="_blank">Complete Digital Solutions Inc.</a>
+					</span>
+
+					<ul class="navbar-nav ml-lg-auto">
+						<li class="nav-item"><a href="https://kopyov.ticksy.com/" class="navbar-nav-link" target="_blank"><i class="icon-lifebuoy mr-2"></i> Support</a></li>
+						<li class="nav-item"><a href="http://demo.interface.club/limitless/docs/" class="navbar-nav-link" target="_blank"><i class="icon-file-text2 mr-2"></i> Docs</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+</body>
+</html>

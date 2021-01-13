@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - Electronic Hospital Records</title>
+
+
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::main-navbar"></div>
+	<!-- /Main Navbar -->
+
+
+	<!-- Secondary navbar -->
+	<div th:replace="fragments/common::secondary-navbar-admin"></div>
+	<!-- /secondary navbar -->	
+
+		<!-- Vertical form modal -->
+			<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-primary">
+							<h5 class="modal-title">ICD 10 Details</h5>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<form th:action="@{/icds}" method="post" th:object="${icd}">
+							<div class="modal-body">
+								<div class="form-group row">
+									<label class="col-form-label col-sm-3">Code</label>
+									<div class="col-sm-9">
+										<input type="text" th:field="*{code}" placeholder="Code" class="form-control">
+									</div>
+								</div>
+								
+								<div class="form-group row">
+									<label class="col-form-label col-sm-3">Description</label>
+									<div class="col-sm-9">
+										<input type="text" th:field="*{description}" placeholder="Description" class="form-control">
+									</div>
+								</div>								
+								
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+								<button type="submit" class="btn bg-primary">Submit form</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- /Vertical form modal -->
+	
+
+					
+	<!-- Page content -->
+	<div class="page-content">	
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">ICD-10</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-xl-12">
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">ICD-10 List</h5>
+								<div class="header-elements">
+<!-- 									<div class="list-icons">				                				 -->
+<!-- 				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add ICD-10</button>	                		 -->
+<!-- 				                	</div> -->
+			                	</div>
+							</div>
+		
+							<div class="card-body">
+								This table shows the list of ICD Diagnosis.
+							</div>
+		
+							<table class="table datatable-basic">
+								<thead>
+									<tr>
+										<th>Code</th>
+										<th>Description</th>																	
+ 										<th>Base Code</th>
+ 										<th>Base Description</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="icd : ${icds}">
+										<tr>
+											<td width="15%" th:text="${icd.code}">code</td>
+											<td width="35%" th:text="${icd.description}">description</td>																				
+											<td width="15%" th:text="${icd.baseCode}">baseCode</td>
+											<td width="35%" th:text="${icd.baseDescription}">baseDescription</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+						<!-- /basic datatable -->					
+					</div>
+				</div>
+				
+				
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->    
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+    
+	    $(document).ready(function() {
+	    	
+	    	$(".nav-link").removeClass("bg-slate-600");
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");	    	
+			$("#adminModuleNav").addClass("bg-slate-600");
+			$("#icd2ndNav").addClass("bg-slate-300");
+	    	
+	    });
+	    
+	</script>
+
+</body>
+</html>

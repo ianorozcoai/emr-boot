@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+	
+	<title>EHR - EMR</title>	
+	
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+	<!-- /Main Navbar -->
+					
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->		
+		
+		<!-- Vertical form modal -->
+				<div id="modal_form_add_clinic" class="modal fade" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-primary">
+								<h5 class="modal-title">Clinic Information</h5>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<form id="addClinicForm" th:action="@{/emrclinics}" method="post" th:object="${clinic}" enctype="multipart/form-data">
+								<input type="hidden" th:field="*{id}" name="clinicId" id="clinicId">
+								<div class="modal-body">
+									<div class="form-group">
+										<div class="row">
+											<!--  Clinic Name -->
+											<div class="col-sm-6">
+						                        <label for="name">Name</label>
+						                        <span class="validationError text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+						                        <input id="name" name="name" th:field="*{name}" placeholder="Name" type="text" class="form-control" >
+						                    </div>
+							                <!--  Contact Number -->
+							                <div class="col-sm-6">
+						                        <label for="contactNumber">Contact Number</label>
+						                        <span class="validationError text-danger" th:if="${#fields.hasErrors('contactNumber')}" th:errors="*{contactNumber}"></span>
+						                        <input id="contactNumber" name="contactNumber" th:field="*{contactNumber}" placeholder="Contact Number" type="text" class="form-control" >
+						                    </div>
+							            </div>
+							        </div>
+							        
+							        <div class="form-group">   
+							            <!--  Address -->
+							            <div class="row">
+											<div class="col-sm">
+							                        <label for="address">Address</label>
+							                        <span class="validationError text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+							                        <input id="address" name="address" th:field="*{address}" placeholder="Address" type="text" class="form-control" >
+							                    </div>
+							            </div>
+							        </div>
+									
+									<!-- Schedules -->
+									<label class="h5">Clinic Schedules</label>
+									<div class="form-group" id="scheduleFormContainer">
+										
+									</div>
+								</div>
+								<!-- /modal-body -->
+
+								<div class="modal-footer">
+									<button onclick="resetRowNum()" type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+									<button onclick="addSchedule()" type="button" class="btn bg-success">Add Schedule</button>
+									<button type="submit" class="btn bg-primary">Save Info</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+		<!-- /vertical form modal -->
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">Clinics and Schedules</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				
+
+				<div class="row">
+					<div class="col-xl-12">		
+					
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">Clinic List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                				
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_add_clinic" onclick="clearSchedules()">Add Clinic</button>		                		
+				                	</div>
+			                	</div>
+							</div>
+		
+							
+		
+							<table class="table datatable-basic" id="dataTables-clinicList" >
+								<thead>
+									<tr>
+										<th>Clinic Name</th>
+										<th>Address</th>										
+										<th>Contact Number</th>		
+										<th>Schedule</th>										
+										<th class="text-center">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="clinic : ${clinics}">
+										<td th:text="${clinic.name}" width="18%;">Clinic Name</td>
+										<td th:text="${clinic.address}" width="28%;">Address</td>		
+										<td th:text="${clinic.contactNumber}" width="14%;">Contact number</td>										
+										<td width="25%;">
+											<div th:each="sched : ${clinic.schedules}">
+												<span th:text="${sched.day} + ', ' + ${sched.open} + ' - ' + ${sched.close}"></span>
+											</div>
+										</td>										
+										<td class="text-center" width="20%;">
+											<button class="btn btn-primary mb-1 btn-block showClinicDetails" id="editClinic"
+												th:data-row-id="${clinic.id}"
+												th:data-row-name="${clinic.name}"
+												th:data-row-address="${clinic.address}"
+												th:data-row-contactNumber="${clinic.contactNumber}"
+												th:data-row-schedules="${clinic.schedules}"
+												data-toggle="modal" data-target="#modal_form_add_clinic">Edit Clinic</button>
+											<button class="btn btn-danger btn-block" th:onclick="|deleteClinic('${clinic.id}')|">Delete Clinic</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							
+						</div>
+						<!-- /basic datatable -->	
+
+							
+						
+					
+						
+						
+					
+					</div>
+				</div>
+				
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+			<!-- Main sidebar -->
+			<div th:replace="fragments/common::emr-footer"></div>
+			<!-- /Main sidebar -->
+			
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+
+		var i = 0;
+	
+	    $(document).ready(function() {     
+	    	
+	    	$(".nav-link").removeClass("active");
+			$("#emrClinicsNav").addClass("active");
+	    	
+	    	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';	    	
+	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_add_clinic').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: msgDesc,
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+	    	
+	    	
+	    	
+	    });
+	    
+	    function clearSchedules() {
+			$(".scheduleFormRow").remove();
+	    	resetRowNum();
+	    	addSchedule();
+		}
+	    
+	    function resetRowNum() {
+			i = 0;
+		}
+	    
+	    $(document).on('click', '.delete-schedule', function(e) {
+		   e.preventDefault();
+		   $(this).closest('.scheduleFormRow').remove();
+		   return false;
+		});
+	    
+	 	// Add Schedule Form
+	    function addSchedule() {
+			 
+			 var scheduleRowWrapper = 
+				 $(`
+					<div id="scheduleRow`+i+`" class="scheduleFormRow">
+						<hr/>
+						<div class="form-group">
+						<input type="hidden" name="schedules[`+i+`].id}" id="id`+i+`"/>
+							
+						<!-- Remove Button -->	
+						<span class="float-right"><i class="icon-trash delete-schedule"></i></span>
+						<div class="row">
+							<!-- Day -->
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label for="schedules[`+i+`].day">Day</label>
+									<select name="schedules[`+i+`].day" id="day`+i+`" class="form-control day">
+										<option selected> - Select Day - </option>
+										<option value="Sunday">Sunday</option>
+										<option value="Monday">Monday</option>
+										<option value="Tuesday">Tuesday</option>
+										<option value="Wednesday">Wednesday</option>
+										<option value="Thursday">Thursday</option>
+										<option value="Friday">Friday</option>
+										<option value="Saturday">Saturday</option>
+									</select>
+								</div>
+							</div>
+							
+							<!-- Opening Hour -->
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label for="schedules[`+i+`].open">Open</label>
+									<select name="schedules[`+i+`].open" id="open`+i+`" class="form-control open">
+										<option selected> - Select Time - </option>
+										<option value="12:00 AM">12:00 AM</option>
+										<option value="12:30 AM">12:30 AM</option>
+										<option value="1:00 AM">1:00 AM</option>
+										<option value="1:30 AM">1:30 AM</option>
+										<option value="2:00 AM">2:00 AM</option>
+										<option value="2:30 AM">2:30 AM</option>
+										<option value="3:00 AM">3:00 AM</option>
+										<option value="3:30 AM">3:30 AM</option>
+										<option value="4:00 AM">4:00 AM</option>
+										<option value="4:30 AM">4:30 AM</option>
+										<option value="5:00 AM">5:00 AM</option>
+										<option value="5:30 AM">5:30 AM</option>
+										<option value="6:00 AM">6:00 AM</option>
+										<option value="6:30 AM">6:30 AM</option>
+										<option value="7:00 AM">7:00 AM</option>
+										<option value="7:30 AM">7:30 AM</option>
+										<option value="8:00 AM">8:00 AM</option>
+										<option value="8:30 AM">8:30 AM</option>
+										<option value="9:00 AM">9:00 AM</option>
+										<option value="9:30 AM">9:30 AM</option>
+										<option value="10:00 AM">10:00 AM</option>
+										<option value="10:30 AM">10:30 AM</option>
+										<option value="11:00 AM">11:00 AM</option>
+										<option value="11:30 AM">11:30 AM</option>
+										<option value="12:00 AM">12:00 PM</option>
+										<option value="12:30 AM">12:30 PM</option>
+										<option value="1:00 AM">1:00 PM</option>
+										<option value="1:30 AM">1:30 PM</option>
+										<option value="2:00 AM">2:00 PM</option>
+										<option value="2:30 AM">2:30 PM</option>
+										<option value="3:00 AM">3:00 PM</option>
+										<option value="3:30 AM">3:30 PM</option>
+										<option value="4:00 AM">4:00 PM</option>
+										<option value="4:30 AM">4:30 PM</option>
+										<option value="5:00 AM">5:00 PM</option>
+										<option value="5:30 AM">5:30 PM</option>
+										<option value="6:00 AM">6:00 PM</option>
+										<option value="6:30 AM">6:30 PM</option>
+										<option value="7:00 AM">7:00 PM</option>
+										<option value="7:30 AM">7:30 PM</option>
+										<option value="8:00 AM">8:00 PM</option>
+										<option value="8:30 AM">8:30 PM</option>
+										<option value="9:00 AM">9:00 PM</option>
+										<option value="9:30 AM">9:30 PM</option>
+										<option value="10:00 AM">10:00 PM</option>
+										<option value="10:30 AM">10:30 PM</option>
+										<option value="11:00 AM">11:00 PM</option>
+										<option value="11:30 AM">11:30 PM</option>
+									</select>
+								</div>
+							</div>
+							
+							<!-- Closing Hour -->
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label for="schedules[`+i+`].close">Close</label>
+									<select name="schedules[`+i+`].close" id="close`+i+`" class="form-control closing">
+										<option selected> - Select Time - </option>
+										<option value="12:00 AM">12:00 AM</option>
+										<option value="12:30 AM">12:30 AM</option>
+										<option value="1:00 AM">1:00 AM</option>
+										<option value="1:30 AM">1:30 AM</option>
+										<option value="2:00 AM">2:00 AM</option>
+										<option value="2:30 AM">2:30 AM</option>
+										<option value="3:00 AM">3:00 AM</option>
+										<option value="3:30 AM">3:30 AM</option>
+										<option value="4:00 AM">4:00 AM</option>
+										<option value="4:30 AM">4:30 AM</option>
+										<option value="5:00 AM">5:00 AM</option>
+										<option value="5:30 AM">5:30 AM</option>
+										<option value="6:00 AM">6:00 AM</option>
+										<option value="6:30 AM">6:30 AM</option>
+										<option value="7:00 AM">7:00 AM</option>
+										<option value="7:30 AM">7:30 AM</option>
+										<option value="8:00 AM">8:00 AM</option>
+										<option value="8:30 AM">8:30 AM</option>
+										<option value="9:00 AM">9:00 AM</option>
+										<option value="9:30 AM">9:30 AM</option>
+										<option value="10:00 AM">10:00 AM</option>
+										<option value="10:30 AM">10:30 AM</option>
+										<option value="11:00 AM">11:00 AM</option>
+										<option value="11:30 AM">11:30 AM</option>
+										<option value="12:00 AM">12:00 PM</option>
+										<option value="12:30 AM">12:30 PM</option>
+										<option value="1:00 AM">1:00 PM</option>
+										<option value="1:30 AM">1:30 PM</option>
+										<option value="2:00 AM">2:00 PM</option>
+										<option value="2:30 AM">2:30 PM</option>
+										<option value="3:00 AM">3:00 PM</option>
+										<option value="3:30 AM">3:30 PM</option>
+										<option value="4:00 AM">4:00 PM</option>
+										<option value="4:30 AM">4:30 PM</option>
+										<option value="5:00 AM">5:00 PM</option>
+										<option value="5:30 AM">5:30 PM</option>
+										<option value="6:00 AM">6:00 PM</option>
+										<option value="6:30 AM">6:30 PM</option>
+										<option value="7:00 AM">7:00 PM</option>
+										<option value="7:30 AM">7:30 PM</option>
+										<option value="8:00 AM">8:00 PM</option>
+										<option value="8:30 AM">8:30 PM</option>
+										<option value="9:00 AM">9:00 PM</option>
+										<option value="9:30 AM">9:30 PM</option>
+										<option value="10:00 AM">10:00 PM</option>
+										<option value="10:30 AM">10:30 PM</option>
+										<option value="11:00 AM">11:00 PM</option>
+										<option value="11:30 AM">11:30 PM</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				 `);
+			 
+			 $("#scheduleFormContainer").append(scheduleRowWrapper);
+			 i++;
+		 }
+    	
+		 $(document).on("click", ".showClinicDetails", function() {
+
+	    	// clear all schedule forms
+	    	$(".scheduleFormRow").remove();
+	    	resetRowNum();
+	    	
+			var id = $(this).attr('data-row-id');
+			var name = $(this).attr('data-row-name');
+			var address = $(this).attr('data-row-address');
+			var contactNumber = $(this).attr('data-row-contactNumber');
+			
+			$("#modal_form_add_clinic").find("#clinicId").val(id);
+			$("#modal_form_add_clinic").find("#name").val(name);
+			$("#modal_form_add_clinic").find("#address").val(address);
+			$("#modal_form_add_clinic").find("#contactNumber").val(contactNumber);
+			
+			var str = $(this).attr('data-row-schedules');
+			console.log(id);
+			console.log(name);
+			console.log(address);
+			console.log(str);
+			
+			var schedItems = str.replaceAll("ClinicSchedule(", "{").replaceAll(")", "}").replaceAll("},", "};").replaceAll("[", "").replaceAll("]", "");
+			var itemSplit = schedItems.split(";");
+			
+			var rowNum = 0;
+			
+			for (var item of itemSplit) {
+				var itemFields = item.split(",");
+				
+				// add schedule form row
+				addSchedule();
+				
+				for (var i = 0; i < itemFields.length; i++) {
+					var field = itemFields[i].split("=");
+					var fieldName = field[0].replaceAll("{", "").trim();
+					var fieldVal = field[1].replaceAll("}", "");
+					
+					var rowId = fieldName+rowNum;
+					console.log("rowNumAA: " + rowNum + " - " + rowId + " - " + fieldVal);
+					$("#modal_form_add_clinic").find("#"+rowId).val(fieldVal);
+				}
+				rowNum++;
+			}
+			$("#modal_form_add_clinic").find("#id").val(id);
+		});
+		 
+	 	function deleteClinic(id){
+	 		let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+			window.location.href = contextRoot + "/emrclinicsdelete/" + id;
+		}
+    </script>
+
+</body>
+</html>
