@@ -37,7 +37,7 @@
 							</div>
 
 							<form id="addPatientForm" th:action="@{/emrpatients}" method="post" th:object="${patient}" enctype="multipart/form-data">
-								<input type="hidden" th:field="*{doctorId}" name="doctorId" id="doctorId">
+								<input type="hidden" th:field="*{doctor.id}" id="doctorId">
 								<input type="hidden" th:field="*{isActive}" name="isActive" id="isActive">
 								<div class="modal-body">
 									<div class="form-group">
