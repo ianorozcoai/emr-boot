@@ -192,8 +192,9 @@
 	
 	    $(document).ready(function() {     
 	    	
-	    	$(".nav-link").removeClass("active");
-			$("#emrClinicsNav").addClass("active");
+	    	$(".nav-item-submenu").removeClass("nav-item-expanded nav-item-open");
+			$("#fileMaintenanceNav").addClass("nav-item-expanded nav-item-open");
+			$("#emrClinics2ndNav").addClass("active");
 	    	
 	    	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';	    	
 	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';

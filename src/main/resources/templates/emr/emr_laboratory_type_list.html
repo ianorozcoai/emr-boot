@@ -16,18 +16,15 @@
 <body>
 
 	<!-- Main Navbar -->
-	<div th:replace="fragments/common::main-navbar"></div>
+	<div th:replace="fragments/common::emr-main-navbar"></div>
 	<!-- /Main Navbar -->
-
-
-	<!-- Secondary navbar -->
-	<div th:replace="fragments/common::secondary-navbar-admin"></div>
-	<!-- /secondary navbar -->	
-
 					
 	<!-- Page content -->
 	<div class="page-content">	
 
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->
 
 		<!-- Main content -->
 		<div class="content-wrapper">
@@ -149,10 +146,9 @@
 	<script th:inline="javascript">
 	
 		$(document).ready(function() {
-			$(".nav-link").removeClass("bg-slate-600");
-	    	$(".navbar-nav-link").removeClass("bg-slate-300");	    	
-			$("#adminModuleNav").addClass("bg-slate-600");
-			$("#labType2ndNav").addClass("bg-slate-300");
+			$(".nav-item-submenu").removeClass("nav-item-expanded nav-item-open");
+			$("#fileMaintenanceNav").addClass("nav-item-expanded nav-item-open");
+			$("#labType2ndNav").addClass("active");
 			
 			
 			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
