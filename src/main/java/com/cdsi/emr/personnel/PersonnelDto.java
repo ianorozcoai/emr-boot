@@ -12,28 +12,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data public class PersonnelDto {
-	@Positive
-	private long id;
-	@NotBlank(message = "First name is required.")
-	private String firstName;
-	@NotBlank(message = "Last name is required.")
-	private String lastName;
-	@Size(min = 1, max = 1)
-	private String gender;
-	private String address;
-	private String contactNumber;
-	@Email(message = "Invalid email.")
-	private String email;
-	private String status;
-	private String userType;
-	
-	private String credentials;
-	private String licenseNumber;
-	private String specialization;
-	private String ptrNumber;
-	private String sNumber;
-	
-	public String getFullName() {
-		return this.firstName + " " + this.lastName;
-	}
+    @Positive
+    private long id;
+    @NotBlank(message = "First name is required.")
+    private String firstName;
+    @NotBlank(message = "Last name is required.")
+    private String lastName;
+    @Size(min = 1, max = 1)
+    private String gender;
+    private String address;
+    private String contactNumber;
+    @Email(message = "Invalid email.")
+    private String email;
+    private String status;
+    private String userType;
+    private long superiorId;
+
+    private String credentials;
+    private String licenseNumber;
+    private String specialization;
+    private String ptrNumber;
+    private String sNumber;
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }
