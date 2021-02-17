@@ -18,5 +18,7 @@ public class EmrDashboardDto {
 	private int totalServed;
 	
 	private int totalCancelled;
+	
+	private int totalOnqueue;
 			
 }

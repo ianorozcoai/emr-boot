@@ -1,6 +1,7 @@
 package com.cdsi.emr.dashboard;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -27,20 +28,34 @@ public class DashboardController {
     public String dashboard(Model model, Authentication auth) {
         Personnel loggedUser = (Personnel) auth.getPrincipal();
 
-        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByConsultationDateAndPersonnelId(LocalDate.now().plusDays(1), loggedUser.getId());
+//        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByConsultationDateAndPersonnelId(LocalDate.now().plusDays(1), loggedUser.getId());
+        
+        List<EmrConsultation> emrConsultations = new ArrayList<EmrConsultation>();
+        
+        List<EmrConsultation> emrConsultationProcessed = this.emrConsultationRepository
+        		.findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "PROCESSED");
+        
+        List<EmrConsultation> emrConsultationPending = this.emrConsultationRepository
+        		.findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "ON QUEUE");
 
         int cancelled = 0;
         int processed = 0;
         int todaysPatient = 0;
+        int onqueue = 0;
 
         for(EmrConsultation emrConsultation : emrConsultations) {
             if("CANCELLED".equals(emrConsultation.getConsultationStatus())) {
                 cancelled++;
             } else if("PROCESSED".equals(emrConsultation.getConsultationStatus())) {
                 processed++;
+            } else if("ON QUEUE".equals(emrConsultation.getConsultationStatus())) {
+            	onqueue++;
             }
             todaysPatient++;
         }
+        
+        emrConsultations.addAll(emrConsultationPending);
+        emrConsultations.addAll(emrConsultationProcessed);
 
         EmrDashboardDto emrDashboardDto = new EmrDashboardDto();
 
@@ -48,6 +63,7 @@ public class DashboardController {
         emrDashboardDto.setTotalCancelled(cancelled);
         emrDashboardDto.setTotalServed(processed);
         emrDashboardDto.setTotalToday(todaysPatient);
+        emrDashboardDto.setTotalOnqueue(onqueue);
 
         model.addAttribute("emrDashboardDto", emrDashboardDto);
         return "emr/emr_dashboard";
