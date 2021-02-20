@@ -252,31 +252,6 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a th:href="@{/emrDoctorProfile}" class="nav-link" id="emrDoctorProfileNav">
-								<i class="icon-profile"></i>
-								<span>
-									Profile									
-								</span>
-							</a>
-						</li>
-						<li class="nav-item nav-item-submenu" id="fileMaintenanceNav">
-							<a href="#" class="nav-link"><i class="icon-gear"></i> <span>File Maintenance</span></a>
-							<ul class="nav nav-group-sub" data-submenu-title="File Maintenance">
-								<li class="nav-item"><a th:href="@{/emrclinics}" class="nav-link" id="emrClinics2ndNav"><i class="icon-folder-plus2"></i> Clinics</a></li>	
-								<li class="nav-item"><a th:href="@{/hmos}" class="nav-link" id="hmo2ndNav"><i class="icon-library2"></i> HMO Management</a></li>								
-								<li class="nav-item"><a th:href="@{/patientImagingTypes}" class="nav-link" id="imagingType2ndNav"><i class="icon-camera"></i> Imaging Type</a></li>
-								<li class="nav-item"><a th:href="@{/patientLaboratoryTypes}" class="nav-link" id="labType2ndNav"><i class="icon-lab"></i> Laboratory Type</a></li>															
-							</ul>
-						</li>								
-						<li class="nav-item">
-							<a th:href="@{/hmoCollection}" class="nav-link" id="emrHMOCollectionNav">
-								<i class="icon-paste2"></i>
-								<span>
-									HMO Collection Management									
-								</span>
-							</a>
-						</li>
-						<li class="nav-item">
 							<a th:href="@{/consultationStats}" class="nav-link" id="emrConsultationStatNav">
 								<i class="icon-stats-dots"></i>
 								<span>
@@ -285,6 +260,32 @@
 							</a>
 						</li>						
 						<li class="nav-item">
+							<a th:href="@{/hmoCollection}" class="nav-link" id="emrHMOCollectionNav">
+								<i class="icon-paste2"></i>
+								<span>
+									HMO Collection Management									
+								</span>
+							</a>
+						</li>
+						<li class="nav-item nav-item-submenu" id="fileMaintenanceNav">
+							<a href="#" class="nav-link"><i class="icon-gear"></i> <span>File Maintenance</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="File Maintenance">
+								<li class="nav-item"><a th:href="@{/emrclinics}" class="nav-link" id="emrClinics2ndNav"><i class="icon-folder-plus2"></i> Clinics</a></li>
+                                <li class="nav-item"><a th:href="@{/mystaffs}" class="nav-link" id="emrStaffs2ndNav"><i class="icon-folder-plus2"></i> My Staffs</a></li>
+								<li class="nav-item"><a th:href="@{/hmos}" class="nav-link" id="hmo2ndNav"><i class="icon-library2"></i> HMO Management</a></li>								
+								<li class="nav-item"><a th:href="@{/patientImagingTypes}" class="nav-link" id="imagingType2ndNav"><i class="icon-camera"></i> Imaging Type</a></li>
+								<li class="nav-item"><a th:href="@{/patientLaboratoryTypes}" class="nav-link" id="labType2ndNav"><i class="icon-lab"></i> Laboratory Type</a></li>															
+							</ul>
+						</li>								
+						<li class="nav-item">
+                          <a th:href="@{/emrDoctorProfile}" class="nav-link" id="emrDoctorProfileNav">
+                            <i class="icon-profile"></i>
+                            <span>
+                              Profile                 
+                            </span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
 							<a th:href="@{emrChangePassword}" class="nav-link" id="emrChangePasswordNav">
 								<i class="icon-user-lock"></i>
 								<span>

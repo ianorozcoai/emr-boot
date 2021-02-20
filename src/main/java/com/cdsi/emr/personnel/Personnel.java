@@ -57,7 +57,7 @@ import lombok.NoArgsConstructor;
     private String email;
     private String status = "ACTIVE";
     private String userType = "DOCTOR";  // "DOCTOR" or "STAFF"
-    private long superiorId;
+    private long staffSupervisorId;
 
     private String credentials;
     private String licenseNumber;

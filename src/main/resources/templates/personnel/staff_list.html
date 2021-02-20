@@ -14,8 +14,8 @@
 
 <body>
 
-	<div th:replace="fragments/common::main-navbar"></div>
-    <div th:replace="fragments/common::secondary-navbar-admin"></div>
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+    <div th:replace="fragments/common::emr-main-sidebarnav"></div>
 
 
 	<!-- Vertical form modal -->
@@ -101,22 +101,6 @@
 				                    </select>
 				                </div>
 				           </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">         
-				                <div class="col-sm-12">
-				                    <label for="departmentId">Department</label>
-				                    <span class="validationError text-danger" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></span>
-				                    <select id="departmentId" th:field="*{department.id}" class="form-control">
-				                        <option value="0">- Select Department -</option>
-				                        <option th:each="d : ${allDepartments}"
-				                            th:value="${d.id}" th:text="${d.departmentName}"
-				                            th:with="did=*{department.id}"
-				                            th:selected="${d.id == did}">
-				                    </select>
-				                </div>
-							</div>
 						</div>
 
 						<div class="form-group">
@@ -252,20 +236,6 @@
 						<div class="form-group">
 							<div class="row">         
 				                <div class="col-sm-12">
-				                    <label for="_departmentId">Department</label>
-				                    <select id="_departmentId" th:field="*{department.id}" class="form-control">
-				                        <option th:each="d : ${allDepartments}" 
-				                            th:value="${d.id}" th:text="${d.departmentName}"
-				                            th:with="did=*{department.id}"
-				                            th:selected="${d.id == did}">
-				                    </select>
-				                </div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">         
-				                <div class="col-sm-12">
 				                    <label for="_address">Address</label>
 				                    <input id="_address" th:field="*{address}" placeholder="Address" type="text" class="form-control" >
 				                </div>
@@ -368,7 +338,6 @@
 								<thead>
 									<tr>
 										<th>Personnel Name</th>
-										<th>Department</th>
 										<th>Designation</th>
 										<th>Gender</th>
 										<th>Contact No.</th>
@@ -385,7 +354,6 @@
 												</div>
 											</div>
 										</td>
-										<td th:text="${personnel.department.departmentName}"></td>
 										<td>
 											<div th:switch="${personnel.userType}" class="mr-3">
 												<span th:case="'ROLE_DOCTOR_EMR'" class="badge bg-success-400">Doctor</span>
@@ -420,7 +388,6 @@
 											    th:data-specialization="${personnel.specialization}"
 											    th:data-ptrNumber="${personnel.ptrNumber}"
 											    th:data-sNumber="${personnel.sNumber}"
-											    th:data-departmentId="${personnel.department.id}"
 											    >Edit</button>
 										</td>
 									</tr>								
@@ -464,7 +431,6 @@
         	$('#_specialization').val(editPersonnelButton.dataset.specialization);
         	$('#_ptrNumber').val(editPersonnelButton.dataset.ptrnumber);
         	$('#_sNumber').val(editPersonnelButton.dataset.snumber);
-        	$('#_departmentId').val(editPersonnelButton.dataset.departmentid);
         }
         
 	    $(document).ready(function() {
