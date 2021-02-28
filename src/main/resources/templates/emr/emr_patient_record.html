@@ -433,12 +433,20 @@
 		var i = 0;
 		var brandNameArr = [];
 		
+		let consultationId = /*[[${selectedConsultationId}]]*/;
+		
 		function resetRowNum() {
 			i = 0;
 		}
 	
 	    $(document).ready(function() {	    		    				
-			$('.flexdatalist').flexdatalist();
+			
+	    	if (consultationId > 0) {
+	    		let viewConsultationButton = document.querySelector('#viewConsultationButton'+consultationId);
+	    		viewConsultationButton.click();
+	    	}
+	    	
+	    	$('.flexdatalist').flexdatalist();
 			
 	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
 			$("#emrPatientDashboard2ndNav").addClass("bg-slate-300");

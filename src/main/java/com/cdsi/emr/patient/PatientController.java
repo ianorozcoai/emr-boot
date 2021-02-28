@@ -120,6 +120,45 @@ public class PatientController {
 		return "emr/emr_patient_record";
 	}
 	
+	@GetMapping("/emrpatientrecord/{patientId}/{consultationId}")
+    public String viewPatientRecordFromDashboard(Model model
+            , @PathVariable long patientId
+            , @PathVariable long consultationId) {
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        Patient patient = optionalPatient.get();
+        model.addAttribute("patient", patient);
+        EmrConsultation emrConsultation = new EmrConsultation();
+        emrConsultation.setPatient(patient);
+        model.addAttribute("emrConsultation", emrConsultation);
+        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientId(patientId);
+        Consumer<EmrConsultation> fetchDiagnosis = ec -> {
+            List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();
+            try {
+                ec.setDiagnosisJSON(mapper.writeValueAsString(diagnosis));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        };
+        
+        List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientId(patientId);
+        List<String> emrGenericsLookupList = emrGenericsLookupRepository.findDistinctByGenericName();
+        
+        emrConsultations.forEach(fetchDiagnosis);
+        model.addAttribute("emrConsultations", emrConsultations);
+        model.addAttribute("hmos", hmoRepository.findAll());
+        
+        EMRPatientMedicationForm emrPatientMedicationForm = new EMRPatientMedicationForm();
+        emrPatientMedicationForm.getEmrPatientMedicationItems().add(new EMRPatientMedicationItem());
+        model.addAttribute("emrPatientMedicationList", emrPatientMedicationList);
+        model.addAttribute("emrGenericsLookupList", emrGenericsLookupList);
+        model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
+        model.addAttribute("dosages", EHRConstants.DOSAGE);
+        
+        model.addAttribute("selectedConsultationId", consultationId);
+        
+        return "emr/emr_patient_record";
+    }
+	
 	@GetMapping("/emrpatientProfile/{patientId}")
 	public String viewPatientProfileByPatientId(Model model, @PathVariable long patientId) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);

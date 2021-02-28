@@ -219,7 +219,7 @@
 											</td>
 											<td colspan="2" class="text-center">
 												<span>
-													<a th:href="|@{/emrpatientrecord}/${ec.patient.id}|" class="btn btn-primary">View</a>
+													<a th:href="|@{/emrpatientrecord}/${ec.patient.id}/${ec.id}|" class="btn btn-primary">View</a>
 												</span>
 												<span>
 													<button class="btn btn-danger" th:classappend="${ec.consultationStatus == 'CANCELLED'} ? disabled : cancelConsultation"
