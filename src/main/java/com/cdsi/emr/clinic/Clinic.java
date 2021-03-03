@@ -30,6 +30,8 @@ public class Clinic {
     @Column(nullable = false)
     private String address;
     
+    private String scheduleRx;
+    
     private String contactNumber;
     
     @ElementCollection

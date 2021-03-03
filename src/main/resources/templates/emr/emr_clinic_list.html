@@ -66,6 +66,17 @@
 							                    </div>
 							            </div>
 							        </div>
+							        
+							        <div class="form-group">   
+							            <!--  Address -->
+							            <div class="row">
+											<div class="col-sm">
+							                        <label for="scheduleRx">Schedule for RX Clinic</label>
+							                        <span class="validationError text-danger" th:if="${#fields.hasErrors('scheduleRx')}" th:errors="*{scheduleRx}"></span>
+							                        <input id="scheduleRx" name="scheduleRx" th:field="*{scheduleRx}" placeholder="Schedule for RX Clinic" type="text" class="form-control" >
+							                    </div>
+							            </div>
+							        </div>
 									
 									<!-- Schedules -->
 									<label class="h5">Clinic Schedules</label>
@@ -128,17 +139,19 @@
 									<tr>
 										<th>Clinic Name</th>
 										<th>Address</th>										
-										<th>Contact Number</th>		
+										<th>Contact Number</th>
+										<th>Schedule for RX Clinic</th>		
 										<th>Schedule</th>										
 										<th class="text-center">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr th:each="clinic : ${clinics}">
-										<td th:text="${clinic.name}" width="18%;">Clinic Name</td>
-										<td th:text="${clinic.address}" width="28%;">Address</td>		
-										<td th:text="${clinic.contactNumber}" width="14%;">Contact number</td>										
-										<td width="25%;">
+										<td th:text="${clinic.name}" width="16%;">Clinic Name</td>
+										<td th:text="${clinic.address}" width="22%;">Address</td>		
+										<td th:text="${clinic.contactNumber}" width="12%;">Contact number</td>
+										<td th:text="${clinic.scheduleRx}" width="14%;">Schedule for RX Clinic</td>									
+										<td width="21%;">
 											<div th:each="sched : ${clinic.schedules}">
 												<span th:text="${sched.day} + ', ' + ${sched.open} + ' - ' + ${sched.close}"></span>
 											</div>
@@ -148,6 +161,7 @@
 												th:data-row-id="${clinic.id}"
 												th:data-row-name="${clinic.name}"
 												th:data-row-address="${clinic.address}"
+												th:data-row-scheduleRx="${clinic.scheduleRx}"
 												th:data-row-contactNumber="${clinic.contactNumber}"
 												th:data-row-schedules="${clinic.schedules}"
 												data-toggle="modal" data-target="#modal_form_add_clinic">Edit Clinic</button>
@@ -402,18 +416,15 @@
 			var name = $(this).attr('data-row-name');
 			var address = $(this).attr('data-row-address');
 			var contactNumber = $(this).attr('data-row-contactNumber');
+			var scheduleRx = $(this).attr('data-row-scheduleRx');
 			
 			$("#modal_form_add_clinic").find("#clinicId").val(id);
 			$("#modal_form_add_clinic").find("#name").val(name);
 			$("#modal_form_add_clinic").find("#address").val(address);
 			$("#modal_form_add_clinic").find("#contactNumber").val(contactNumber);
+			$("#modal_form_add_clinic").find("#scheduleRx").val(scheduleRx);
 			
 			var str = $(this).attr('data-row-schedules');
-			console.log(id);
-			console.log(name);
-			console.log(address);
-			console.log(str);
-			
 			var schedItems = str.replaceAll("ClinicSchedule(", "{").replaceAll(")", "}").replaceAll("},", "};").replaceAll("[", "").replaceAll("]", "");
 			var itemSplit = schedItems.split(";");
 			
@@ -431,7 +442,6 @@
 					var fieldVal = field[1].replaceAll("}", "");
 					
 					var rowId = fieldName+rowNum;
-					console.log("rowNumAA: " + rowNum + " - " + rowId + " - " + fieldVal);
 					$("#modal_form_add_clinic").find("#"+rowId).val(fieldVal);
 				}
 				rowNum++;
