@@ -460,7 +460,9 @@
 				var rowNum = 0;
 				rowNum = $(this).attr("id").replace("genericName", "");
 
-				$.getJSON("http://localhost:8080/emr/api/generics/search/findByGenericName?genericName=" + genericName , {
+				let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+
+				$.getJSON( contextRoot + "/api/generics/search/findByGenericName?genericName=" + genericName , {
 	                ajax : 'true'
 	            }, function(data) {
 	            	var html = '<option value=""> - Select Brand Name - </option>';
