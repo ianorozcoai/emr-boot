@@ -23,11 +23,12 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header bg-primary">
-					<h5 class="modal-title">System User Information</h5>
+					<h5 class="modal-title">Staff Information</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
 				<form th:action="@{/personnels}" method="post" th:object="${personnel}">
+                    <input type="hidden" th:field="*{userType}" />
 					<div class="modal-body">
 						<div class="form-group">
 							<div class="row">
@@ -90,22 +91,6 @@
 				                </div>
 				                
 				                <div class="col-sm-6">
-				                    <label for="userType">Role</label>
-				                    <select id="userType" th:field="*{userType}" class="form-control">
-				                        <option th:selected="*{userType == 'ROLE_DOCTOR_EMR'}" value="ROLE_DOCTOR_EMR">Doctor with EMR Access</option>
-				                        <option th:selected="*{userType == 'ROLE_DOCTOR'}" value="ROLE_DOCTOR" selected="selected">Doctor</option>
-				                        <option th:selected="*{userType == 'ROLE_NURSE'}" value="ROLE_NURSE">Nurse</option>
-				                        <option th:selected="*{userType == 'ROLE_MED_TECH'}" value="ROLE_MED_TECH">Medical Technician</option>
-				                        <option th:selected="*{userType == 'ROLE_STAFF'}" value="ROLE_STAFF">Doctors Staff</option>
-				                        <option th:selected="*{userType == 'ROLE_ADMIN'}" value="ROLE_ADMIN">Admin</option>
-				                    </select>
-				                </div>
-				           </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">         
-				                <div class="col-sm-12">
 				                    <label for="address">Address</label>
 				                    <input id="address" th:field="*{address}" placeholder="Address" type="text" class="form-control" >
 				                </div>
@@ -113,44 +98,7 @@
 						</div>
 						
 						<hr>
-						<h6 class="font-weight-semibold">Doctors Info</h6>
-						<p>Please fill up the info below if you are encoding to doctors access.</p>									
 						
-						<div class="form-group">
-							<div class="row">
-				                <div class="col-sm-12">
-				                    <label for="credentials">Credentials</label>
-				                    <input id="credentials" name="credentials" placeholder="Credentials" type="text" class="form-control" >
-				                </div>
-				            </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">
-				                <div class="col-sm-6">
-				                    <label for="specialization">Specialization</label>
-				                    <input id="specialization" th:field="*{specialization}" placeholder="Specialization" type="text" class="form-control" >
-				                </div>
-				                    
-				                    <div class="col-sm-6">
-				                        <label for="licenseNumber">License No.</label>
-				                        <input id="licenseNumber" th:field="*{licenseNumber}" placeholder="License No." type="text" class="form-control" >
-				                    </div>
-				            </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">
-				                    <div class="col-sm-6">
-				                        <label for="ptrNumber">PTR No.</label>
-				                        <input id="ptrNumber" th:field="*{ptrNumber}" placeholder="PTR No." type="text" class="form-control" >
-				                    </div>
-				                    <div class="col-sm-6">
-				                        <label for="sNumber">S2 No.</label>
-				                        <input id="sNumber" th:field="*{sNumber}" placeholder="S2 No." type="text" class="form-control" >
-				                    </div>
-				             </div>
-						</div>
 					</div>
 
 					<div class="modal-footer">
@@ -168,12 +116,13 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header bg-primary">
-					<h5 class="modal-title">System User Information</h5>
+					<h5 class="modal-title">Staff Information</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
 				<form th:action="@{/personnels/edit}" method="post" th:object="${personnelDto}" class="editPersonnelForm">
 				    <input type="hidden" th:field="*{id}" id="personnelId">
+                    <input type="hidden" th:field="*{userType}" />
 					<div class="modal-body">
 						<div class="form-group">
 							<div class="row">
@@ -220,22 +169,6 @@
 				                </div>
 				                
 				                <div class="col-sm-6">
-				                    <label for="_userType">Role</label>
-				                    <select id="_userType" th:field="*{userType}" class="form-control">
-				                    	<option th:selected="*{userType == 'ROLE_DOCTOR_EMR'}" value="ROLE_DOCTOR_EMR">Doctor with EMR Access</option>
-				                        <option th:selected="*{userType == 'ROLE_DOCTOR'}" value="ROLE_DOCTOR">Doctor</option>				                        
-				                        <option th:selected="*{userType == 'ROLE_NURSE'}" value="ROLE_NURSE">Nurse</option>
-				                        <option th:selected="*{userType == 'ROLE_MED_TECH'}" value="ROLE_MED_TECH">Medical Technician</option>
-				                        <option th:selected="*{userType == 'ROLE_STAFF'}" value="ROLE_STAFF">Doctors Staff</option>
-				                        <option th:selected="*{userType == 'ROLE_ADMIN'}" value="ROLE_ADMIN">Admin</option>
-				                    </select>
-				                </div>
-				           </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">         
-				                <div class="col-sm-12">
 				                    <label for="_address">Address</label>
 				                    <input id="_address" th:field="*{address}" placeholder="Address" type="text" class="form-control" >
 				                </div>
@@ -243,45 +176,7 @@
 						</div>
 						
 						<hr>
-						<h6 class="font-weight-semibold">Doctors Info</h6>
-						<p>Please fill up the info below if you are encoding to doctors access.</p>									
 						
-						<div class="form-group">
-							<div class="row">
-				                    
-				                    <div class="col-sm-12">
-				                        <label for="_credentials">Credentials</label>
-				                        <input id="_credentials" name="credentials" placeholder="Credentials" type="text" class="form-control" >
-				                    </div>
-				            </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">
-				                    <div class="col-sm-6">
-				                        <label for="_specialization">Specialization</label>
-				                        <input id="_specialization" th:field="*{specialization}" placeholder="Specialization" type="text" class="form-control" >
-				                    </div>
-				                    
-				                    <div class="col-sm-6">
-				                        <label for="_licenseNumber">License No.</label>
-				                        <input id="_licenseNumber" th:field="*{licenseNumber}" placeholder="License No." type="text" class="form-control" >
-				                    </div>
-				            </div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">
-				                    <div class="col-sm-6">
-				                        <label for="_ptrNumber">PTR No.</label>
-				                        <input id="_ptrNumber" th:field="*{ptrNumber}" placeholder="PTR No." type="text" class="form-control" >
-				                    </div>
-				                    <div class="col-sm-6">
-				                        <label for="_sNumber">S2 No.</label>
-				                        <input id="_sNumber" th:field="*{sNumber}" placeholder="S2 No." type="text" class="form-control" >
-				                    </div>
-				             </div>
-						</div>
 					</div>
 
 					<div class="modal-footer">
@@ -305,7 +200,7 @@
 			<div class="page-header">
 				<div class="page-header-content header-elements-md-inline">
 					<div class="page-title d-flex">
-						<h4><span class="font-weight-semibold">System Users</span></h4>
+						<h4><span class="font-weight-semibold">Doctor's Staffs</span></h4>
 						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 					</div>					
 				</div>
@@ -322,16 +217,16 @@
 						<!-- Basic datatable -->
 						<div class="card">
 							<div class="card-header header-elements-inline">
-								<h5 class="card-title">System User List</h5>
+								<h5 class="card-title">Doctor's Staff List</h5>
 								<div class="header-elements">
 									<div class="list-icons">				                				
-				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton">Add System User</button>		                		
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton">Add Staff</button>		                		
 				                	</div>
 			                	</div>
 							</div>
 		
 							<div class="card-body">
-								This table shows the list of system users. This list shows all users and what department, role they have.
+								This table shows the list of doctor's staffs.
 							</div>
 		
 							<table class="table table-bordered table-hover" id="system-user-list">
