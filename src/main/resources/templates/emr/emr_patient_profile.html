@@ -62,7 +62,7 @@
 												<div class="tab-pane fade show active" id="basic-tab1">
 													<div class="col-md-12">
 														<form th:action="@{/emrpatientprofile}" method="post" th:object="${patient}">
-															<input type="hidden" th:field="*{doctorId}" name="doctorId" id="doctorId">
+															<input type="hidden" th:field="*{doctor.id}" name="doctorId" id="doctorId">
 															<input type="hidden" th:field="*{isActive}" name="isActive" id="isActive">
 															<input type="hidden" th:field="*{id}" id="id" name="id" >
 															<input type="hidden" th:field="*{patientPhoto}" />
