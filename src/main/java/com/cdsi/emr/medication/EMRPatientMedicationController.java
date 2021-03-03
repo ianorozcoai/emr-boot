@@ -24,28 +24,38 @@ public class EMRPatientMedicationController {
     	private EMRPatientMedicationRepository emrPatientMedicationRepository;
     	private EMRPatientMedicationItemRepository emrPatientMedicationItemRepository;
 	private PatientRepository patientRepository;
-	
+	private EMRGenericsLookupRepository emrGenericsLookupRepository;
+
 	public EMRPatientMedicationController (EMRPatientMedicationRepository emrPatientMedicationRepository
 		, PatientRepository patientRepository
 		, EMRPatientMedicationItemRepository emrPatientMedicationItemRepository
+	    , EMRGenericsLookupRepository emrGenericsLookupRepository
 			) {
 	    	this.emrPatientMedicationRepository = emrPatientMedicationRepository;
 		this.patientRepository = patientRepository;
 		this.emrPatientMedicationItemRepository = emrPatientMedicationItemRepository;
+		this.emrGenericsLookupRepository = emrGenericsLookupRepository;
 	}
-	
-	@GetMapping("/emrpatientMedication/{patientId}")
-	public String listAll(Model model, @PathVariable long patientId) {
-		List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientId(patientId);
+
+	@GetMapping("/emrPatientMedication/{patientId}")
+	public String viewPatientMedicationByPatientId(Model model, @PathVariable long patientId) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();
 		model.addAttribute("patient", patient);
+
+		List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientId(patientId);
+		List<String> emrGenericsLookupList = emrGenericsLookupRepository.findDistinctByGenericName();
+
+		EMRPatientMedicationForm emrPatientMedicationForm = new EMRPatientMedicationForm();
+		emrPatientMedicationForm.getEmrPatientMedicationItems().add(new EMRPatientMedicationItem());
 		model.addAttribute("emrPatientMedicationList", emrPatientMedicationList);
-		model.addAttribute("emrPatientMedicationForm", new EMRPatientMedicationForm());
+		model.addAttribute("emrGenericsLookupList", emrGenericsLookupList);
+		model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
 		model.addAttribute("dosages", EHRConstants.DOSAGE);
+
 		return "emr/emr_patient_medication";
-	}	
-	
+	}
+
 	@PostMapping("/emrpatientMedication")
 	@Transactional
 	public String savePatientMedication(
@@ -60,21 +70,21 @@ public class EMRPatientMedicationController {
 			Patient patient = optionalPatient.get();
 			model.addAttribute("patient", patient);
 			model.addAttribute("emrPatientMedicationForm", new EMRPatientMedicationForm());
-			return "emr/emr_patient_record";
+			return "emr/emr_patient_medication";
 		}
-		
+
 		EMRPatientMedication emrPatientMedication = emrPatientMedicationForm.getEmrPatientMedication();
 		emrPatientMedication.setEmrPatientMedicationItems(emrPatientMedicationForm.getEmrPatientMedicationItems());
-		
+
 		for (EMRPatientMedicationItem item : emrPatientMedication.getEmrPatientMedicationItems()) {
 		    item.setEmrPatientMedication(emrPatientMedication);
 		}
-		
+
 		emrPatientMedicationItemRepository.deleteByEMRPatientMedicationId(emrPatientMedication.getId());
-		
+
 		emrPatientMedicationRepository.save(emrPatientMedication);
 		redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Medication added successfully."));
-		return "redirect:/emrpatientrecord/" + emrPatientMedicationForm.getEmrPatientMedication().getPatient().getId();
+		return "redirect:/emrPatientMedication/" + emrPatientMedicationForm.getEmrPatientMedication().getPatient().getId();
 	}
-	
+
 }

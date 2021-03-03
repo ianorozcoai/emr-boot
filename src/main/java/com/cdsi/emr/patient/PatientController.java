@@ -102,20 +102,12 @@ public class PatientController {
 				e.printStackTrace();
 			}
 		};
-		
-		List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientId(patientId);
-		List<String> emrGenericsLookupList = emrGenericsLookupRepository.findDistinctByGenericName();
-		
+
 		emrConsultations.forEach(fetchDiagnosis);
 		model.addAttribute("emrConsultations", emrConsultations);
 		model.addAttribute("hmos", hmoRepository.findAll());
-		
-		EMRPatientMedicationForm emrPatientMedicationForm = new EMRPatientMedicationForm();
-		emrPatientMedicationForm.getEmrPatientMedicationItems().add(new EMRPatientMedicationItem());
-		model.addAttribute("emrPatientMedicationList", emrPatientMedicationList);
-		model.addAttribute("emrGenericsLookupList", emrGenericsLookupList);
-		model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
-		model.addAttribute("dosages", EHRConstants.DOSAGE);
+
+		model.addAttribute("selectedConsultationId", 0);
 		
 		return "emr/emr_patient_record";
 	}
