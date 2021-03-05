@@ -37,6 +37,13 @@ public class DashboardController {
         
         List<EmrConsultation> emrConsultationPending = this.emrConsultationRepository
         		.findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "ON QUEUE");
+        
+        List<EmrConsultation> emrConsultationCancelled = this.emrConsultationRepository
+                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "CANCELLED");
+
+        emrConsultations.addAll(emrConsultationPending);
+        emrConsultations.addAll(emrConsultationProcessed);
+        emrConsultations.addAll(emrConsultationCancelled);
 
         int cancelled = 0;
         int processed = 0;
@@ -54,9 +61,7 @@ public class DashboardController {
             todaysPatient++;
         }
         
-        emrConsultations.addAll(emrConsultationPending);
-        emrConsultations.addAll(emrConsultationProcessed);
-
+       
         EmrDashboardDto emrDashboardDto = new EmrDashboardDto();
 
         emrDashboardDto.setEmrConsultations(emrConsultations);
