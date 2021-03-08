@@ -301,7 +301,7 @@
 		var i = 0;
 		var brandNameArr = [];
 
-		let consultationId = /*[[${selectedConsultationId}]]*/;
+		let consultationId = /*[[${selectedConsultationId}]]*/0;
 
 		function resetRowNum() {
 			i = 0;
@@ -401,7 +401,8 @@
 	            timer: 2000,
 			})
 			.then((value) => {
-				window.location.href = /*[[${#request.getContextPath() + '/emrdashboard'}]]*/"";
+				window.location.reload();
+			    //window.location.href = /*[[${#request.getContextPath() + '/emrdashboard'}]]*/"";
 			});
 		}
 
