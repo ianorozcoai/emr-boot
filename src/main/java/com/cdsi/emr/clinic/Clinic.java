@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 import lombok.Data;
 import lombok.ToString;
@@ -21,6 +22,9 @@ public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    
+    @Positive(message = " is mandatory.")
+    private long doctorId;
     
     @NotBlank(message = " is mandatory.")
     @Column(nullable = false)

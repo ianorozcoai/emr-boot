@@ -166,7 +166,9 @@
                                                             th:data-row-id="${emrPatientMedication.id}"
                                                             th:data-row-items="${emrPatientMedication.emrPatientMedicationItems}"
                                                             data-toggle="modal" data-target="#modal_form_vertical" id="editMedication">View</button></td>
-                                                <td><button class="btn btn-primary">Print</button></td>
+                                                <td>
+                                                	<a class="btn btn-primary" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">Print</a>
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
