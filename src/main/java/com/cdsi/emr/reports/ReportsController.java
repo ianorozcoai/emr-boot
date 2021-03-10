@@ -21,6 +21,8 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.cdsi.emr.medicalreports.EMRMedicalCertificate;
+import com.cdsi.emr.medicalreports.EMRMedicalCertificateRepository;
 import com.cdsi.emr.clinic.Clinic;
 import com.cdsi.emr.clinic.ClinicRepository;
 import com.cdsi.emr.medication.EMRPatientMedication;
@@ -42,14 +44,17 @@ public class ReportsController {
 	private EMRPatientMedicationRepository emrPatientMedicationRepository;	
 	private PatientRepository patientRepository;
 	private ClinicRepository clinicRepository;
+	private EMRMedicalCertificateRepository emrMedicalCertificateRepository;
 	
 	public ReportsController (PatientRepository patientRepository, 
 			EMRPatientMedicationRepository emrPatientMedicationRepository,
-			ClinicRepository clinicRepository) {
+			ClinicRepository clinicRepository,
+			EMRMedicalCertificateRepository emrMedicalCertificateRepository) {
 	    	
 		this.emrPatientMedicationRepository = emrPatientMedicationRepository;		
 		this.patientRepository = patientRepository;
 		this.clinicRepository = clinicRepository;
+		this.emrMedicalCertificateRepository = emrMedicalCertificateRepository;
 		
 	}
 	
@@ -66,15 +71,11 @@ public class ReportsController {
 		
 		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
 		
-//		String rxLogo = request.getServletContext().getRealPath(File.separator) + EMR_RX_LOGO_URL;
 		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
 		File hospitalLogoFile = ResourceUtils.getFile("classpath:static/images/logo.jpg");
 		
 		String rxLogo = file.getAbsolutePath();
-		String hospitalLogo = hospitalLogoFile.getAbsolutePath();
-		
-//		File companyLogo = File.createTempFile("coLogo_",".tmp");
-		
+		String hospitalLogo = hospitalLogoFile.getAbsolutePath();		
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RX_LOGO", rxLogo);
@@ -98,12 +99,12 @@ public class ReportsController {
 			if(ctr == 1){
 				map.put("CLINIC_NAME", clinic.getName());
 				map.put("DOCTOR_ADDRESS", clinic.getAddress());
-//				map.put("DOCTOR_ADDRESS", clinic.getRxSchedule());
+				map.put("DOCTOR_ADDRESS", clinic.getScheduleRx());
 				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
 			} else if (ctr == 2) {
 				map.put("CLINIC_NAME2", clinic.getName());
 				map.put("DOCTOR_ADDRESS2", clinic.getAddress());
-//				map.put("DOCTOR_ADDRESS2", clinic.getRxSchedule());
+				map.put("DOCTOR_ADDRESS2", clinic.getScheduleRx());
 				map.put("DOCTOR_CONTACT_NO2", "Contact No: " + clinic.getContactNumber());			
 			} else {
 				break;
@@ -116,13 +117,9 @@ public class ReportsController {
 		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber());
 		map.put("DOCTOR_S_NO", doctor.getSNumber());
 		
-//		SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 		map.put("PERIOD", formatter.format(emrPatientMedication.getDateCreated()));
-//		map.put("PERIOD", emrPatientMedication.getDateCreated());
 		
-		
-		//map.put("PATIENT_NAME", patient.getFirstName() + " " + patient.getLastName());
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
 		map.put("PATIENT_ADDRESS", patient.getStreet() + " " + patient.getCity());
 		map.put("PATIENT_GENDER", patient.getGender());
@@ -173,6 +170,100 @@ public class ReportsController {
 		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
 		
 	}	
+	
+	@GetMapping("/viewMedCert/{medCertId}")
+	public void listAllMedCert(Model model, @PathVariable long medCertId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
+		
+		Personnel doctor = (Personnel) auth.getPrincipal();
+		
+		Optional<EMRMedicalCertificate> oEMRMedicalCertificate = emrMedicalCertificateRepository.findById(medCertId);
+		EMRMedicalCertificate emrMedicalCertificate = oEMRMedicalCertificate.orElseGet(() -> new EMRMedicalCertificate());
+		
+		Optional<Patient> oPatient = patientRepository.findById(emrMedicalCertificate.getPatient().getId());
+		Patient patient = oPatient.orElseGet(() -> new Patient());
+		
+		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+		
+		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
+		File hospitalLogoFile = ResourceUtils.getFile("classpath:static/images/logo.jpg");
+		
+		String rxLogo = file.getAbsolutePath();
+		String hospitalLogo = hospitalLogoFile.getAbsolutePath();
+				
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("RX_LOGO", rxLogo);
+		map.put("COMPANY_LOGO", hospitalLogo);
+		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
+		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
+		map.put("SPECIALIZATION", doctor.getSpecialization());
+		
+		map.put("CLINIC_NAME", "");
+		map.put("DOCTOR_ADDRESS", "");
+		map.put("DOCTOR_CONTACT_NO", "");	
+		
+		map.put("CLINIC_NAME2", "");
+		map.put("DOCTOR_ADDRESS2", "");
+		map.put("DOCTOR_CONTACT_NO2", "");
+		
+		int ctr = 1;
+		
+		for(Clinic clinic : clinicList){
+			
+			if(ctr == 1){
+				map.put("CLINIC_NAME", clinic.getName());
+				map.put("DOCTOR_ADDRESS", clinic.getAddress());
+				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
+			} else {
+				break;
+			}
+			
+			ctr++;
+		}
+		
+		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
+		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber());
+		map.put("DOCTOR_S_NO", doctor.getSNumber());
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+		map.put("PERIOD", formatter.format(emrMedicalCertificate.getDateRequested()));
+		
+		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
+		map.put("PATIENT_ADDRESS", patient.getStreet() + " " + patient.getCity());
+		map.put("PATIENT_GENDER", patient.getGender());
+		//ReadableInstant
+		LocalDate birthdate = patient.getBirthdate();		
+		long years = ChronoUnit.YEARS.between(birthdate, LocalDate.now());
+		
+		map.put("PATIENT_AGE", patient.getAge() + "");
+		map.put("PATIENT_MEDICATION", emrMedicalCertificate.getMedication());
+		map.put("PATIENT_RECOMMENDATION", emrMedicalCertificate.getRecommendation());
+		map.put("PATIENT_DIAGNOSIS", emrMedicalCertificate.getDiagnosis());
+		map.put("PATIENT_HISTORY", emrMedicalCertificate.getHistory());
+		
+		
+		
+		
+		List<Patient> dataList = new ArrayList<Patient>();	
+		
+		Patient dummyData = new Patient();
+		dummyData.setFirstName("test");
+		
+		dataList.add(dummyData);
+		
+		
+		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+		
+		response.setContentType("application/pdf");
+		
+		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "com/cdsi/ehr/emr/reports/MedicalCertReport.jasper");
+				
+		if(reportStream == null){
+			//logger.debug("reportStream is NULL");
+		}
+		
+		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
+		
+	}
 	
 	
 }
