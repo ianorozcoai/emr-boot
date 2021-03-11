@@ -164,7 +164,11 @@ public class ReportsController {
 		}		
 		
 		if(reportStream == null){
-			//logger.debug("reportStream is NULL");
+			System.out.println("reportStream is NULL");
+		}
+		
+		if(response.getOutputStream() == null){
+			System.out.println("response.getOutputStream() is NULL");
 		}
 		
 		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
