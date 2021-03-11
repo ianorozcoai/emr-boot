@@ -23,7 +23,6 @@ public class EMRPatientMedicationItem {
 	@NotBlank(message = " is mandatory.")
 	private String genericName;
 	
-	@NotBlank(message = " is mandatory.")
 	private String brandName;
 	
 	@NotBlank(message = " is mandatory.")

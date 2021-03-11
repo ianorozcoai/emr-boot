@@ -50,10 +50,8 @@ import lombok.NoArgsConstructor;
 	private BigDecimal consultationFee;
 	private String consultationStatus = "ON QUEUE";
 	private double temperature;
-	@PositiveOrZero
-	private int weight;
-	@PositiveOrZero
-	private int height;
+	private double weight;
+	private double height;
 	private String bloodPressure;
 	private String symptoms;
 	private String physical;

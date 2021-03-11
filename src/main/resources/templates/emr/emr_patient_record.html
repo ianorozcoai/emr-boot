@@ -82,17 +82,17 @@
 						<div class="row">
 							<div class="col-sm-3">
 								<label for="temperature">Temp (&deg;C)</label>
-								<input id="temperature" th:field="*{temperature}" placeholder="0.0" type="text" class="form-control" >
+								<input id="temperature" th:field="*{temperature}" placeholder="0.0" type="number" class="form-control" >
 							</div>
 							<div class="col-sm-3">
 								<label for="weight">Weight (Kg)</label>
 								<span class="validationError text-danger" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></span>
-								<input id="weight" th:field="*{weight}" placeholder="0.0" type="text" class="form-control" >
+								<input id="weight" th:field="*{weight}" placeholder="0.0" type="number" class="form-control" >
 							</div>
 							<div class="col-sm-3">
 								<label for="height">Height (cm)</label>
 								<span class="validationError text-danger" th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
-								<input id="height" th:field="*{height}" placeholder="0.0" type="text" class="form-control" >
+								<input id="height" th:field="*{height}" placeholder="0.0" type="number" class="form-control" >
 							</div>
 							<div class="col-sm-3">
 								<label for="bloodPressure">BP</label>
