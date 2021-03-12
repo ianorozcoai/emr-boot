@@ -209,7 +209,7 @@
         let url = /*[[@{/exportdata/patients}]]*/'';
         let res = await fetch(url);
         let json = await res.json();
-      
+        console.log(json)
         const data = json.map( row => ({
             //id: row.id,
             firstName: row.firstName,
@@ -220,18 +220,21 @@
             city: row.city,
             province: row.province,
             contactNumber: row.contactNumber,
-            emailAddress: row.emailAddress,
+            emailAddress: row.email,
             emergencyContactName: row.emergencyContactName,
             emergencyContactAddress: row.emergencyContactAddress,
             emergencyContactNumber: row.emergencyContactNumber,
             maritalStatus: row.maritalStatus,
             profession: row.profession,
             seniorCitizenNumber: row.seniorCitizenNumber,
+            notes: row.notes,
+            patientPhoto: row.patientPhoto,
             mothersname: row.mothersname,
             mothersoccupation: row.mothersoccupation,
+            mothersmobile: row.mothersmobile,
             fathersname: row.fathersname,
             fathersoccupation: row.fathersoccupation,
-            notes: row.notes
+            fathersmobile: row.fathersmobile,
         }));
       
         const csvData = objectToCsv(data);
@@ -242,11 +245,11 @@
         let url = /*[[@{/exportdata/consultations}]]*/'';
         let res = await fetch(url);
         let json = await res.json();
-      
+        console.log(json)
         const data = json.map( row => ({        
             consultationDate: row.consultationDate,
-            firstName: row.firstName,
-            lastName: row.lastName,
+            firstName: row.patient.firstName,
+            lastName: row.patient.lastName,
             consultationStatus: row.consultationStatus,
             paymentType: row.paymentType,
             consultationFee: row.consultationFee,
@@ -269,7 +272,7 @@
         let url = /*[[@{/exportdata/medications}]]*/'';
         let res = await fetch(url);
         let json = await res.json();
-      
+        console.log(json)
         const data = json.map( row => ({        
           dateCreated: row.dateCreated,
           firstName: row.firstName,
@@ -288,11 +291,11 @@
         let url = /*[[@{/exportdata/vaccinations}]]*/'';
         let res = await fetch(url);
         let json = await res.json();
-      
+        console.log(json)
         const data = json.map( row => ({        
             dateCreated: row.dateCreated,
-            firstName: row.firstName,
-            lastName: row.lastName,
+            firstName: row.patient.firstName,
+            lastName: row.patient.lastName,
             vaccineName: row.vaccineName,
             remarks: row.remarks
         }));
@@ -306,13 +309,13 @@
         let res = await fetch(url);
         let json = await res.json();
       
-      
-      const data = json.map( row => ({        
-        dateCreated: row.dateCreated,
-        firstName: row.firstName,
-        lastName: row.lastName,
-        remarks: row.remarks
-      }));
+        console.log(json)
+        const data = json.map( row => ({        
+            dateCreated: row.dateCreated,
+            firstName: row.firstName,
+            lastName: row.lastName,
+            remarks: row.remarks
+        }));
       
       const csvData = objectToCsv(data);
       download(csvData, 'patientLabsList.csv');
@@ -321,8 +324,8 @@
       const exportPatientImagingListFunc = async function() {
         let url = /*[[@{/exportdata/imagings}]]*/'';
         let res = await fetch(url);
-      let json = await res.json();
-      
+        let json = await res.json();
+        console.log(json)
       const data = json.map( row => ({        
         dateCreated: row.dateCreated,
         firstName: row.firstName,
@@ -337,8 +340,8 @@
       const exportPatientProcedureListFunc = async function() {
         let url = /*[[@{/exportdata/procedures}]]*/'';
         let res = await fetch(url);
-      let json = await res.json();
-      
+        let json = await res.json();
+        console.log(json)
       const data = json.map( row => ({        
         dateCreated: row.dateCreated,
         firstName: row.firstName,
