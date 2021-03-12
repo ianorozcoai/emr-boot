@@ -312,8 +312,8 @@
         console.log(json)
         const data = json.map( row => ({        
             dateCreated: row.dateCreated,
-            firstName: row.firstName,
-            lastName: row.lastName,
+            firstName: row.patient.firstName,
+            lastName: row.patient.lastName,
             remarks: row.remarks
         }));
       
@@ -328,8 +328,8 @@
         console.log(json)
       const data = json.map( row => ({        
         dateCreated: row.dateCreated,
-        firstName: row.firstName,
-        lastName: row.lastName,
+        firstName: row.patient.firstName,
+        lastName: row.patient.lastName,
         remarks: row.remarks
       }));
       
@@ -344,8 +344,8 @@
         console.log(json)
       const data = json.map( row => ({        
         dateCreated: row.dateCreated,
-        firstName: row.firstName,
-        lastName: row.lastName,
+        firstName: row.patient.firstName,
+        lastName: row.patient.lastName,
         remarks: row.remarks
       }));
       
