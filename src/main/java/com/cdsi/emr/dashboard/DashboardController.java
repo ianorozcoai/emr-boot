@@ -28,16 +28,16 @@ public class DashboardController {
     public String dashboard(Model model, Authentication auth) {
         Personnel loggedUser = (Personnel) auth.getPrincipal();
 
-//        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByConsultationDateAndPersonnelId(LocalDate.now().plusDays(1), loggedUser.getId());
-        
-        List<EmrConsultation> emrConsultations = new ArrayList<EmrConsultation>();
-        
+        //        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByConsultationDateAndPersonnelId(LocalDate.now().plusDays(1), loggedUser.getId());
+
+        List<EmrConsultation> emrConsultations = new ArrayList<>();
+
         List<EmrConsultation> emrConsultationProcessed = this.emrConsultationRepository
-        		.findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "PROCESSED");
-        
+                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "PROCESSED");
+
         List<EmrConsultation> emrConsultationPending = this.emrConsultationRepository
-        		.findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "ON QUEUE");
-        
+                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "ON QUEUE");
+
         List<EmrConsultation> emrConsultationCancelled = this.emrConsultationRepository
                 .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "CANCELLED");
 
@@ -56,12 +56,12 @@ public class DashboardController {
             } else if("PROCESSED".equals(emrConsultation.getConsultationStatus())) {
                 processed++;
             } else if("ON QUEUE".equals(emrConsultation.getConsultationStatus())) {
-            	onqueue++;
+                onqueue++;
             }
             todaysPatient++;
         }
-        
-       
+
+
         EmrDashboardDto emrDashboardDto = new EmrDashboardDto();
 
         emrDashboardDto.setEmrConsultations(emrConsultations);
@@ -72,5 +72,10 @@ public class DashboardController {
 
         model.addAttribute("emrDashboardDto", emrDashboardDto);
         return "emr/emr_dashboard";
+    }
+
+    @GetMapping("/exportdata")
+    public String exportData(Model model) {
+        return "emr/exportdata";
     }
 }

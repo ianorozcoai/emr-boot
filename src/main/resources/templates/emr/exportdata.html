@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>Export Data</title>
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+	<!-- /Main Navbar -->
+
+					
+	<!-- Page content -->
+	<div class="page-content">
+	
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Export Data</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-lg-3 col-md-6" id="exportPatientMasterList" style="cursor: pointer">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Master List</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6" id="exportPatientConsultationList" style="cursor: pointer">
+                        <div class="panel panel-green">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Consultation Records</div>
+                                    </div>
+                                </div>
+                            </div>                       
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6" id="exportPatientMedicationList" style="cursor: pointer">
+                        <div class="panel panel-red">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Medication Records</div>
+                                    </div>
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6" id="exportPatientVaccinationList" style="cursor: pointer">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Vaccination Records</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <!-- Comment This if Local  -->
+                    <div class="col-lg-3 col-md-6" id="exportPatientLabList" style="cursor: pointer">
+                        <div class="panel panel-violet">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Lab Records</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6" id="exportPatientImagingList" style="cursor: pointer">
+                        <div class="panel panel-info">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Imaging Records</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6" id="exportPatientProcedureList" style="cursor: pointer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading" style="height: 90px;">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-download fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="totalFigures">Click Here</div>
+                                        <div>Patient Procedure Records</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div> 
+				</div>	
+		        <!-- /dashboard content -->
+	        </div>
+	        <!-- /content area -->
+						
+	        <!-- Main sidebar -->
+	        <div th:replace="fragments/common::emr-footer"></div>
+	        <!-- /Main sidebar -->
+
+	    </div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">		
+	
+	    $(document).ready(function() {
+	    		    				
+			$(".nav-link").removeClass("active");	    	  	
+			$("#emrDashboardNav").addClass("active");
+
+	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+
+	    	if(msgCode === 'ERROR'){
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: msgDesc,
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+
+	    });
+
+		$(document).on("click", ".cancelConsultation", function(){
+
+			swal({
+			  title: "Confirmation?",
+			  text: "Are you sure you want to cancel the appointment?",
+			  icon: "info",
+			  buttons: ["Yes", "No"],
+			  dangerMode: false,
+			})
+			.then((willDelete) => {
+			  if (willDelete) {
+				  //No Response
+				  console.log("will delete no");
+
+			  } else {
+			  	 console.log("will delete yes");
+				 var id = $(this).attr('data-row-id');
+				 $("#cancelConsultationForm").find("#consultationId").val(id);
+				 $("#cancelConsultationForm").submit();
+			  }
+			});
+
+		});
+
+	</script>
+    <script type="text/javascript"> 
+    
+    
+    $(document).ready(function() {
+      let exportPatientMasterListButton = document.getElementById('exportPatientMasterList');
+      let exportPatientConsultationListButton = document.getElementById('exportPatientConsultationList');
+      let exportPatientMedicationListButton = document.getElementById('exportPatientMedicationList');
+      let exportPatientVaccinationListButton = document.getElementById('exportPatientVaccinationList');
+      let exportPatientLabListButton = document.getElementById('exportPatientLabList');
+      let exportPatientImagingListButton = document.getElementById('exportPatientImagingList');
+      let exportPatientProcedureListButton = document.getElementById('exportPatientProcedureList');
+      
+      exportPatientMasterListButton.addEventListener('click', exportPatientMasterListFunc); 
+      exportPatientConsultationListButton.addEventListener('click', exportPatientConsultationListFunc);
+      exportPatientMedicationListButton.addEventListener('click', exportPatientMedicationListFunc);
+      exportPatientVaccinationListButton.addEventListener('click', exportPatientVaccinationListFunc);
+      exportPatientLabListButton.addEventListener('click', exportPatientLabListFunc);
+      exportPatientImagingListButton.addEventListener('click', exportPatientImagingListFunc);
+      exportPatientProcedureListButton.addEventListener('click', exportPatientProcedureListFunc);
+            
+    });
+    
+    const objectToCsv = function(data) {        
+        const csvRows = [];
+        //get the headers
+        const headers = Object.keys(data[0]);
+        csvRows.push(headers.join(','));
+        //loop over the rows
+        for(var row of data){
+          const values = headers.map(header => {
+            //const escaped = (''+row[header]).replace(/"/g, '\\"');
+            //console.log('row header: ' + escaped);
+            //return `"${row[header]}"`;
+            return row[header];
+          });
+          csvRows.push(values.join(','));
+        }
+        return csvRows.join('\n');
+    };
+      
+    const download = function(data, fileName) {
+        const blob = new Blob([data], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', fileName);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+      
+    const exportPatientMasterListFunc = async function() {
+        let url = "${exportPatientMasterListUrl}";
+        let res = await fetch(url);
+        let json = await res.json();
+      
+        const data = json.map( row => ({
+            //id: row.id,
+            firstName: row.firstName,
+            lastName: row.lastName,
+            gender: row.gender,
+            birthdate: row.birthdate,
+            street: row.street,
+            city: row.city,
+            province: row.province,
+            contactNumber: row.contactNumber,
+            emailAddress: row.emailAddress,
+            emergencyContactName: row.emergencyContactName,
+            emergencyContactAddress: row.emergencyContactAddress,
+            emergencyContactNumber: row.emergencyContactNumber,
+            maritalStatus: row.maritalStatus,
+            profession: row.profession,
+            seniorCitizenNumber: row.seniorCitizenNumber,
+            mothersname: row.mothersname,
+            mothersoccupation: row.mothersoccupation,
+            fathersname: row.fathersname,
+            fathersoccupation: row.fathersoccupation,
+            notes: row.notes
+        }));
+      
+        const csvData = objectToCsv(data);
+        download(csvData, 'patientList.csv');
+    };
+      
+    const exportPatientConsultationListFunc = async function() {
+        let url = "${exportPatientConsultationListUrl}";
+        let res = await fetch(url);
+        let json = await res.json();
+      
+        const data = json.map( row => ({        
+            consultationDate: row.consultationDate,
+            firstName: row.firstName,
+            lastName: row.lastName,
+            consultationStatus: row.consultationStatus,
+            paymentType: row.paymentType,
+            consultationFee: row.consultationFee,
+            hmoName: row.hmoName,
+            complaints: row.symptoms,
+            physicalExamination: row.physical,
+            diagnosis: row.diagnosis,
+            intervention: row.intervention,
+            height: row.height,
+            weight: row.weight,
+            temperature: row.temperature,
+            bloodPressure: row.bloodPressure
+        }));
+      
+        const csvData = objectToCsv(data);
+        download(csvData, 'patientConsultationList.csv');
+    };
+      
+    const exportPatientMedicationListFunc = async function() {
+        let url = "${exportPatientMedicationListUrl}";
+        let res = await fetch(url);
+        let json = await res.json();
+      
+        const data = json.map( row => ({        
+          dateCreated: row.dateCreated,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          genericName: row.genericName,
+          brandName: row.brandName,
+          dosage: row.dosage,
+          instructions: row.instructions
+        }));
+      
+        const csvData = objectToCsv(data);
+        download(csvData, 'patientMedicationList.csv');
+    };
+      
+    const exportPatientVaccinationListFunc = async function() {
+        let url = "${exportPatientVaccinationListUrl}";
+        let res = await fetch(url);
+        let json = await res.json();
+      
+        const data = json.map( row => ({        
+            dateCreated: row.dateCreated,
+            firstName: row.firstName,
+            lastName: row.lastName,
+            vaccineName: row.vaccineName,
+            remarks: row.remarks
+        }));
+      
+        const csvData = objectToCsv(data);
+        download(csvData, 'patientVaccinationList.csv');
+    };
+      
+    const exportPatientLabListFunc = async function() {
+        let url = "${exportPatientLabListUrl}";
+        let res = await fetch(url);
+        let json = await res.json();
+      
+      
+      const data = json.map( row => ({        
+        dateCreated: row.dateCreated,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        remarks: row.remarks
+      }));
+      
+      const csvData = objectToCsv(data);
+      download(csvData, 'patientLabsList.csv');
+      };
+      
+      const exportPatientImagingListFunc = async function() {
+        let url = "${exportPatientImagingListUrl}";
+        let res = await fetch(url);
+      let json = await res.json();
+      
+      const data = json.map( row => ({        
+        dateCreated: row.dateCreated,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        remarks: row.remarks
+      }));
+      
+      const csvData = objectToCsv(data);
+      download(csvData, 'patientImagingList.csv');
+      };
+      
+      const exportPatientProcedureListFunc = async function() {
+        let url = "${exportPatientProcedureListUrl}";
+        let res = await fetch(url);
+      let json = await res.json();
+      
+      const data = json.map( row => ({        
+        dateCreated: row.dateCreated,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        remarks: row.remarks
+      }));
+      
+      const csvData = objectToCsv(data);
+      download(csvData, 'patientProcedureList.csv');
+      };
+      
+      </script>
+</body>
+</html>

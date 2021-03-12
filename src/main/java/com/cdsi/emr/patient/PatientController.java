@@ -76,7 +76,7 @@ public class PatientController {
 	@GetMapping("/emrpatients")
 	public String listAllPatientsByDoctorId(Model model, Authentication auth) {
 		Personnel doctor = (Personnel) auth.getPrincipal();
-		Iterable<Patient> patients = patientRepository.findByDoctorId(doctor.getId());
+		Iterable<Patient> patients = patientRepository.findAllByDoctorId(doctor.getId());
 		Patient patient = new Patient();
 		patient.setDoctor(doctor);
 		patient.setIsActive("A");
@@ -239,7 +239,7 @@ public class PatientController {
 			model.addAttribute("patients", patientRepository.findAll());
 			model.addAttribute("hmos", hmoRepository.findAll());
 			if (request.getServletPath().equalsIgnoreCase("/emrpatients")) {
-				Iterable<Patient> patients = patientRepository.findByDoctorId(patient.getDoctor().getId());
+				Iterable<Patient> patients = patientRepository.findAllByDoctorId(patient.getDoctor().getId());
 				model.addAttribute("patients", patients);
 			    	return "emr/emr_patient_list";
 			} else if (request.getServletPath().equalsIgnoreCase("/emrpatientprofile")) {
