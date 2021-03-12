@@ -12,7 +12,7 @@ public interface EMRPatientOthersRepository extends JpaRepository<EMRPatientOthe
     List<EMRPatientOthers> findByPatientId(long patientId);
 
     @Query(nativeQuery = true,
-            value = "")
-    List<EMRPatientOthers> findAllByDoctorId(long id);
+            value = "select * from emrpatient_others where patient_id in ?1")
+    List<EMRPatientOthers> findAllByDoctorId(List<Long> ids);
 
 }

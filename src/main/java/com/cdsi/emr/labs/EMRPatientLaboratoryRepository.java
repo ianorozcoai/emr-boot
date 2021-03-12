@@ -12,6 +12,6 @@ public interface EMRPatientLaboratoryRepository extends JpaRepository<EMRPatient
     List<EMRPatientLaboratory> findByPatientId(long patientId);
 
     @Query(nativeQuery = true,
-            value = "")
-    List<EMRPatientLaboratory> findAllByDoctorId(long doctorId);
+            value = "select * from emrpatient_laboratory where patient_id in ?1")
+    List<EMRPatientLaboratory> findAllByDoctorId(List<Long> ids);
 }
