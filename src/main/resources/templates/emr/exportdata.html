@@ -382,14 +382,14 @@
         let json = await res.json();
         console.log(json)
         const data = json.map( row => ({        
-          dateCreated: row.dateCreated,
-          firstName: row.firstName,
-          lastName: row.lastName,
+          dateCreated: row.emrPatientMedication.dateCreated,
+          firstName: row.emrPatientMedication.patient.firstName,
+          lastName: row.emrPatientMedication.patient.lastName,
           genericName: row.genericName,
           brandName: row.brandName,
           dosage: row.dosage,
-          instructions: row.instructions
-        }));
+          instructions: row.remarks,
+          }));
       
         const csvData = objectToCsv(data);
         download(csvData, 'patientMedicationList.csv');

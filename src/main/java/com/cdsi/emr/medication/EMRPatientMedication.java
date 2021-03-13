@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.cdsi.emr.config.data.Auditable;
 import com.cdsi.emr.patient.Patient;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -28,21 +29,22 @@ import lombok.EqualsAndHashCode;
 @Data
 public class EMRPatientMedication extends Auditable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@NotNull(message = " is mandatory.")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime dateCreated = LocalDateTime.now();
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "patient_id")
-	Patient patient;
-	
-	@OneToMany(mappedBy = "emrPatientMedication", 
-		fetch = FetchType.EAGER, 
-		cascade = CascadeType.ALL)
-        List<EMRPatientMedicationItem> emrPatientMedicationItems;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotNull(message = " is mandatory.")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime dateCreated = LocalDateTime.now();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id")
+    Patient patient;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "emrPatientMedication",
+    fetch = FetchType.EAGER,
+    cascade = CascadeType.ALL)
+    List<EMRPatientMedicationItem> emrPatientMedicationItems;
 }

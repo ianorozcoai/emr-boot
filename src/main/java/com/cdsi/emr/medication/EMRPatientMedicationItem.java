@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -16,23 +18,24 @@ import lombok.ToString;
 @Data
 public class EMRPatientMedicationItem {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@NotBlank(message = " is mandatory.")
-	private String genericName;
-	
-	private String brandName;
-	
-	@NotBlank(message = " is mandatory.")
-	private String dosage;
-	
-	@NotBlank(message = " is mandatory.")
-	private String remarks;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "emrpatient_medication_id")
-	@ToString.Exclude
-	private EMRPatientMedication emrPatientMedication;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotBlank(message = " is mandatory.")
+    private String genericName;
+
+    private String brandName;
+
+    @NotBlank(message = " is mandatory.")
+    private String dosage;
+
+    @NotBlank(message = " is mandatory.")
+    private String remarks;
+
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "emrpatient_medication_id")
+    @ToString.Exclude
+    private EMRPatientMedication emrPatientMedication;
 }

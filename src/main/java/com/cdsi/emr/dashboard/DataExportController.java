@@ -16,6 +16,8 @@ import com.cdsi.emr.imaging.EMRPatientImagingRepository;
 import com.cdsi.emr.labs.EMRPatientLaboratory;
 import com.cdsi.emr.labs.EMRPatientLaboratoryRepository;
 import com.cdsi.emr.medication.EMRPatientMedication;
+import com.cdsi.emr.medication.EMRPatientMedicationItem;
+import com.cdsi.emr.medication.EMRPatientMedicationItemRepository;
 import com.cdsi.emr.medication.EMRPatientMedicationRepository;
 import com.cdsi.emr.others.EMRPatientOthers;
 import com.cdsi.emr.others.EMRPatientOthersRepository;
@@ -38,6 +40,7 @@ public class DataExportController {
     EMRPatientImagingRepository imagingRepo;
     EMRPatientLaboratoryRepository labsRepo;
     EMRPatientMedicationRepository medicationRepo;
+    EMRPatientMedicationItemRepository medicationItemRepo;
     EMRPatientOthersRepository othersRepo;
     EMRPatientProcedureRepository procedureRepo;
     EMRPatientVaccinationRepository vaccinationRepo;
@@ -72,12 +75,16 @@ public class DataExportController {
     }
 
     @GetMapping("/exportdata/medications")
-    List<EMRPatientMedication> allMedicationsByDoctorId(@AuthenticationPrincipal Personnel doctor) {
+    List<EMRPatientMedicationItem> allMedicationsByDoctorId(@AuthenticationPrincipal Personnel doctor) {
         List<Patient> patients = this.patientRepo.findAllByDoctorId(doctor.getId());
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        return this.medicationRepo.findAllByDoctorId(patientIds);
+        List<Long> medicationIds = this.medicationRepo.findAllByDoctorId(patientIds).stream()
+                .map(EMRPatientMedication::getId)
+                .collect(toList());
+        List<EMRPatientMedicationItem> result = this.medicationItemRepo.findAllByDoctorId(medicationIds);
+        return result;
     }
 
     @GetMapping("/exportdata/others")
