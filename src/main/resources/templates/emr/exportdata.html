@@ -46,6 +46,112 @@
 
 				<!-- Dashboard content -->
 				<div class="row">
+					<div class="col-sm-6 col-xl-3" id="exportPatientMasterList" style="cursor: pointer">
+						<div class="card card-body bg-indigo-400 has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Master List</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-6 col-xl-3" id="exportPatientConsultationList" style="cursor: pointer">
+						<div class="card card-body bg-success has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Consultation Records</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-6 col-xl-3" id="exportPatientMedicationList" style="cursor: pointer">
+						<div class="card card-body bg-warning has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Medication Records</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-6 col-xl-3" id="exportPatientVaccinationList" style="cursor: pointer">
+						<div class="card card-body bg-violet-600 has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Vaccination Records</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-6 col-xl-3" id="exportPatientLabList" style="cursor: pointer">
+						<div class="card card-body bg-primary has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Lab Records</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-6 col-xl-3" id="exportPatientProcedureList" style="cursor: pointer">
+						<div class="card card-body bg-danger has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Procedure Records</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-6 col-xl-3" id="exportPatientImagingList" style="cursor: pointer">
+						<div class="card card-body bg-teal-600 has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-folder-download icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0">Click Here</h3>
+									<span class="text-uppercase font-size-xs">Patient Imaging Records</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- 
 					<div class="col-lg-3 col-md-6" id="exportPatientMasterList" style="cursor: pointer">
                         <div class="panel panel-primary">
                             <div class="panel-heading" style="height: 90px;">
@@ -62,6 +168,7 @@
                             
                         </div>
                     </div>
+                   
                     <div class="col-lg-3 col-md-6" id="exportPatientConsultationList" style="cursor: pointer">
                         <div class="panel panel-green">
                             <div class="panel-heading" style="height: 90px;">
@@ -108,7 +215,7 @@
                             
                         </div>
                     </div>
-                    <!-- Comment This if Local  -->
+                    
                     <div class="col-lg-3 col-md-6" id="exportPatientLabList" style="cursor: pointer">
                         <div class="panel panel-violet">
                             <div class="panel-heading" style="height: 90px;">
@@ -158,6 +265,7 @@
                             
                         </div>
                     </div> 
+                      -->
 				</div>	
 		        <!-- /dashboard content -->
 	        </div>
@@ -354,6 +462,10 @@
       };
       
     $(document).ready(function() {
+    	$(".nav-item-submenu").removeClass("nav-item-expanded nav-item-open");
+		$("#fileMaintenanceNav").addClass("nav-item-expanded nav-item-open");
+		$("#exportData2ndNav").addClass("active");
+    	
         let exportPatientMasterListButton = document.getElementById('exportPatientMasterList');
         let exportPatientConsultationListButton = document.getElementById('exportPatientConsultationList');
         let exportPatientMedicationListButton = document.getElementById('exportPatientMedicationList');
