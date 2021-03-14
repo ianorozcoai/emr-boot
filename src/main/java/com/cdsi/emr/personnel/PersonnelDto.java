@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
     private String email;
     private String status;
     private String userType;
+    private int staffCount;
     private long superiorId;
 
     private String credentials;
@@ -33,6 +34,8 @@ import lombok.NoArgsConstructor;
     private String specialization;
     private String ptrNumber;
     private String sNumber;
+
+    private String clinicLogoUrl;
 
     public String getFullName() {
         return this.firstName + " " + this.lastName;

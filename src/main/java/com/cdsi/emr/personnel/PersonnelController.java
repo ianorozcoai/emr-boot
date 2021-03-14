@@ -137,6 +137,7 @@ public class PersonnelController {
                 p.getEmail(),
                 p.getStatus(),
                 p.getUserType(),
+                p.getStaffCount(),
                 p.getSuperiorId(),
                 p.getCredentials(),
                 p.getLicenseNumber(),
@@ -144,7 +145,8 @@ public class PersonnelController {
                 p.getPtrNumber(),
                 p.getSNumber(),
                 null, //startDate
-                null //endDate
+                null, //endDate
+                p.getClinicLogoUrl()
                 );
     }
 }

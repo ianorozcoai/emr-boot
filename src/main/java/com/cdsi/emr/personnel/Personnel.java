@@ -57,6 +57,7 @@ import lombok.NoArgsConstructor;
     private String email;
     private String status = "ACTIVE";
     private String userType = "DOCTOR";  // "DOCTOR" or "STAFF"
+    private int staffCount = 0; // Number of doctor's staff that will use the system.
     private long staffSupervisorId;
 
     private String credentials;
@@ -67,6 +68,7 @@ import lombok.NoArgsConstructor;
     @PastOrPresent
     private LocalDate startDate = LocalDate.now();
     private LocalDate endDate = LocalDate.of(9999, 12, 31);
+    private String clinicLogoUrl;
 
     //@ElementCollection(fetch = FetchType.EAGER)
     //private Collection<String> roles;
