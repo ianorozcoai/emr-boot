@@ -39,6 +39,11 @@
             <form th:action="@{/emrpatientMedication}" th:object="${emrPatientMedicationForm}" method="post">
                 <input type="hidden" th:field="*{emrPatientMedication.id}" id="id"/>
                 <input type="hidden" name="emrPatientMedication.patient.id" th:value="${patient.id}" />
+                <datalist id="genericsDatalist">
+                    <option th:each="generics : ${emrGenericsLookupList}"
+                        th:value="${generics}"
+                        th:text="${generics}">Generic Name</option>
+                </datalist>
                 <div class="modal-body" id="medicineFormContainer">
                     <div class="form-group">
                         <div class="row">
@@ -55,12 +60,7 @@
                             <div class="row">
                                 <div class="col-sm-4">
                                     <label for="genericName0">Generic name</label>
-                                    <select id="genericName0" name="genericName" th:field="*{emrPatientMedicationItems[__${i.index}__].genericName}" class="form-control genericName" >
-                                        <option value=''>- Select Generic Name -</option>
-                                        <option th:each="generics : ${emrGenericsLookupList}"
-                                                th:value="${generics}"
-                                                th:text="${generics}">Generic Name</option>
-                                    </select>
+                                    <input list="genericsDatalist" id="genericName0" name="genericName" th:field="*{emrPatientMedicationItems[__${i.index}__].genericName}" class="form-control genericName" >
                                 </div>
 
                                 <div class="col-sm-4">
@@ -310,8 +310,8 @@
 					}
 
 					if (fieldName == "brandName") {
-						brandNameArr[rowNum] = fieldVal;
 						$("#modal_form_vertical").find("#genericName"+rowNum).trigger("change");
+						brandNameArr[rowNum] = fieldVal;
 					}
 					$("#modal_form_vertical").find("#"+rowId).val(fieldVal);
 				}
@@ -380,10 +380,7 @@
 								<div class="col-sm-4">
 									<div class="form-group">
 										<label for="emrPatientMedicationItems[`+i+`].genericName">Generic name</label>
-										<select name="emrPatientMedicationItems[`+i+`].genericName" id="genericName`+i+`" class="form-control genericName">
-											<option selected> - Select Generic Name - </option>
-											${options}
-										</select>
+										<input list="genericsDatalist" name="emrPatientMedicationItems[`+i+`].genericName" id="genericName`+i+`" class="form-control genericName">
 									</div>
 								</div>
 
@@ -391,10 +388,8 @@
 								<div class="col-sm-4">
 									<div class="form-group">
 										<label for="emrPatientMedicationItems[`+i+`].brandName">Brand name</label>
-										<select name="emrPatientMedicationItems[`+i+`].brandName" id="brandName`+i+`" class="form-control brandName">
-											<option disabled="disabled" selected> - Select Brand Name - </option>
-
-										</select>
+										<datalist id="brandNameDatalist${i}"></datalist>
+										<input list="brandNameDatalist${i}" name="emrPatientMedicationItems[`+i+`].brandName" id="brandName`+i+`" class="form-control brandName">
 									</div>
 								</div>
 
@@ -467,7 +462,7 @@
 				$.getJSON( contextRoot + "/api/generics/search/findByGenericName?genericName=" + genericName , {
 	                ajax : 'true'
 	            }, function(data) {
-	            	var html = '<option value=""> - Select Brand Name - </option>';
+	            	//var html = '<option value=""> - Select Brand Name - </option>';
 	                var brands = data._embedded.generics;
 
 	                var brandOptions = brands.reduce(
@@ -475,14 +470,17 @@
 	                	, ''
 	                	)
 
-	                html += brandOptions;
+	                //html += brandOptions;
 
-	                $("#brandName"+rowNum).html(html);
-
-	                console.log("---" + brandNameArr[rowNum]);
-	                if (brandNameArr[rowNum] != "") {
-	                	$("#modal_form_vertical").find("#brandName"+rowNum).val(brandNameArr[rowNum]);
-	                }
+	                //$("#brandName"+rowNum).html(html);
+                    $("#brandNameDatalist"+rowNum).empty().append(brandOptions);
+	                $("#brandName"+rowNum).focus();
+	                $("#brandName"+rowNum).val('');
+	                
+	                //console.log("---" + brandNameArr[rowNum]);
+	                //if (brandNameArr[rowNum] != "") {
+	                //	$("#modal_form_vertical").find("#brandName"+rowNum).val(brandNameArr[rowNum]);
+	                //}
 	            });
         });
 
