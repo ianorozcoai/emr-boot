@@ -21,6 +21,8 @@ import com.cdsi.emr.patient.Patient;
 import com.cdsi.emr.patient.PatientRepository;
 import com.cdsi.emr.personnel.Personnel;
 import com.cdsi.emr.util.UXMessage;
+import com.cdsi.emr.clinic.Clinic;
+import com.cdsi.emr.clinic.ClinicRepository;
 import com.cdsi.emr.hmo.HmoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -33,17 +35,20 @@ public class EmrConsultationController {
 	private PatientRepository patientRepository;
 	private HmoRepository hmoRepository;
 	private ObjectMapper mapper;
+	private ClinicRepository clinicRepository;
 	
 	public EmrConsultationController(
 			EmrConsultationRepository emrConsultationRepository
 			,PatientRepository patientRepository
 			,HmoRepository hmoRepository
 			,ObjectMapper mapper
+			,ClinicRepository clinicRepository
 			) {
 		this.emrConsultationRepository = emrConsultationRepository;
 		this.patientRepository = patientRepository;
 		this.hmoRepository = hmoRepository;
 		this.mapper = mapper;
+		this.clinicRepository = clinicRepository;
 	}
 	
 	@GetMapping("/hmoCollection")
@@ -208,16 +213,26 @@ public class EmrConsultationController {
 		//Temporary Fix
 		emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().plusDays(1));
 		
-		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		Optional<Patient> optionalPatient = this.patientRepository.findById(emrConsultation.getPatient().getId());
 		Patient patient = optionalPatient.get();
+		
+		Personnel loggedUser = (Personnel) auth.getPrincipal();		
+		
 		if (errors.hasErrors()) {
 			model.addAttribute("uxmessage", new UXMessage("ERRORCONSULT","Please check items marked in red."));
 			model.addAttribute("patient", patient);
 			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAll());
 			model.addAttribute("hmos", hmoRepository.findAll());
+			
+			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
+			model.addAttribute("allClinics", clinicList);
+			
 			return "emr/emr_patient_record";
 		}
+		
+		Optional<Clinic> optionalClinic = this.clinicRepository.findById(emrConsultation.getClinic().getId());
+		Clinic clinic = optionalClinic.orElseGet(Clinic::new);
+				
 		String diagnosisJSON = emrConsultation.getDiagnosisJSON();
 		if (diagnosisJSON == null || diagnosisJSON.isEmpty()) diagnosisJSON = "[]";
 		try {
@@ -230,6 +245,7 @@ public class EmrConsultationController {
 			model.addAttribute("", new UXMessage("ERRORCONSULT","Error converting JSON string."));
 			return "emr/emr_patient_record";
 		}
+		emrConsultation.setClinic(clinic);
 		emrConsultation.setPatient(patient); // set associated patient before saving
 		emrConsultation.setPersonnel(loggedUser);
 		this.emrConsultationRepository.save(emrConsultation);

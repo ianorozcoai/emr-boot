@@ -12,12 +12,15 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Data
-public class Clinic {
+@AllArgsConstructor @NoArgsConstructor
+public class Clinic {	
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

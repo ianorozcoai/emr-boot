@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.personnel.Personnel;
 import com.cdsi.emr.util.UXMessage;
 
 @Controller
@@ -27,8 +29,12 @@ public class ClinicController {
 	}
 	
 	@GetMapping("/emrclinics")
-	public String listAll(Model model) {
-		List<Clinic> clinicList = clinicRepository.findAll();
+	public String listAll(Model model, Authentication auth) {
+		Personnel doctor = (Personnel) auth.getPrincipal();
+		
+		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());		
+		
+		model.addAttribute("doctor", doctor);
 		model.addAttribute("clinics", clinicList);
 		model.addAttribute("clinic", new Clinic());
 		return "emr/emr_clinic_list";
@@ -41,13 +47,15 @@ public class ClinicController {
 			,Errors errors
 			,final RedirectAttributes redirect
 			,Model model
+			
 			) {
+		
 		if (errors.hasErrors()) {
 			List<Clinic> clinicList = clinicRepository.findAll();
 			
 			model.addAttribute("clinics", clinicList);
 			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-			return "emr/emr_clinics";
+			return "emr/emr_clinic_list";
 		}
 		
 		clinicRepository.save(clinic);

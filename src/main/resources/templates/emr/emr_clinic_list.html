@@ -38,6 +38,7 @@
 
 							<form id="addClinicForm" th:action="@{/emrclinics}" method="post" th:object="${clinic}" enctype="multipart/form-data">
 								<input type="hidden" th:field="*{id}" name="clinicId" id="clinicId">
+								<input type="hidden" name="doctorId" th:value="${doctor.id}">
 								<div class="modal-body">
 									<div class="form-group">
 										<div class="row">

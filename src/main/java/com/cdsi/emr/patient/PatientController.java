@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.clinic.Clinic;
+import com.cdsi.emr.clinic.ClinicRepository;
 import com.cdsi.emr.consultation.EmrConsultation;
 import com.cdsi.emr.consultation.EmrConsultationDiagnosis;
 import com.cdsi.emr.consultation.EmrConsultationRepository;
@@ -45,6 +47,7 @@ public class PatientController {
 	private PatientMedicalHistoryRepository patientMedicalHistoryRepository;
 	private ObjectMapper mapper;
 	private StorageService storageService;
+	private ClinicRepository clinicRepository;
 	
 	public PatientController (
 		PatientRepository patientRepository
@@ -55,6 +58,7 @@ public class PatientController {
 		,PatientMedicalHistoryRepository patientMedicalHistoryRepository
 		,ObjectMapper mapper
 		,StorageService storageService
+		,ClinicRepository clinicRepository
 	) {
 		this.patientRepository = patientRepository;
 		this.hmoRepository = hmoRepository;
@@ -64,6 +68,7 @@ public class PatientController {
 		this.patientMedicalHistoryRepository = patientMedicalHistoryRepository;
 		this.mapper = mapper;
 		this.storageService = storageService;
+		this.clinicRepository = clinicRepository;
 	}
 	
 	@GetMapping("/adminpatients")
@@ -86,7 +91,12 @@ public class PatientController {
 	}
 	
 	@GetMapping("/emrpatientrecord/{patientId}")
-	public String viewPatientRecordByPatientId(Model model, @PathVariable long patientId) {
+	public String viewPatientRecordByPatientId(Model model, @PathVariable long patientId, Authentication auth) {
+		
+		Personnel doctor = (Personnel) auth.getPrincipal();
+		
+		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+		
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();
 		model.addAttribute("patient", patient);
@@ -94,6 +104,7 @@ public class PatientController {
 		emrConsultation.setPatient(patient);
 		model.addAttribute("emrConsultation", emrConsultation);
 		List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientId(patientId);
+		
 		Consumer<EmrConsultation> fetchDiagnosis = ec -> {
 			List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();
 			try {
@@ -106,7 +117,7 @@ public class PatientController {
 		emrConsultations.forEach(fetchDiagnosis);
 		model.addAttribute("emrConsultations", emrConsultations);
 		model.addAttribute("hmos", hmoRepository.findAll());
-
+		model.addAttribute("allClinics", clinicList);
 		model.addAttribute("selectedConsultationId", 0);
 		
 		return "emr/emr_patient_record";

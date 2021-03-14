@@ -43,16 +43,22 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-6">
+							<div class="col-sm-4">
 								<label for="consultationDate">Consultation Date</label>
 								<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationDate')}" th:errors="*{consultationDate}"></span>
 								<input id="consultationDate" th:field="*{consultationDate}" placeholder="Consultation Date" type="date" class="form-control" >
 							</div>
-							<div class="col-sm-6">
+							<div class="col-sm-4">
 								<label for="paymentType">Payment Type</label>
 								<select th:field="*{paymentType}" id="paymentType" class="form-control">
 									<option value='CASH'>CASH</option>
 									<option value='HMO'>HMO</option>
+								</select>
+							</div>
+							<div class="col-sm-4">
+								<label for="clinic_id">Clinic</label>
+								<select id="clinic_id" name="clinic.id" class="form-control">
+									<option th:each="clinic : ${allClinics}" th:value="${clinic.id}" th:text="${clinic.name}">
 								</select>
 							</div>
 						</div>
@@ -60,7 +66,7 @@
 
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-6">
+							<div class="col-sm-8">
 								<label for="hmoName">HMO Name</label>
 								<select th:field="*{hmoName}" id="hmoName" class="form-control">
 									<option value=''>- Select Service Provider -</option>
@@ -70,7 +76,7 @@
 											th:selected="${hmo.hmoName==emrConsultation.hmoName}">HMO</option>
 								</select>
 							</div>
-							<div class="col-sm-6">
+							<div class="col-sm-4">
 								<label for="consultationFee">Consultation Fee</label>
 								<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></span>
 								<input id="consultationFee" th:field="*{consultationFee}" placeholder="Consultation Fee" type="text" class="form-control" >
@@ -250,6 +256,7 @@
 															th:data-id="${ec.id}"
 															th:data-consultationDate="${ec.consultationDate}"
 															th:data-paymentType="${ec.paymentType}"
+															th:data-clinic-id="${ec.clinic.id}"
 															th:data-hmoName="${ec.hmoName}"
 															th:data-hmoPaid="${ec.hmoPaid}"
 															th:data-consultationFee="${ec.consultationFee}"
@@ -415,6 +422,7 @@
 			$('#emrConsultationId').val(viewConsultationButton.dataset.id);
 			$('#consultationDate').val(viewConsultationButton.dataset.consultationdate);
 			$('#paymentType').val(viewConsultationButton.dataset.paymenttype);
+			$('#clinic_id').val(viewConsultationButton.dataset.clinicId);
 			$('#hmoName').val(viewConsultationButton.dataset.hmoname);
 			//$('#hmoPaid').val(viewConsultationButton.dataset.hmoPaid);
 			$('#consultationFee').val(viewConsultationButton.dataset.consultationfee);

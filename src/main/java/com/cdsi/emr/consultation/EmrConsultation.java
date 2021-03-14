@@ -16,10 +16,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.cdsi.emr.clinic.Clinic;
 import com.cdsi.emr.config.data.Auditable;
 import com.cdsi.emr.patient.Patient;
 import com.cdsi.emr.personnel.Personnel;
@@ -69,5 +71,10 @@ import lombok.NoArgsConstructor;
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "doctor_id")
 	Personnel personnel;
+	
+	
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+	@JoinColumn(name = "clinic_id")
+	Clinic clinic;
 	
 }
