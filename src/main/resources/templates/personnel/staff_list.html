@@ -25,7 +25,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
-				<form th:action="@{/personnels}" method="post" th:object="${personnel}">
+				<form th:action="@{/mystaffs}" method="post" th:object="${personnel}">
                     <input type="hidden" th:field="*{userType}" />
 					<div class="modal-body">
 						<div class="form-group">
@@ -118,7 +118,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
-				<form th:action="@{/personnels/edit}" method="post" th:object="${personnelDto}" class="editPersonnelForm">
+				<form th:action="@{/mystaffs/edit}" method="post" th:object="${personnelDto}" class="editPersonnelForm">
 				    <input type="hidden" th:field="*{id}" id="personnelId">
                     <input type="hidden" th:field="*{userType}" />
 					<div class="modal-body">
