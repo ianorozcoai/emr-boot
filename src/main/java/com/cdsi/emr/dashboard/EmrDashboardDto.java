@@ -21,4 +21,5 @@ public class EmrDashboardDto {
 	
 	private int totalOnqueue;
 			
+	private Date subscriptionValidUntil;
 }

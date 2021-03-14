@@ -122,6 +122,21 @@
 							</div>
 						</div>
 					</div>
+					
+					<div class="col-sm-6 col-xl-3">
+						<div class="card card-body bg-blue-400 has-bg-image">
+							<div class="media">
+								<div class="mr-3 align-self-center">
+									<i class="icon-calendar icon-3x opacity-75"></i>
+								</div>
+
+								<div class="media-body text-right">
+									<h3 class="mb-0" th:text="${#dates.format(emrDashboardDto.subscriptionValidUntil, 'MMM d, yyyy')}">Sept 9, 2020</h3>
+									<span class="text-uppercase font-size-xs">Subscription Valid Until</span>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>	
 
 				<!-- for EMR Only -->

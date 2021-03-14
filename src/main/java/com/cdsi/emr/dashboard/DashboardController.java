@@ -1,5 +1,6 @@
 package com.cdsi.emr.dashboard;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,7 @@ public class DashboardController {
         emrDashboardDto.setTotalServed(processed);
         emrDashboardDto.setTotalToday(todaysPatient);
         emrDashboardDto.setTotalOnqueue(onqueue);
+        emrDashboardDto.setSubscriptionValidUntil(Date.valueOf(loggedUser.getEndDate()));
 
         model.addAttribute("emrDashboardDto", emrDashboardDto);
         return "emr/emr_dashboard";
