@@ -126,6 +126,7 @@
 														<th>Date</th>
 														<th>Type</th>
 														<th>Notes</th>
+														<th><i class="fas fa-paperclip"></i></th>
 														<th class="text-center">Actions</th>
 													</tr>
 												</thead>
@@ -134,6 +135,10 @@
 														<td th:text="${#temporals.format(img.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
 														<td th:text="${img.emrPatientImagingType.imagingTypeName}">imagingTypeName</td>								
 														<td th:text="${img.remarks}">Notes</td>
+														<td width="5px;">																			
+															<span th:if="!${#lists.isEmpty(img.imgFileUrls)}"><i class="fas fa-paperclip"></i></span>
+															<span th:unless="${img.imgFileUrls != ''}">&nbsp;</span>
+														</td>
 														<td class="text-center">
 															<button th:id="|editImgButton${img.id}|" class="btn btn-primary"
 															    data-toggle="modal" data-target="#modal_form_vertical"

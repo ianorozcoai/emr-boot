@@ -139,6 +139,7 @@
 														<th>Date</th>
 														<th>Vaccine Name</th>
 														<th>Notes</th>
+														<th><i class="fas fa-paperclip"></i></th>
 														<th class="text-center">Actions</th>
 													</tr>
 												</thead>
@@ -147,6 +148,10 @@
 														<td th:text="${#temporals.format(vaccination.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>								
 														<td th:text="${vaccination.vaccineName}"></td>
 														<td th:text="${vaccination.remarks}"></td>
+														<td width="5px;">																			
+															<span th:if="!${#lists.isEmpty(vaccination.vaccineFileUrls)}"><i class="fas fa-paperclip"></i></span>
+															<span th:unless="${vaccination.vaccineFileUrls != ''}">&nbsp;</span>
+														</td>
 														<td class="text-center" width="40px;">
 															<button th:id="|editVaccinationButton${vaccination.id}|" type="button" class="showVaccinationDetails btn btn-primary" 
 																th:data-row-id="${vaccination.id}"

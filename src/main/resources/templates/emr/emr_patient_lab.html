@@ -146,6 +146,7 @@
 																		<th>Result</th>
 																		<th>Type</th>
 																		<th>Notes</th>
+																		<th><i class="fas fa-paperclip"></i></th>
 																		<th class="text-center">Actions</th>
 																	</tr>
 																</thead>
@@ -155,6 +156,10 @@
 																		<td th:text="${lab.labResult}">labResult</td>
 																		<td th:text="${lab.emrPatientLaboratoryType.labTypeName}">labTypeName</td>
 																		<td th:text="${lab.remarks}">Remarks</td>
+																		<td width="5px;">																			
+																			<span th:if="!${#lists.isEmpty(lab.labFileUrls)}"><i class="fas fa-paperclip"></i></span>
+																			<span th:unless="${lab.labFileUrls != ''}">&nbsp;</span>
+																		</td>
 																		<td class="text-center">
 																			<button th:id="|editLabButton${lab.id}|" class="btn btn-primary"
 																			    data-toggle="modal" data-target="#modal_form_vertical"
