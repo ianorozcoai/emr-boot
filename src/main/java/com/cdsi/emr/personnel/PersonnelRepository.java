@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @RepositoryRestResource
 public interface PersonnelRepository extends JpaRepository<Personnel, Long>{
     Optional<Personnel> findByUsername(String username);
-    Optional<Personnel> findByEmail(String email);
+    //Optional<Personnel> findByEmail(String email);
     Optional<Personnel> findByUsernameOrEmail(String username, String email);
     Set<Personnel> findAllByUserType(String userType);
     List<Personnel> findByIdIn(List<Long> doctorIds);

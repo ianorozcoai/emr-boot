@@ -30,8 +30,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "unique_username_personnel", columnNames = "username"),
-        @UniqueConstraint(name = "unique_email_personnel", columnNames = "email")
+        @UniqueConstraint(name = "unique_username_personnel", columnNames = "username")
 })
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
