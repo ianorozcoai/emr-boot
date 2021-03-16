@@ -55,6 +55,11 @@ public class PersonnelController {
         return "emr/emr_doctor_profile";
     }
 
+    @GetMapping("/cliniclogo")
+    public String updateClinicLogo() {
+        return "admin/cliniclogo";
+    }
+
     @PostMapping("/personnels")
     public String savePersonnel(
             @Valid Personnel personnel
