@@ -43,7 +43,7 @@ public class EMRPatientImagingController {
 	
 	@GetMapping("/emrpatientImaging/{patientId}")
 	public String listAll(Model model, @PathVariable long patientId) {
-		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedAsc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientImagingType> emrPatientImagingTypeList = emrPatientImagingTypeRepository.findAll();
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();

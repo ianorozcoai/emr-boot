@@ -53,7 +53,7 @@ public class EMRPatientLaboratoryController {
 	public String listAllLabByAdmissionId(Model model, @PathVariable long admissionId) {
 		
 		//Change This
-		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientId(admissionId);
+		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(admissionId);
 		Optional<Patient> optionalPatient = patientRepository.findById(admissionId);
 		Patient patient = optionalPatient.get();
 		
@@ -70,7 +70,7 @@ public class EMRPatientLaboratoryController {
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 		
-		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findAllByPatientIdOrderByDateCreatedAsc(patientId);
+		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientLaboratoryType> emrPatientLaboratoryTypeList = emrPatientLaboratoryTypeRepository.findAll();
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();

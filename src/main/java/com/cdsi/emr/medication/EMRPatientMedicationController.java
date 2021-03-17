@@ -43,7 +43,7 @@ public class EMRPatientMedicationController {
 		Patient patient = optionalPatient.get();
 		model.addAttribute("patient", patient);
 
-		List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientId(patientId);
+		List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<String> emrGenericsLookupList = emrGenericsLookupRepository.findDistinctByGenericName();
 
 		EMRPatientMedicationForm emrPatientMedicationForm = new EMRPatientMedicationForm();

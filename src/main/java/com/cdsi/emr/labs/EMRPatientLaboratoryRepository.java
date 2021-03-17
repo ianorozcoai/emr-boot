@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(collectionResourceRel = "laboratories", path = "patientLab")
 public interface EMRPatientLaboratoryRepository extends JpaRepository<EMRPatientLaboratory, Long> {
-    List<EMRPatientLaboratory> findAllByPatientIdOrderByDateCreatedAsc(long patientId);
+    List<EMRPatientLaboratory> findByPatientIdOrderByDateCreatedDesc(long patientId);
     List<EMRPatientLaboratory> findByPatientId(long patientId);
 
     @Query(nativeQuery = true,

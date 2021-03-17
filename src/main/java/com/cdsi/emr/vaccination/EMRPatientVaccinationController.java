@@ -3,11 +3,8 @@ package com.cdsi.emr.vaccination;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.cdsi.emr.fileupload.FileDTO;
 import com.cdsi.emr.fileupload.StorageService;
 import com.cdsi.emr.patient.Patient;
@@ -45,7 +41,7 @@ public class EMRPatientVaccinationController {
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.orElseGet(() -> new Patient());
 		model.addAttribute("patient", patient);
-		List<EMRPatientVaccination> emrPatientVaccinationList = emrPatientVaccinationRepository.findByPatientId(patientId);
+		List<EMRPatientVaccination> emrPatientVaccinationList = emrPatientVaccinationRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		model.addAttribute("emrPatientVaccinationList", emrPatientVaccinationList);
 		EMRPatientVaccination emrPatientVaccination = new EMRPatientVaccination();
 		model.addAttribute("emrPatientVaccination", emrPatientVaccination);

@@ -27,7 +27,7 @@ public class MedicalReportsController {
 	
 	@GetMapping("/emrPatientMedicalCertificate/{patientId}")
 	public String listAll(Model model, @PathVariable long patientId) {
-		List<EMRMedicalCertificate> emrMedicalCertificateList = emrMedicalCertificateRepository.findAllByPatientId(patientId);
+		List<EMRMedicalCertificate> emrMedicalCertificateList = emrMedicalCertificateRepository.findByPatientIdOrderByDateRequestedDesc(patientId);
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();
 		model.addAttribute("patient", patient);
@@ -45,7 +45,7 @@ public class MedicalReportsController {
 			,Model model
 			) {
 		if (errors.hasErrors()) {
-			List<EMRMedicalCertificate> emrMedicalCertificateList = emrMedicalCertificateRepository.findAllByPatientId(emrMedicalCertificate.getPatient().getId());
+			List<EMRMedicalCertificate> emrMedicalCertificateList = emrMedicalCertificateRepository.findByPatientIdOrderByDateRequestedDesc(emrMedicalCertificate.getPatient().getId());
 			Optional<Patient> optionalPatient = patientRepository.findById(emrMedicalCertificate.getPatient().getId());
 			Patient patient = optionalPatient.get();
 			model.addAttribute("patient", patient);

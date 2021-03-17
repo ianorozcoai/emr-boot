@@ -10,7 +10,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface EMRPatientImagingRepository extends JpaRepository<EMRPatientImaging, Long> {
 
     List<EMRPatientImaging> findByPatientId(long patientId);
-    List<EMRPatientImaging> findByPatientIdOrderByDateCreatedAsc(long patientId);
+    List<EMRPatientImaging> findByPatientIdOrderByDateCreatedDesc(long patientId);
 
     @Query(nativeQuery = true,
             value= "select * from emrpatient_imaging where patient_id in ?1")
