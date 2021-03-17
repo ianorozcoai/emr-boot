@@ -54,9 +54,9 @@
 								<div id="page-wrapper">
                                     <div class="container bootstrap snippet">
                         			    <div class="col-sm-3">
-                                            <form id="fileUploadForm" th:action="@{/file/upload/cliniclogo}" th:object="${#authentication.principal}" method="post" enctype="multipart/form-data">
+                                                    <form id="fileUploadForm">
                         			    	<div class="text-center">
-                            				    <img th:src="@{*{clinicLogoUrl}}" class="avatar img-thumbnail" alt="avatar" id="photoPreview">
+                            				    <img th:src="@{${#authentication.principal.clinicLogoUrl}}" class="avatar img-thumbnail" alt="avatar" id="photoPreview">
                             				    <h6>Upload a different photo...</h6>
                             				    <input type="file" name="clinicLogo" id="clinicLogo" class="text-center center-block file-upload" />
                         					</div>
@@ -64,11 +64,11 @@
                         					<div class="row">
                         					<div class="form-group" style="margin-top: 20px;">
                         						<div class="col-xs-12">
-                        							<button type="submit" id="saveClinicLogoButton" class="btn btn-block btn-success">Save Clinic Logo</button>								
+                            							<button type="submit" id="saveClinicLogoButton" class="btn btn-block btn-success">Save Clinic Logo</button>								
                         						</div>
                         					</div>
                         					</div>					
-                                            </form>
+                                                    </form>
                         			    </div>
                         			    <!-- END (Profile Left) col-sm-3 -->
                         			    
@@ -152,40 +152,40 @@
 	        }, false); */
 	        const profilePhoto = document.getElementById('clinicLogo');
 	        profilePhoto.addEventListener('change', previewImage, false);
-	        
-		    const uploadUrl = /*[[${#request.getContextPath() + '/file/upload/cliniclogo'}]]*/'';
+
+	        const uploadUrl = /*[[${#request.getContextPath() + '/file/upload/cliniclogo'}]]*/'';
 		    const fileUploadForm = document.getElementById('fileUploadForm');
-        	console.log(fileUploadForm.action)
-	        fileUploadForm.onsubmit = async (e) => {
+	        fileUploadForm.onsubmit = (e) => {
 	        	e.preventDefault();
 	        	let fd = new FormData(fileUploadForm);
-	        	let response = await fetch(uploadUrl, {
+	        	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
+	        	let response = fetch(uploadUrl, {
 	        		method: 'POST',
 	        		body: fd
-	        	});
-	        	
-	        	if(response.ok){
-	        		swal({
-		    			title: "Success!",
-		    			text: "Clinic Logo successfully updated.",
-		    			icon: "success",
-		    			buttons: false,
-		                timer: 2000,
-		    		});
-	        	} else {
-	        		swal({
+	        	})
+	        	.then(res => res.json())
+	        	.then(data => {
+	        	    console.log(data)
+	        	    swal({
+	        	    	title: "Success!",
+	        	    	text: "Clinic Logo successfully updated.",
+	        	    	icon: "success",
+	        	    	buttons: false,
+	        	        timer: 2000,
+	        	    });
+	        	})
+	        	.catch(err => {
+	        	    swal({
 		    			title: "Upload Failure!",
 		    			text: "Clinic Logo not saved.",
 		    			icon: "error",
 		    			buttons: false,
 		                timer: 2000,
 		    		});
-	        	}
-	            console.log('File upload is done.')
+	        	});
 	        };	        
 
 	        const saveClinicLogoButton = document.getElementById('saveClinicLogoButton');
-	        saveClinicLogoButton.addEventListener('click', () => fileUploadForm.submit());
 	        saveClinicLogoButton.disabled = true;
             
             function previewImage() {
