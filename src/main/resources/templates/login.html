@@ -174,6 +174,32 @@
                 }
             });
         });
+        
+        
+        $(document).ready(function () {
+	        let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';	    	
+	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Profile successfully saved.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+        });
     </script>
 </body>
 </html>

@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] PUBLIC = new String[] 
-			{"/login","/logout","/error"};
+			{"/login","/logout","/error", "/registration"};
 	private static final String[] ASSETS = new String[]
 			{"/assets/**","/global_assets/**",
 					"/admin_js/**","/parent_css/**","/parent_js/**",
