@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.cdsi.emr.fileupload.FileDTO;
 import com.cdsi.emr.fileupload.FileInputInitialPreviewConfig;
 import com.cdsi.emr.fileupload.FileInputResponse;
@@ -176,12 +173,46 @@ public class EMRPatientLaboratoryController {
 			,final RedirectAttributes redirect
 			,Model model
 			) {
-		if (errors.hasErrors()) {
-			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-			return "/emr_patient_lab";
+		List<String> labFileUrls = new ArrayList<>();
+        long patientId = emrPatientLaboratory.getPatient().getId();
+        if (errors.hasErrors()) {
+	        List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+	        List<EMRPatientLaboratoryType> emrPatientLaboratoryTypeList = emrPatientLaboratoryTypeRepository.findAll();
+	        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+	        Patient patient = optionalPatient.get();
+	        model.addAttribute("patient", patient);
+	        model.addAttribute("emrPatientLaboratoryList", emrPatientLaboratoryList);
+	        model.addAttribute("allLaboratoryTypes", emrPatientLaboratoryTypeList);
+	        model.addAttribute("emrPatientLaboratory", new EMRPatientLaboratory());
+	        model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+			return "emr/emr_patient_lab";
 		}
-		emrPatientLaboratoryRepository.save(emrPatientLaboratory);
-		return "redirect:/emrpatientLaboratory";
+		
+	    MultipartFile[] files = emrPatientLaboratory.getLabFiles();
+        if(files.length > 0 && files[0].getOriginalFilename().isEmpty()) {
+            EMRPatientLaboratory emrImg = emrPatientLaboratoryRepository.findById(emrPatientLaboratory.getId())
+                    .orElseGet(() -> new EMRPatientLaboratory());
+            labFileUrls = emrImg.getLabFileUrls();
+        } else {
+            for (int i = 0; i < files.length; i++) {
+                try {
+                    String fileExt = files[i].getOriginalFilename().substring(files[i].getOriginalFilename().lastIndexOf("."));
+                    String fileName = "patient_labfile_" + patientId + '_' + i + "_" + System.currentTimeMillis() + fileExt;
+                    FileDTO fileDTO = storageService.uploadFile(files[i], fileName);
+                    labFileUrls.add(fileDTO.getDownloadUri());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        emrPatientLaboratory.setLabFileUrls(labFileUrls);
+        Patient patient = patientRepository.findById(patientId).orElseGet(() -> new Patient());
+        emrPatientLaboratory.setPatient(patient);
+        emrPatientLaboratoryRepository.save(emrPatientLaboratory);
+        
+        redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Files successfully uploaded."));
+		return "redirect:/emrpatientLaboratory/" + patientId;
 	}
 	
 	@GetMapping("/emrpatientLaboratory/{id}/json")

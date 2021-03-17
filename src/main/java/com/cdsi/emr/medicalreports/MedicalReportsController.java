@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -39,7 +40,7 @@ public class MedicalReportsController {
 	
 	@PostMapping("/emrPatientMedicalCertificate")
 	public String saveEMRPatientMedicalCertificate(
-			@Valid EMRMedicalCertificate emrMedicalCertificate
+			@Valid @ModelAttribute("emrMedicalCertificate") EMRMedicalCertificate emrMedicalCertificate
 			,Errors errors
 			,final RedirectAttributes redirect
 			,Model model

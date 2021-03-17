@@ -33,7 +33,7 @@
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 
-							<form id="uploadImgForm" th:action="@{/upload/emrpatientImaging}" method="post" enctype="multipart/form-data" th:object="${EMRPatientImaging}">
+							<form id="uploadImgForm" th:action="@{/emrpatientImaging}" method="post" enctype="multipart/form-data" th:object="${EMRPatientImaging}">
 							    <input type="hidden" name="id" id="id" th:value="${id}" />
 							    <input type="hidden" name="patient.id" th:value="${patient.id}" />
 								<div class="modal-body">
@@ -44,8 +44,9 @@
 												<input th:field="*{dateCreated}" placeholder="Date" type="datetime-local" class="form-control" >
 											</div>	
 											<div class="col-sm-6">
-												<label for="laboratory_type_id">Type</label>
-												<select id="imaging_type_id" name="emrPatientImagingType.id" class="form-control">
+												<label for="imaging_type_id">Type</label>
+												<span class="validationError" th:if="${#fields.hasErrors('emrPatientImagingType')}" th:errors="*{emrPatientImagingType}"></span>
+												<select id="imaging_type_id" name="emrPatientImagingType.id" class="form-control" th:field="*{emrPatientImagingType}">
 							                        <option value="0">- Select Imaging Type -</option>
 							                        <option th:each="imagingType : ${allImagingTypes}" th:value="${imagingType.id}" th:text="${imagingType.imagingTypeName}">
 							                    </select>
@@ -56,6 +57,7 @@
 										<div class="row">       
 											<div class="col-sm-12">
 												<label for="remarks">Notes</label>
+												<span class="validationError" th:if="${#fields.hasErrors('remarks')}" th:errors="*{remarks}"></span>
 												<textarea th:field="*{remarks}" class="form-control instructions" rows="4"></textarea>
 											</div>                    
 							            </div>
@@ -187,27 +189,32 @@
 	<script th:inline="javascript">
 	    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/'';
 	    let uploadImgForm = document.getElementById('uploadImgForm');
-	    uploadImgForm.addEventListener('submit', (e) => {
-	    	e.preventDefault();
-	    	
-	    	let promise = fetch(uploadImgForm.action, {
-	    		method: 'POST',
-	    		body: new FormData(uploadImgForm)
-	    	})
-	    	.then(res => res.json())
-	    	.then(data => {
-	    		swal({
+	    let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+		let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+		
+		$(document).ready(function() {
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				$('#id').val(0);
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
 					title: "Success!",
 					text: "Files successfully uploaded.",
 					icon: "success",
 					buttons: false,
 		            timer: 2000,
-				})
-				.then(() => window.location.reload());	
-	    	})
-	    	.catch(err => console.log(err));	    	
-	    });
-	    
+				});
+			}
+		});
+		
 	    function editPatientImaging(id) {
 	        let editLabButton = document.getElementById('editImgButton'+id);
 	    	let lab = fetch(contextRoot + '/api/patientImaging/'+id)
@@ -217,6 +224,7 @@
 	    	    	document.getElementById('id').value = data.id;
 	    	    	document.getElementById('dateCreated').value = data.dateCreated;
 	    	    	document.getElementById('remarks').value = data.remarks;
+	    	    	document.getElementById('imaging_type_id').value = data.emrPatientImagingType.id;
 
 	    	    	let fiOpts = $('#imgFiles').data('fileinput');
 	    	    	$('#imgFiles').fileinput('destroy').fileinput({
@@ -412,6 +420,7 @@
         	$('#id').val(0);
         	$('#dateCreated').val(moment(new Date()).format('YYYY-MM-DDThh:mm'));
         	//$('#dateCreated').val(new Date().toISOString().substring(0,16));
+        	$('#imaging_type_id').val(0);
         	$('#remarks').val('');
         	$('#imgFiles').fileinput('refresh');
         });

@@ -61,12 +61,46 @@ public class EMRPatientImagingController {
 			,RedirectAttributes redirect
 			,Model model
 			) {
+		List<String> imgFileUrls = new ArrayList<>();
+	    long patientId = emrPatientImaging.getPatient().getId();
+	    
 		if (errors.hasErrors()) {
-			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-			return "/emr_patient_imaging";
+			List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+	        List<EMRPatientImagingType> emrPatientImagingTypeList = emrPatientImagingTypeRepository.findAll();
+	        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+	        Patient patient = optionalPatient.get();
+	        model.addAttribute("patient", patient);
+	        model.addAttribute("emrPatientImagingList", emrPatientImagingList);
+	        model.addAttribute("allImagingTypes", emrPatientImagingTypeList);
+	        model.addAttribute(new EMRPatientImaging());
+	        model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+	        return "emr/emr_patient_imaging";
 		}
-		emrPatientImagingRepository.save(emrPatientImaging);
-		return "redirect:/emrpatientImaging";
+		
+		MultipartFile[] files = emrPatientImaging.getImgFiles();
+        if(files.length > 0 && files[0].getOriginalFilename().isEmpty()) {
+            EMRPatientImaging emrImg = emrPatientImagingRepository.findById(emrPatientImaging.getId())
+                    .orElseGet(() -> new EMRPatientImaging());
+            imgFileUrls = emrImg.getImgFileUrls();
+        } else {
+            for (int i = 0; i < files.length; i++) {
+                try {
+                    String fileExt = files[i].getOriginalFilename().substring(files[i].getOriginalFilename().lastIndexOf("."));
+                    String fileName = "patient_imgfile_" + patientId + '_' + i + "_" + System.currentTimeMillis() + fileExt;
+                    FileDTO fileDTO = storageService.uploadFile(files[i], fileName);
+                    imgFileUrls.add(fileDTO.getDownloadUri());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        emrPatientImaging.setImgFileUrls(imgFileUrls);
+        Patient patient = patientRepository.findById(patientId).orElseGet(() -> new Patient());
+        emrPatientImaging.setPatient(patient);
+        emrPatientImagingRepository.save(emrPatientImaging);
+		
+		redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Files successfully uploaded."));
+		return "redirect:/emrpatientImaging/" + patientId;
 	}
 	
 	@PostMapping("/upload/emrpatientImaging")

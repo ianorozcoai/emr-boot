@@ -61,7 +61,7 @@ public class EMRPatientProcedureController {
 			) {
 		if (errors.hasErrors()) {
 			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-			return "/emr_patient_procedure";
+			return "emr/emr_patient_procedure";
 		}
 		emrPatientProcedureRepository.save(emrPatientProcedure);
 		return "redirect:/emrpatientProcedure";

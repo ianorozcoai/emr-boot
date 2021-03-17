@@ -31,7 +31,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
-				<form id="uploadLabsForm" th:action="@{/upload/emrpatientLaboratory}" method="post" enctype="multipart/form-data">
+				<form id="uploadLabsForm" th:action="@{/emrpatientLaboratory}" method="post" enctype="multipart/form-data" th:object="${emrPatientLaboratory}">
 				    <input type="hidden" name="id" id="id" th:value="${id}" />
 				    <input type="hidden" name="patient.id" th:value="${patient.id}" />
 					<div class="modal-body">
@@ -50,7 +50,8 @@
 								</div>
 								<div class="col-sm-4">
 									<label for="labResult">Lab Result</label>
-									<input id="labResult" name="labResult" placeholder="Lab Result" type="text" class="form-control" >
+									<span class="validationError text-danger" th:if="${#fields.hasErrors('labResult')}" th:errors="*{labResult}"></span>
+									<input id="labResult" name="labResult" placeholder="Lab Result" type="text" class="form-control" th:field="*{labResult}">
 								</div>									
 				            </div>
 						</div>				
@@ -268,26 +269,31 @@
 	<script th:inline="javascript">
 	    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/'';
 	    let uploadLabsForm = document.getElementById('uploadLabsForm');
-	    uploadLabsForm.addEventListener('submit', (e) => {
-	    	e.preventDefault();
-	    	
-	    	let promise = fetch(contextRoot + '/upload/emrpatientLaboratory', {
-	    		method: 'POST',
-	    		body: new FormData(uploadLabsForm)
-	    	})
-	    	.then(res => res.json())
-	    	.then(data => {
-	    		console.log(data);
-	    		swal({
+	    let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+		let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+		
+		$(document).ready(function() {
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				$('#id').val(0);
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
 					title: "Success!",
 					text: "Files successfully uploaded.",
 					icon: "success",
 					buttons: false,
 		            timer: 2000,
-				}).then(() => window.location.reload());	
-	    	})
-	    	.catch(err => console.log(err));	    	
-	    });
+				});
+			}
+		});
 	    
 	    function editPatientLaboratory(id) {
 	        let editLabButton = document.getElementById('editLabButton'+id);
