@@ -79,7 +79,7 @@ public class ReportsController {
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RX_LOGO", rxLogo);
-		map.put("COMPANY_LOGO", hospitalLogo);
+		map.put("COMPANY_LOGO", doctor.getClinicLogoUrl());
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
 		map.put("SPECIALIZATION", doctor.getSpecialization());
@@ -157,10 +157,10 @@ public class ReportsController {
 		
 		response.setContentType("application/pdf");
 		
-		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "com/cdsi/ehr/emr/reports/PrescriptionReport.jasper");
+		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/PrescriptionReport.jasper");
 		
 		if(emrPatientMedication.getEmrPatientMedicationItems() != null && emrPatientMedication.getEmrPatientMedicationItems().size() > 3){
-			reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "com/cdsi/ehr/emr/reports/PrescriptionReport2Page.jasper");
+			reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/PrescriptionReport2Page.jasper");
 		}		
 		
 		if(reportStream == null){
@@ -259,7 +259,7 @@ public class ReportsController {
 		
 		response.setContentType("application/pdf");
 		
-		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "com/cdsi/ehr/emr/reports/MedicalCertReport.jasper");
+		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/MedicalCertReport.jasper");
 				
 		if(reportStream == null){
 			//logger.debug("reportStream is NULL");
