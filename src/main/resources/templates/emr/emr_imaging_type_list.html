@@ -50,7 +50,7 @@
 							<h5 class="modal-title">Imaging Type Details</h5>
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 						</div>
-						<form th:action="@{/patientImagingType}" method="post" class="form-horizontal" th:object="${emrPatientImagingType}">
+						<form th:action="@{/patientImagingTypes}" method="post" class="form-horizontal" th:object="${emrPatientImagingType}">
 							<input type="hidden" th:field="*{id}" id="id"/>
 							<div class="modal-body">
 								<div class="form-group row">
