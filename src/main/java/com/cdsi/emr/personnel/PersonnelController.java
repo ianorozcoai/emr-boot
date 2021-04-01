@@ -3,10 +3,12 @@ package com.cdsi.emr.personnel;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -14,26 +16,24 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.fileupload.FileDTO;
+import com.cdsi.emr.fileupload.StorageService;
 import com.cdsi.emr.util.UXMessage;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
+@Controller @AllArgsConstructor
 public class PersonnelController {
 
     private PersonnelRepository personnelRepository;
     private PasswordEncoder passwordEncoder;
-
-    public PersonnelController(
-            PersonnelRepository personnelRepository
-            ,PasswordEncoder passwordEncoder
-            ) {
-        this.personnelRepository = personnelRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private StorageService storageService;
 
     @GetMapping("/personnels")
     public String listAll(Model model) {
@@ -53,6 +53,37 @@ public class PersonnelController {
 
         model.addAttribute("personnelDto", doctor);
         return "emr/emr_doctor_profile";
+    }
+
+    @GetMapping("/emrDoctorProfilePhoto")
+    public String getDoctorProfilePhoto(Model model) {
+        return "emr/emr_doctor_profile_photo";
+    }
+
+    @PostMapping("/emr/profilephoto")
+    @Transactional
+    public String saveDoctorProfilePhoto(@RequestParam MultipartFile photoFile
+            ,@AuthenticationPrincipal Personnel doctor
+            ,final RedirectAttributes redirect
+            ) {
+        if(photoFile == null || photoFile.getOriginalFilename().isEmpty()) {
+            if(doctor.getProfilePhotoUrl() == null || doctor.getProfilePhotoUrl().isEmpty()) {
+                doctor.setProfilePhotoUrl(null);
+            }
+            redirect.addFlashAttribute("uxmessage", new UXMessage("ERROR", "Profile Photo is blank."));
+        } else {
+            try {
+                String fileExt = photoFile.getOriginalFilename().substring(photoFile.getOriginalFilename().lastIndexOf("."));
+                String fileName = "doctor_profile_photo_" + doctor.getFirstName() + "_"+ doctor.getLastName() + "_" + System.currentTimeMillis() + fileExt;
+                FileDTO fileDTO = this.storageService.uploadFile(photoFile, fileName);
+                doctor.setProfilePhotoUrl(fileDTO.getDownloadUri());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            this.personnelRepository.updateProfilePhotoUrl(doctor.getId(), doctor.getProfilePhotoUrl());
+            redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Profile Photo updated successfully."));
+        }
+        return "redirect:/emrDoctorProfilePhoto";
     }
 
     @GetMapping("/cliniclogo")

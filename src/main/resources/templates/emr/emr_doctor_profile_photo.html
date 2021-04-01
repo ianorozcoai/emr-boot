@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+	
+	<title>EHR - EMR</title>	
+	
+	
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+	<!-- /Main Navbar -->
+					
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->		
+		
+		
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			
+			<!-- Content area -->
+			<div class="content pt-0">			
+
+				<div class="row">
+					<div class="col-xl-12">		
+					
+						<!-- Profile info -->
+							<div class="card">
+								<div class="card-header header-elements-inline">
+									<h5 class="card-title">Doctor Profile Photo</h5>
+									
+								</div>
+
+								<div class="card-body">
+									<form th:action="@{/emr/profilephoto}" method="post" enctype="multipart/form-data">
+									    
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-6">													    
+									                    <label for="photoFile" th:text="|Profile Photo for ${#authentication.principal.fullName}|"></label>
+                                                        <input type="file" id="photoFile" name="photoFile" />
+									                </div>
+									            </div>
+											</div>
+										</div>
+					
+										<div class="modal-footer">											
+											<button type="submit" class="btn bg-primary">Save Photo</button>
+										</div>
+									</form>
+								</div>
+							</div>
+							<!-- /profile info -->				
+					
+					</div>
+				</div>
+				
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+			<!-- Main sidebar -->
+			<div th:replace="fragments/common::emr-footer"></div>
+			<!-- /Main sidebar -->
+			
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+	
+	<script th:inline="javascript">
+	    
+	    $(document).ready(function() {     
+	    	
+	    	$(".nav-link").removeClass("active");
+			$("#emrDoctorProfileNav").addClass("active");
+	    	
+	    	let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';	    	
+	    	let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Profile Photo updated successfully.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+	    });
+    
+    </script>
+</body>
+</html>

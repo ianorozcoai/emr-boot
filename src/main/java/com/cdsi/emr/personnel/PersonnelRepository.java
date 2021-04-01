@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,7 @@ public interface PersonnelRepository extends JpaRepository<Personnel, Long>{
     List<Personnel> findByIdIn(List<Long> doctorIds);
     Set<Personnel> findAllByStatusAndUserTypeIn(String status, String[] userTypes);
     List<Personnel> findAllByStaffSupervisorId(long id);
+
+    @Modifying @Query("update Personnel p set p.profilePhotoUrl = :profilePhotoUrl where p.id = :id")
+    void updateProfilePhotoUrl(long id, String profilePhotoUrl);
 }
