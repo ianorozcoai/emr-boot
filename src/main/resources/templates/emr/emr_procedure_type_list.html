@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+    
+	<title>EHR - Electronic Hospital Records</title>
+
+
+</head>
+
+<body>
+
+	<!-- Main Navbar -->
+	<div th:replace="fragments/common::emr-main-navbar"></div>
+	<!-- /Main Navbar -->
+					
+	<!-- Page content -->
+	<div class="page-content">	
+	
+		<!-- Main sidebar -->
+		<div th:replace="fragments/common::emr-main-sidebarnav"></div>
+		<!-- /Main sidebar -->	
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Page header -->
+			<div class="page-header">
+				<div class="page-header-content header-elements-md-inline">
+					<div class="page-title d-flex">
+						<h4><span class="font-weight-semibold">Procedure Types</span></h4>
+						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+					</div>					
+				</div>
+			</div>
+			<!-- /page header -->
+			
+			
+			<!-- Vertical form modal -->
+			<div id="modal_form_vertical" class="modal fade" tabindex="-1" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-primary">
+							<h5 class="modal-title">Procedure Type Details</h5>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<form th:action="@{/patientProcedureType}" method="post" class="form-horizontal" th:object="${emrPatientProcedureType}">
+							<input type="hidden" th:field="*{id}" id="id"/>
+							<div class="modal-body">
+								<div class="form-group row">
+									<div class="col-sm-12">
+										<label class="col-form-label">Procedure Type Name</label>
+										<span class="validationError text-danger" th:if="${#fields.hasErrors('procedureTypeName')}" th:errors="*{procedureTypeName}"></span>
+										<input type="text" th:field="*{procedureTypeName}" placeholder="Procedure Type Name" class="form-control">
+									</div>
+								</div>										
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+								<button type="submit" class="btn bg-primary">Submit form</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- /Vertical form modal -->
+
+
+			<!-- Content area -->
+			<div class="content pt-0">
+
+				<!-- Dashboard content -->
+				<div class="row">
+					<div class="col-xl-12">
+						<!-- Basic datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline">
+								<h5 class="card-title">Procedure Type List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                		
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add Procedure Type</button>				                		
+				                	</div>
+			                	</div>
+							</div>							
+		
+							<table class="table datatable-basic" id="dataTables-departmentList" >
+								<thead>
+									<tr>
+										<th>Procedure Type Name</th>									
+										<th class="text-center">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="procedureType : ${emrPatientProcedureTypeList}">
+										<tr>
+											<td th:text="${procedureType.procedureTypeName}">Procedure Type Name</td>
+											<td class="text-center" width="180px;">
+												<button id="editProcedureTypeButton" type="button" class="showProcedureTypeDetails btn btn-primary" 
+													th:data-row-procedureTypeName="${procedureType.procedureTypeName}"													
+													th:data-row-id="${procedureType.id}"
+													data-toggle="modal" data-target="#modal_form_vertical">View Record</button>
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+						<!-- /basic datatable -->					
+					</div>
+				</div>
+				
+				
+				
+				<!-- /dashboard content -->
+
+			</div>
+			<!-- /content area -->
+
+
+			<!-- Footer -->
+			<div th:replace="fragments/common::footer"></div>
+			<!-- /Footer -->    
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+	<script th:inline="javascript">
+	
+		$(document).ready(function() {
+			$(".nav-link").removeClass("bg-slate-600");
+	    	$(".navbar-nav-link").removeClass("bg-slate-300");	    	
+			$("#adminModuleNav").addClass("bg-slate-600");
+			$("#procedureType2ndNav").addClass("bg-slate-300");
+			
+			
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Procedure Type successfully saved.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				});
+			}
+			
+			
+		});
+		
+		$(document).on("click", ".showProcedureTypeDetails", function() {
+
+			var id = $(this).attr('data-row-id');
+			var procedureTypeName = $(this).attr('data-row-procedureTypeName');
+			
+			$("#modal_form_vertical").find("#id").val(id);
+			$("#modal_form_vertical").find("#procedureTypeName").val(procedureTypeName);
+		});
+	</script>
+</body>
+</html>

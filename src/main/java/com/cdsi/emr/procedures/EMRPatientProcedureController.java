@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.procedures.EMRPatientProcedureTypeRepository;
+import com.cdsi.emr.procedures.EMRPatientProcedure;
+import com.cdsi.emr.procedures.EMRPatientProcedureType;
 import com.cdsi.emr.fileupload.FileDTO;
 import com.cdsi.emr.fileupload.FileInputInitialPreviewConfig;
 import com.cdsi.emr.fileupload.FileInputResponse;
@@ -31,25 +34,29 @@ import com.cdsi.emr.util.UXMessage;
 public class EMRPatientProcedureController {
     	private StorageService storageService;
     	private EMRPatientProcedureRepository emrPatientProcedureRepository;
+    	private EMRPatientProcedureTypeRepository emrPatientProcedureTypeRepository;
 	private PatientRepository patientRepository;
 	
 	public EMRPatientProcedureController (EMRPatientProcedureRepository emrPatientProcedureRepository, PatientRepository patientRepository
-		,StorageService storageService
+		, EMRPatientProcedureTypeRepository emrPatientProcedureTypeRepository, StorageService storageService
 			) {
 	    	this.storageService = storageService;
 	    	this.emrPatientProcedureRepository = emrPatientProcedureRepository;
-		this.patientRepository = patientRepository;
+	    	this.emrPatientProcedureTypeRepository = emrPatientProcedureTypeRepository;
+	    	this.patientRepository = patientRepository;
 	}
 	
 	@GetMapping("/emrpatientProcedure/{patientId}")
 	public String listAll(Model model, @PathVariable long patientId) {
-		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
-		Patient patient = optionalPatient.get();
-		model.addAttribute("patient", patient);
-		model.addAttribute("emrPatientProcedureList", emrPatientProcedureList);
-		model.addAttribute(new EMRPatientProcedure());
-		return "emr/emr_patient_procedure";
+	    List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+        List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAll();
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        Patient patient = optionalPatient.get();
+        model.addAttribute("patient", patient);
+        model.addAttribute("emrPatientProcedureList", emrPatientProcedureList);
+        model.addAttribute("allProcedureTypes", emrPatientProcedureTypeList);
+        model.addAttribute(new EMRPatientProcedure());
+        return "emr/emr_patient_procedure";
 	}	
 	
 	@PostMapping("/emrpatientProcedure")
@@ -59,10 +66,20 @@ public class EMRPatientProcedureController {
 			,final RedirectAttributes redirect
 			,Model model
 			) {
+	    
+	        long patientId = emrPatientProcedure.getPatient().getId();
 		if (errors.hasErrors()) {
-			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-			return "emr/emr_patient_procedure";
-		}
+            List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+            List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAll();
+            Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+            Patient patient = optionalPatient.get();
+            model.addAttribute("patient", patient);
+            model.addAttribute("emrPatientProcedureList", emrPatientProcedureList);
+            model.addAttribute("allProcedureTypes", emrPatientProcedureTypeList);
+            model.addAttribute(new EMRPatientProcedure());
+            model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+            return "emr/emr_patient_procedure";
+        }
 		emrPatientProcedureRepository.save(emrPatientProcedure);
 		return "redirect:/emrpatientProcedure";
 	}
