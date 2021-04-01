@@ -91,7 +91,7 @@
 								<h5 class="card-title">Laboratory Type List</h5>
 								<div class="header-elements">
 									<div class="list-icons">				                		
-				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add Record</button>				                		
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add Laboratory Type</button>				                		
 				                	</div>
 			                	</div>
 							</div>							
@@ -109,7 +109,7 @@
 										<tr>
 											<td th:text="${labType.labTypeName}">Lab Type Name</td>
 											<td th:text="${labType.labTypeNormalValue}">Normal Value</td>
-											<td class="text-center" width="40px;">
+											<td class="text-center" width="180px;">
 												<button id="editLabTypeButton" type="button" class="showLabTypeDetails btn btn-primary" 
 													th:data-row-labTypeName="${labType.labTypeName}"
 													th:data-row-labTypeNormalValue="${labType.labTypeNormalValue}"													

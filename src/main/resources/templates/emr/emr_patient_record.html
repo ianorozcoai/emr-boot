@@ -130,7 +130,7 @@
 							<div class="col-sm-12">
 								<label for="diagnosis">Diagnosis</label>
 								<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
-								<input type="text" class="form-control flexdatalist" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
+								<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
 									   th:data-data="@{/icd/datalist}"
 									   data-search-in="description"
 									   data-search-by-word="true"
@@ -315,6 +315,11 @@
 		}
 
 	    $(document).ready(function() {
+	    	
+	    	$("#diagnosisArea").on("keyup", function() {
+	    		$('.flexdatalist').flexdatalist();
+				
+			});
 
 	    	if (consultationId > 0) {
 	    		let viewConsultationButton = document.querySelector('#viewConsultationButton'+consultationId);

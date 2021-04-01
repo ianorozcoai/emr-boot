@@ -103,7 +103,7 @@ public class PatientController {
 		EmrConsultation emrConsultation = new EmrConsultation();
 		emrConsultation.setPatient(patient);
 		model.addAttribute("emrConsultation", emrConsultation);
-		List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientId(patientId);
+		List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(patientId);
 		
 		Consumer<EmrConsultation> fetchDiagnosis = ec -> {
 			List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();

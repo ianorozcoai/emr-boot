@@ -65,10 +65,16 @@ public class IcdController {
         this.icdRepository.save(icd);
         return "redirect:/icds";
     }
-
+    
     @GetMapping("/icd/datalist")
     public ResponseEntity<FlexDatalistResult> flexDatalistForIcd() {
         List<Icd> result = this.icdRepository.findAll();
+        return ResponseEntity.ok().body(new FlexDatalistResult(result));
+    }
+
+    @GetMapping("/icd/datalist/{keyword}")
+    public ResponseEntity<FlexDatalistResult> flexDatalistForIcdByKeyWord(@PathVariable String keyword) {
+        List<Icd> result = this.icdRepository.findAllByDescriptionContaining(keyword);
         return ResponseEntity.ok().body(new FlexDatalistResult(result));
     }
 }

@@ -179,12 +179,13 @@ public class EMRPatientLaboratoryController {
             ,Errors errors
             ,final RedirectAttributes redirect
             ,Model model
+            ,@AuthenticationPrincipal Personnel doctor
             ) {
         List<String> labFileUrls = new ArrayList<>();
         long patientId = emrPatientLaboratory.getPatient().getId();
         if (errors.hasErrors()) {
             List<EMRPatientLaboratory> emrPatientLaboratoryList = this.emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-            List<EMRPatientLaboratoryType> emrPatientLaboratoryTypeList = this.emrPatientLaboratoryTypeRepository.findAll();
+            List<EMRPatientLaboratoryType> emrPatientLaboratoryTypeList = this.emrPatientLaboratoryTypeRepository.findAllByDoctorId(doctor.getId());
             Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);
             Patient patient = optionalPatient.get();
             model.addAttribute("patient", patient);

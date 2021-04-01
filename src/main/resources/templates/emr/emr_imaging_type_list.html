@@ -85,7 +85,7 @@
 								<h5 class="card-title">Imaging Type List</h5>
 								<div class="header-elements">
 									<div class="list-icons">				                		
-				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add Record</button>				                		
+				                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical">Add Imaging Type</button>				                		
 				                	</div>
 			                	</div>
 							</div>							
@@ -101,7 +101,7 @@
 									<th:block th:each="imagingType : ${emrPatientImagingTypeList}">
 										<tr>
 											<td th:text="${imagingType.imagingTypeName}">Imaging Type Name</td>
-											<td class="text-center" width="40px;">
+											<td class="text-center" width="180px;">
 												<button id="editImagingTypeButton" type="button" class="showImagingTypeDetails btn btn-primary" 
 													th:data-row-imagingTypeName="${imagingType.imagingTypeName}"													
 													th:data-row-id="${imagingType.id}"
