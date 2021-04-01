@@ -58,6 +58,7 @@ import lombok.NoArgsConstructor;
     private String userType = "DOCTOR";  // "DOCTOR" or "STAFF"
     private int staffCount = 0; // Number of doctor's staff that will use the system.
     private long staffSupervisorId;
+    private String profilePhotoUrl;
 
     private String credentials;
     private String licenseNumber;

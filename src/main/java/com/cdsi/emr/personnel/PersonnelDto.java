@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
     private String userType;
     private int staffCount;
     private long superiorId;
+    private String profilePhotoUrl;
 
     private String credentials;
     private String licenseNumber;

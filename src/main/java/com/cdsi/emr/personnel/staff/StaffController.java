@@ -107,6 +107,7 @@ public class StaffController {
                 p.getUserType(),
                 p.getStaffCount(),
                 p.getSuperiorId(),
+                p.getProfilePhotoUrl(),
                 p.getCredentials(),
                 p.getLicenseNumber(),
                 p.getSpecialization(),

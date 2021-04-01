@@ -1,14 +1,9 @@
 package com.cdsi.emr.personnel;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +52,7 @@ public class RegistrationController {
             return "personnel/login";
         }
         personnel.setPassword(this.passwordEncoder.encode(personnel.getPassword()));
-        
+
         LocalDate today = LocalDate.now();
         personnel.setEndDate(today.plusMonths(1));
         this.personnelRepository.save(personnel);
@@ -65,29 +60,30 @@ public class RegistrationController {
         return "redirect:/login";
     }
 
-      private Personnel toPersonnel(PersonnelDto p) {
+    private Personnel toPersonnel(PersonnelDto p) {
         return new Personnel(
-            p.getId(),
-            null, //username
-            null, //password
-            p.getFirstName(),
-            p.getLastName(),
-            p.getGender(),
-            p.getAddress(),
-            p.getContactNumber(),
-            p.getEmail(),
-            p.getStatus(),
-            p.getUserType(),
-            p.getStaffCount(),
-            p.getSuperiorId(),
-            p.getCredentials(),
-            p.getLicenseNumber(),
-            p.getSpecialization(),
-            p.getPtrNumber(),
-            p.getSNumber(),
-            null, //startDate
-            null, //endDate
-            p.getClinicLogoUrl()
-            );
+                p.getId(),
+                null, //username
+                null, //password
+                p.getFirstName(),
+                p.getLastName(),
+                p.getGender(),
+                p.getAddress(),
+                p.getContactNumber(),
+                p.getEmail(),
+                p.getStatus(),
+                p.getUserType(),
+                p.getStaffCount(),
+                p.getSuperiorId(),
+                p.getProfilePhotoUrl(),
+                p.getCredentials(),
+                p.getLicenseNumber(),
+                p.getSpecialization(),
+                p.getPtrNumber(),
+                p.getSNumber(),
+                null, //startDate
+                null, //endDate
+                p.getClinicLogoUrl()
+                );
     }
 }
