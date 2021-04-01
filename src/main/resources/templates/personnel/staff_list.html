@@ -232,7 +232,6 @@
 								<thead>
 									<tr>
 										<th>Personnel Name</th>
-										<th>Designation</th>
 										<th>Gender</th>
 										<th>Contact No.</th>
 										<th>Status</th>
@@ -247,17 +246,7 @@
 													<a href="#" class="text-default font-weight-semibold" th:text="${personnel.fullName}">Chris Macintyre</a>													
 												</div>
 											</div>
-										</td>
-										<td>
-											<div th:switch="${personnel.userType}" class="mr-3">
-												<span th:case="'ROLE_DOCTOR_EMR'" class="badge bg-success-400">Doctor</span>
-												<span th:case="'ROLE_DOCTOR'" class="badge bg-success-400">Doctor</span>
-												<span th:case="'ROLE_NURSE'" class="badge bg-warning-400">Nurse</span>
-												<span th:case="'ROLE_MED_TECH'" class="badge bg-violet-400">Medical Technician</span>
-												<span th:case="'ROLE_STAFF'" class="badge bg-violet-400">Doctors Staff</span>
-												<span th:case="'ROLE_ADMIN'" class="badge bg-violet-400">Admin</span>
-											</div>
-										</td>
+										</td>										
 										<td>
 											<div th:switch="${personnel.gender}" class="mr-3">
 												<span th:case="'M'">Male</span>
@@ -357,10 +346,7 @@
 	    	
 			$('#system-user-list').DataTable({
 				"lengthMenu": [10, 25, 50],
-				"ordering": false,
-                "columnDefs": [
-				    { "width": "70%", "targets": 0 }
-				],
+				"ordering": false,                
 			});
 			
 			if (/*[[${isValidationErrorOnAdd}]]*/ false) {
