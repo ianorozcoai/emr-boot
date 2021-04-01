@@ -39,7 +39,6 @@ public class EMRPatientProcedure extends Auditable {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private LocalDateTime dateCreated = LocalDateTime.now();
 	
-	@NotBlank(message = " is mandatory.")
 	private String remarks;
 		
 	@ElementCollection
