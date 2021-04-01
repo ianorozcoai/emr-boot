@@ -131,7 +131,6 @@
 								<label for="diagnosis">Diagnosis</label>
 								<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
 								<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
-									   th:data-data="@{/icd/datalist}"
 									   data-search-in="description"
 									   data-search-by-word="true"
 									   data-min-length="1"
@@ -315,18 +314,19 @@
 		}
 
 	    $(document).ready(function() {
+			$('.flexdatalist').flexdatalist();
 	    	
-	    	$("#diagnosisArea").on("keyup", function() {
-	    		$('.flexdatalist').flexdatalist();
-				
+	    	$("#diagnosisArea-flexdatalist").on("keyup", function(e) {
+	    	    let ctxpath = /*[[${#request.getContextPath()}]]*/'';
+	    	    let kw = e.target.value;
+	    		$('.flexdatalist').flexdatalist('url', ctxpath+'/icd/datalist/'+kw);
 			});
+
 
 	    	if (consultationId > 0) {
 	    		let viewConsultationButton = document.querySelector('#viewConsultationButton'+consultationId);
 	    		viewConsultationButton.click();
 	    	}
-
-			$('.flexdatalist').flexdatalist();
 
 	    	$(".navbar-nav-link").removeClass("bg-slate-300");
 			$("#emrPatientDashboard2ndNav").addClass("bg-slate-300");
