@@ -6,10 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -138,11 +136,10 @@ public class PersonnelController {
         fromDto.setStartDate(fromDb.getStartDate());
         fromDto.setEndDate(fromDb.getEndDate());
 
-        log.info("Saving updated Personnel in Database and in Security Context");
-        Authentication authentication = new UsernamePasswordAuthenticationToken(this.personnelRepository.save(fromDto),
-                fromDb.getPassword(),
-                SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        this.personnelRepository.save(fromDto);
+
+        // TODO: Update AuthenticationPricipal if DTO is the same as logged in user (/myProfile & /emr/profile/edit)
+
         log.info("Successfully saved changes of Personnel {} - {}, {}",
                 fromDb.getUsername(),
                 fromDb.getLastName(),
