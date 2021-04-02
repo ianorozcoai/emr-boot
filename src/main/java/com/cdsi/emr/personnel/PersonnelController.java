@@ -116,6 +116,7 @@ public class PersonnelController {
             ,final RedirectAttributes redirect
             ,Model model
             ,HttpServletRequest request
+            ,@AuthenticationPrincipal Personnel doctor
             ) {
         if (errors.hasErrors()) {
             model.addAttribute("personnel", new Personnel());
@@ -135,10 +136,12 @@ public class PersonnelController {
         fromDto.setStatus(fromDb.getStatus());
         fromDto.setStartDate(fromDb.getStartDate());
         fromDto.setEndDate(fromDb.getEndDate());
+        fromDto.setProfilePhotoUrl(fromDb.getProfilePhotoUrl());
 
         this.personnelRepository.save(fromDto);
 
         // TODO: Update AuthenticationPricipal if DTO is the same as logged in user (/myProfile & /emr/profile/edit)
+        this.updateLoggedInDoctor(doctor, fromDto);
 
         log.info("Successfully saved changes of Personnel {} - {}, {}",
                 fromDb.getUsername(),
@@ -154,6 +157,19 @@ public class PersonnelController {
         } else {
             redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "System user updated successfully."));
             return "redirect:/personnels";
+        }
+    }
+
+    private void updateLoggedInDoctor(Personnel doctor, Personnel fromDto) {
+        // TODO compare fields, if doctor is different from Dto, update personnel
+        if (!doctor.getFirstName().equalsIgnoreCase(fromDto.getFirstName())) {
+            doctor.setFirstName(fromDto.getFirstName());
+        }
+        if (!doctor.getLastName().equalsIgnoreCase(fromDto.getLastName())) {
+            doctor.setLastName(fromDto.getLastName());
+        }
+        if (!doctor.getSpecialization().equalsIgnoreCase(fromDto.getSpecialization())) {
+            doctor.setSpecialization(fromDto.getSpecialization());
         }
     }
 
