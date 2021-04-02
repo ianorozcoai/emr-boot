@@ -196,7 +196,7 @@ public class EMRPatientLaboratoryController {
             model.addAttribute("patient", patient);
             model.addAttribute("emrPatientLaboratoryList", emrPatientLaboratoryList);
             model.addAttribute("allLaboratoryTypes", emrPatientLaboratoryTypeList);
-            model.addAttribute("emrPatientLaboratory", new EMRPatientLaboratory());
+            model.addAttribute("emrPatientLaboratory", emrPatientLaboratory);
             model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
             return "emr/emr_patient_lab";
         }
