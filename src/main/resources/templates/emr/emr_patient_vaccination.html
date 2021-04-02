@@ -53,7 +53,8 @@
 							            <div class="row">
 											<div class="col-sm-12">
 												<label for="vaccineName">Vaccine Name</label>
-												<input list="vaccines" th:field="*{vaccineName}" placeholder="Vaccine name" type="text" class="form-control flexdatalist"
+												<span class="validationError text-danger" th:if="${#fields.hasErrors('vaccineName')}" th:errors="*{vaccineName}"></span>
+                                                <input list="vaccines" th:field="*{vaccineName}" placeholder="Vaccine name" type="text" class="form-control flexdatalist"
 		                                               data-search-by-word="true"
 		                                               data-min-length="1"
 		                                               multiple="multiple"
