@@ -133,7 +133,7 @@
 								<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
 									   data-search-in="description"
 									   data-search-by-word="true"
-									   data-min-length="1"
+									   data-min-length="3"
 									   multiple="multiple"
 									   data-selection-required="true"
 									   data-visible-properties='["code","description"]'
@@ -319,7 +319,12 @@
 	    	$("#diagnosisArea-flexdatalist").on("keyup", function(e) {
 	    	    let ctxpath = /*[[${#request.getContextPath()}]]*/'';
 	    	    let kw = e.target.value;
-	    		$('.flexdatalist').flexdatalist('url', ctxpath+'/icd/datalist/'+kw);
+	    	    
+	    	    if(kw.length >=3 ){
+	    	    	console.log("kw: " + kw);
+	    	    	$('.flexdatalist').flexdatalist('url', ctxpath+'/icd/datalist/'+kw);
+	    	    }
+	    		
 			});
 
 
