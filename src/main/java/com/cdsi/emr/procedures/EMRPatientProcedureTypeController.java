@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.personnel.Personnel;
 import com.cdsi.emr.util.UXMessage;
 
 @Controller
@@ -26,9 +28,9 @@ public class EMRPatientProcedureTypeController {
 	}	
 	
 	@GetMapping("/patientProcedureTypes")
-	public String listAllProcedureType(Model model) {		
+	public String listAllProcedureType(Model model, @AuthenticationPrincipal Personnel doctor) {		
 
-		List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAll();
+		List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAllByDoctorId(doctor.getId());
 		
 		model.addAttribute("emrPatientProcedureTypeList", emrPatientProcedureTypeList);
 		model.addAttribute("emrPatientProcedureType", new EMRPatientProcedureType());
@@ -43,9 +45,10 @@ public class EMRPatientProcedureTypeController {
 			,Errors errors
 			,final RedirectAttributes redirect
 			,Model model
+			, @AuthenticationPrincipal Personnel doctor
 			) {
 		if (errors.hasErrors()) {
-			List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAll();
+			List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAllByDoctorId(doctor.getId());
 			
 			model.addAttribute("emrPatientProcedureTypeList", emrPatientProcedureTypeList);
 			model.addAttribute("emrPatientProcedureType", emrPatientProcedureType);
@@ -53,7 +56,7 @@ public class EMRPatientProcedureTypeController {
 			return "emr/emr_Procedure_type_list";
 		}
 		emrPatientProcedureTypeRepository.save(emrPatientProcedureType);
-		redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Laboratory Type successfully saved."));
+		redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Procedure Type successfully saved."));
 		return "redirect:/patientProcedureTypes";
 	}	
 	

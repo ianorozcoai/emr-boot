@@ -17,5 +17,7 @@ public class EMRPatientProcedureType{
 	
 	@NotBlank(message = " is mandatory.")
 	private String procedureTypeName;
+	
+	private long doctorId;
 		
 }
