@@ -2,25 +2,20 @@ package com.cdsi.emr.reports;
 
 import java.io.File;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
 import com.cdsi.emr.medicalreports.EMRMedicalCertificate;
 import com.cdsi.emr.medicalreports.EMRMedicalCertificateRepository;
 import com.cdsi.emr.clinic.Clinic;
@@ -32,7 +27,6 @@ import com.cdsi.emr.medication.EMRPatientMedicationRepository;
 import com.cdsi.emr.patient.Patient;
 import com.cdsi.emr.patient.PatientRepository;
 import com.cdsi.emr.personnel.Personnel;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -127,11 +121,7 @@ public class ReportsController {
 		
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
 		map.put("PATIENT_ADDRESS", patient.getStreet() + " " + patient.getCity());
-		map.put("PATIENT_GENDER", patient.getGender());
-		//ReadableInstant
-		LocalDate birthdate = patient.getBirthdate();		
-		long years = ChronoUnit.YEARS.between(birthdate, LocalDate.now());
-		
+		map.put("PATIENT_GENDER", patient.getGender());		
 		map.put("PATIENT_AGE", patient.getAge() + "");
 		
 		ctr = 1;
@@ -194,13 +184,17 @@ public class ReportsController {
 		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
 		
 		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
-		File hospitalLogoFile = ResourceUtils.getFile("classpath:static/images/logo.jpg");
 		
 		String rxLogo = file.getAbsolutePath();
 //		String hospitalLogo = hospitalLogoFile.getAbsolutePath();
 		
 		String docLogo = doctor.getClinicLogoUrl();
-		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+		String hospitalLogo = "";
+		
+		if(docLogo != null) {
+			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+		}
+		
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RX_LOGO", rxLogo);
@@ -241,11 +235,7 @@ public class ReportsController {
 		
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
 		map.put("PATIENT_ADDRESS", patient.getStreet() + " " + patient.getCity());
-		map.put("PATIENT_GENDER", patient.getGender());
-		//ReadableInstant
-		LocalDate birthdate = patient.getBirthdate();		
-		long years = ChronoUnit.YEARS.between(birthdate, LocalDate.now());
-		
+		map.put("PATIENT_GENDER", patient.getGender());		
 		map.put("PATIENT_AGE", patient.getAge() + "");
 		map.put("PATIENT_MEDICATION", emrMedicalCertificate.getMedication());
 		map.put("PATIENT_RECOMMENDATION", emrMedicalCertificate.getRecommendation());

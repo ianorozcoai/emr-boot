@@ -56,7 +56,7 @@
                         			    <div class="col-sm-3">
                                                     <form id="fileUploadForm">
                         			    	<div class="text-center">
-                            				    <img th:src="@{${#authentication.principal.clinicLogoUrl}}" class="avatar img-thumbnail" alt="avatar" id="photoPreview">
+                            				    <img th:src="|@{*{#authentication.principal.clinicLogoUrl == null ? '/images/no_image.png' : #authentication.principal.clinicLogoUrl}}|" class="avatar img-thumbnail" alt="avatar" id="photoPreview">
                             				    <h6>Upload a different photo...</h6>
                             				    <input type="file" name="clinicLogo" id="clinicLogo" class="text-center center-block file-upload" />
                         					</div>
