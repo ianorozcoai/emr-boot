@@ -45,6 +45,7 @@ import lombok.EqualsAndHashCode;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "imaging_type_id")
+	@NotNull(message = " is mandatory.")
 	EMRPatientImagingType emrPatientImagingType;
 
 	@Transient

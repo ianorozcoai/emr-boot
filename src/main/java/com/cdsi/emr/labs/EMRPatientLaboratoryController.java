@@ -183,7 +183,12 @@ public class EMRPatientLaboratoryController {
             ) {
         List<String> labFileUrls = new ArrayList<>();
         long patientId = emrPatientLaboratory.getPatient().getId();
-        if (errors.hasErrors()) {
+        if (errors.hasErrors()  || emrPatientLaboratory.getEmrPatientLaboratoryType().getId() <= 0) {
+        	if (emrPatientLaboratory.getEmrPatientLaboratoryType().getId() <= 0) {
+                errors.rejectValue("emrPatientLaboratoryType", "emrPatientLaboratoryType.id.zero", " is mandatory");
+            }
+            model.addAttribute("isValidationErrorOnAdd", true);
+        	
             List<EMRPatientLaboratory> emrPatientLaboratoryList = this.emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
             List<EMRPatientLaboratoryType> emrPatientLaboratoryTypeList = this.emrPatientLaboratoryTypeRepository.findAllByDoctorId(doctor.getId());
             Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);

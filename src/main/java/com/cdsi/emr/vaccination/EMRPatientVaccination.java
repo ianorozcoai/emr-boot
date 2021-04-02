@@ -43,8 +43,6 @@ public class EMRPatientVaccination extends Auditable {
 	@Column(nullable = false)
 	private String vaccineName;
 	
-	@NotBlank(message = " is mandatory.")
-	@Column(nullable = false)
 	private String remarks;
 	
 	@ElementCollection(fetch = FetchType.EAGER)
