@@ -3,7 +3,6 @@ package com.cdsi.emr.vaccination;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,27 +30,27 @@ import lombok.EqualsAndHashCode;
 @Data
 public class EMRPatientVaccination extends Auditable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@NotNull(message = " is mandatory.")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime dateCreated = LocalDateTime.now();
-	
-	@Column(nullable = false)
-	private String vaccineName;
-	
-	private String remarks;
-	
-	@ElementCollection(fetch = FetchType.EAGER)
-	private List<String> vaccineFileUrls;
-	
-	@Transient
-	private MultipartFile[] vaccineFiles;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "patient_id")
-	Patient patient;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotNull(message = " is mandatory.")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime dateCreated = LocalDateTime.now();
+
+    @NotBlank(message = " is mandatory.")
+    private String vaccineName;
+
+    private String remarks;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> vaccineFileUrls;
+
+    @Transient
+    private MultipartFile[] vaccineFiles;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id")
+    Patient patient;
 }

@@ -46,8 +46,7 @@ public class EMRPatientVaccinationController {
         model.addAttribute("patient", patient);
         List<EMRPatientVaccination> emrPatientVaccinationList = this.emrPatientVaccinationRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
         model.addAttribute("emrPatientVaccinationList", emrPatientVaccinationList);
-        EMRPatientVaccination emrPatientVaccination = new EMRPatientVaccination();
-        model.addAttribute("emrPatientVaccination", emrPatientVaccination);
+        model.addAttribute(new EMRPatientVaccination());
         model.addAttribute(this.vaccineNameRepository.findAll());
         return "emr/emr_patient_vaccination";
     }
@@ -65,7 +64,7 @@ public class EMRPatientVaccinationController {
             Optional<Patient> optionalPatient = this.patientRepository.findById(emrPatientVaccination.getPatient().getId());
             Patient patient = optionalPatient.get();
             model.addAttribute("patient", patient);
-            model.addAttribute("emrPatientVaccination", new EMRPatientVaccination());
+            //model.addAttribute("emrPatientVaccination", new EMRPatientVaccination());
             model.addAttribute(this.vaccineNameRepository.findAll());
             return "emr/emr_patient_vaccination";
         }
