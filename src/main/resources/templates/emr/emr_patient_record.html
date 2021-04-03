@@ -330,14 +330,16 @@
 	    	$('#diagnosisArea-flexdatalist').on('blur', (e) => {
 	    	    let fval = e.target.value;
                 if ($('#diagnosisArea').val() && fval.length > 0 || fval.length > 0) {
-                    console.log('diagnosis not found.', fval, fval.length)
-                    swal({
-						title: "Diagnosis Not Found!",
-						text: "Please select disgnosis from the dropdown values.",
-						icon: "error",
-						buttons: false,
-			            timer: 2000,
-					});
+                    console.log('diagnosis not found:', fval, '| length:', fval.length)
+                    // swal({
+                    // 	title: "Diagnosis Not Found!",
+                    // 	text: "Please select disgnosis from the dropdown values.",
+                    // 	icon: "error",
+                    // 	buttons: false,
+                    //     timer: 2000,
+                    // });
+                    // console.log('target:', e.target);
+                    e.target.value = '';
                 }
 	    	});
 
