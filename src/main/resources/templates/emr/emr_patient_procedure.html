@@ -427,8 +427,7 @@
         $('#addProcedureButton').click((e) => {
         	//clear values in form
         	$('#id').val(0);
-        	$('#dateCreated').val(moment(new Date()).format('YYYY-MM-DDThh:mm'));
-        	//$('#dateCreated').val(new Date().toISOString().substring(0,16));
+        	$('#dateCreated').val(moment(new Date()).format('YYYY-MM-DDTHH:mm'));
         	$('#remarks').val('');
         	$('#procedureFiles').fileinput('refresh');
         });

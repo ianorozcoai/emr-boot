@@ -157,7 +157,7 @@
 							                    
 							                    <div class="col-sm-6">
 							                        <label for="city">City</label>
-							                        <select class="form-control" name="city" id="city" th:field="*{city}" onchange="loadCities('city', this.value)">
+							                        <select class="form-control" name="city" id="city" th:field="*{city}">
 		
 													</select>
 							                    </div>
@@ -375,6 +375,7 @@
 //end update profile photo
 
 	    $(document).ready(function() {     
+	    	loadProvinces('province');
 	    	
 	    	$(".nav-link").removeClass("active");
 			$("#emrPatientListNav").addClass("active");

@@ -153,15 +153,13 @@
 																	<div class="row">    
 														                    <div class="col-sm-6">
 														                        <label for="province">Province</label>
-														                        <select class="form-control" name="province" id="province" th:field="*{province}" onchange="loadCities('city', this.value)">
-									
+														                        <select class="form-control" name="province" id="province" th:data-province="*{province}" onchange="loadCities('city', this.value)">
 																				</select>
 														                    </div>
 														                    
 														                    <div class="col-sm-6">
 														                        <label for="city">City</label>
-														                        <select class="form-control" name="city" id="city" th:field="*{city}" onchange="loadCities('city', this.value)">
-									
+														                        <select class="form-control" name="city" id="city" th:data-city="*{city}">
 																				</select>
 														                    </div>
 														           </div>
@@ -667,12 +665,32 @@
 	
 	<script th:inline="javascript">
 	
-	    $(document).ready(function() {	    		    				
+	    $(document).ready(function() {	  
+	    	loadProvinces('province');
+	    	var province = $('#province').attr('data-province');
+	    	$('#province').val(province);
+
+	    	if(province === undefined){
+	    		loadCities('city','MM');
+	    	} else {
+	    		loadCities('city',province);
+	    	}
+	    	
+	    	var city = $('#city').attr('data-city');
+	    	$('#city').val(city);
+
+	    	if (!province) {
+	    		$('#province')[0].selectedIndex = 1;
+	    		$('#city')[0].selectedIndex = 0;
+	    	}
+	    	else if (!city) {
+	    		$('#city')[0].selectedIndex = 0;
+	    	}
 			
 	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
 			$("#emrPatientProfile2ndNav").addClass("bg-slate-300");
 
-// start update profile photo
+			// start update profile photo
 			const fileSelect = document.getElementById('fileSelect');
 		    const profilePhoto = document.getElementById('profilePhoto');
 			fileSelect.addEventListener('click', (e) => {
