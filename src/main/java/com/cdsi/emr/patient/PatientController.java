@@ -270,7 +270,7 @@ public class PatientController {
 		}
 		
 		MultipartFile photoFile = patient.getPhotoFile();
-		if(photoFile.getOriginalFilename().isEmpty()) {
+		if(photoFile == null || photoFile.getOriginalFilename().isEmpty()) {
 			patient.setPatientPhoto(null);
 		} else {
 			try {
