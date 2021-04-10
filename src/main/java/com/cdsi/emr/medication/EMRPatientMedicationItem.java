@@ -30,7 +30,7 @@ public class EMRPatientMedicationItem {
     @NotBlank(message = " is mandatory.")
     private String dosage;
 
-    @NotBlank(message = " is mandatory.")
+//    @NotBlank(message = " is mandatory.")
     private String remarks;
 
     @JsonManagedReference

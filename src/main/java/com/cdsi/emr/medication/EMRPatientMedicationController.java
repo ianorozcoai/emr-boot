@@ -69,7 +69,15 @@ public class EMRPatientMedicationController {
 			Optional<Patient> optionalPatient = patientRepository.findById(emrPatientMedicationForm.getEmrPatientMedication().getPatient().getId());
 			Patient patient = optionalPatient.get();
 			model.addAttribute("patient", patient);
-			model.addAttribute("emrPatientMedicationForm", new EMRPatientMedicationForm());
+
+			List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientIdOrderByDateCreatedDesc(patient.getId());
+			List<String> emrGenericsLookupList = emrGenericsLookupRepository.findDistinctByGenericName();
+
+			model.addAttribute("emrPatientMedicationList", emrPatientMedicationList);
+			model.addAttribute("emrGenericsLookupList", emrGenericsLookupList);
+			model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
+			model.addAttribute("dosages", EHRConstants.DOSAGE);
+			model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
 			return "emr/emr_patient_medication";
 		}
 

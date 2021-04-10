@@ -41,14 +41,15 @@
                 <input type="hidden" name="emrPatientMedication.patient.id" th:value="${patient.id}" />
                 <datalist id="genericsDatalist">
                     <option th:each="generics : ${emrGenericsLookupList}"
-                        th:value="${generics}"
-                        th:text="${generics}">Generic Name</option>
+                            th:value="${generics}"
+                            th:text="${generics}">Generic Name</option>
                 </datalist>
                 <div class="modal-body" id="medicineFormContainer">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-12">
                                 <label for="dateCreated">Date</label>
+                                <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedication.dateCreated')}" th:errors="*{emrPatientMedication.dateCreated}"></span>
                                 <input id="dateCreated" name="dateCreated" th:field="*{emrPatientMedication.dateCreated}" placeholder="Date" type="datetime-local" class="form-control" >
                             </div>
                         </div>
@@ -56,22 +57,26 @@
 
                     <div id="medicationFormRow" class="medicationFormRow" th:each="med, i : ${emrPatientMedicationForm.emrPatientMedicationItems}">
                         <input type="hidden" th:field="*{emrPatientMedicationItems[__${i.index}__].id}" id="id"/>
+
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <label for="genericName0">Generic name</label>
-                                    <input list="genericsDatalist" id="genericName0" name="genericName" th:field="*{emrPatientMedicationItems[__${i.index}__].genericName}" class="form-control genericName" >
+                                    <label th:for="|genericName${i.index}|">Generic name</label>
+                                    <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedicationItems[__${i.index}__].genericName')}"
+                                          th:errors="*{emrPatientMedicationItems[__${i.index}__].genericName}"></span>
+                                    <input th:id="|genericName${i.index}|" list="genericsDatalist" name="genericName" th:field="*{emrPatientMedicationItems[__${i.index}__].genericName}" class="form-control genericName" >
                                 </div>
 
                                 <div class="col-sm-4">
-                                    <label for="brandName0">Brand name</label>
-                                    <select id="brandName0" name="brandName" th:field="*{emrPatientMedicationItems[__${i.index}__].brandName}" class="form-control brandName" >
-                                        <option disabled="disabled" value=" " selected>- Select Brand Name -</option>
-                                    </select>
+                                    <label th:for="|brandName${i.index}|">Brand name</label>
+                                    <datalist th:id="|brandNameDatalist${i.index}|"></datalist>
+                                    <input th:id="|brandName${i.index}|" th:list="|brandNameDatalist${i.index}|" name="brandName" th:field="*{emrPatientMedicationItems[__${i.index}__].brandName}" class="form-control brandName">
                                 </div>
                                 <div class="col-sm-4">
-                                    <label for="dosage0">Dosage</label>
-                                    <select id="dosage0" name="dosage" th:field="*{emrPatientMedicationItems[__${i.index}__].dosage}" class="form-control dosage" >
+                                    <label th:for="|dosage${i.index}|">Dosage</label>
+                                    <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedicationItems[__${i.index}__].dosage')}"
+                                          th:errors="*{emrPatientMedicationItems[__${i.index}__].dosage}"></span>
+                                    <select th:id="|dosage${i.index}|" name="dosage" th:field="*{emrPatientMedicationItems[__${i.index}__].dosage}" class="form-control dosage" >
                                         <option value=''>- Select Dosage -</option>
                                         <option th:each="d : ${dosages}"
                                                 th:value="${d}"
@@ -135,7 +140,7 @@
                                         <h5 class="card-title">Medication List</h5>
                                         <div class="header-elements">
                                             <div class="list-icons">
-                                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton" onclick="clearMedications()">Add Medication</button>
+                                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton">Add Medication</button>
                                             </div>
                                         </div>
                                     </div>
@@ -167,7 +172,7 @@
                                                             th:data-row-items="${emrPatientMedication.emrPatientMedicationItems}"
                                                             data-toggle="modal" data-target="#modal_form_vertical" id="editMedication">View</button></td>
                                                 <td>
-                                                	<a class="btn btn-primary" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">Print</a>
+                                                    <a class="btn btn-primary" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">Print</a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -268,6 +273,10 @@
 				$(this).attr("id", rowNumbered);
 				i++;
 			});
+
+			$('#addSystemUserButton').on('load click', function(){
+			    clearMedications();
+			});
 	    });
 
 	    $(document).on("click", ".showMedicationDetails", function() {
@@ -287,8 +296,6 @@
 			var itemSplit = medicationItems.split(";");
 
 			var rowNum = 0;
-			var generic = "";
-			var brand = "";
 
 			for (var item of itemSplit) {
 				var itemFields = item.split(",");
@@ -306,12 +313,12 @@
 					console.log("rowNumAA: " + rowNum + " - " + rowId + " - " + fieldVal);
 
 					if (fieldName == "genericName") {
-						generic = fieldVal;
+						$("#modal_form_vertical").find("#genericName"+rowNum).val(fieldVal);
+						loadBrandDataList(fieldVal,rowNum);
 					}
 
 					if (fieldName == "brandName") {
-						$("#modal_form_vertical").find("#genericName"+rowNum).trigger("change");
-						brandNameArr[rowNum] = fieldVal;
+						$("#modal_form_vertical").find("#brandName"+rowNum).val(fieldVal);
 					}
 					$("#modal_form_vertical").find("#"+rowId).val(fieldVal);
 				}
@@ -388,7 +395,7 @@
 								<div class="col-sm-4">
 									<div class="form-group">
 										<label for="emrPatientMedicationItems[`+i+`].brandName">Brand name</label>
-										<datalist id="brandNameDatalist${i}"></datalist>
+                                        <datalist id="brandNameDatalist${i}"></datalist>
 										<input list="brandNameDatalist${i}" name="emrPatientMedicationItems[`+i+`].brandName" id="brandName`+i+`" class="form-control brandName">
 									</div>
 								</div>
@@ -451,18 +458,16 @@
         	.catch(err => console.log('HTTP-Error: ' + err));
 		}
 
-		$('#medicineFormContainer').on('change','.genericName',
-			function() {
-				var genericName = $(this).val();
+		$('#medicineFormContainer').on('change','.genericName', function(){
+		    var genericName = $(this).val();
 				var rowNum = 0;
 				rowNum = $(this).attr("id").replace("genericName", "");
 
-				let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+                let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
 
 				$.getJSON( contextRoot + "/api/generics/search/findByGenericName?genericName=" + genericName , {
 	                ajax : 'true'
 	            }, function(data) {
-	            	//var html = '<option value=""> - Select Brand Name - </option>';
 	                var brands = data._embedded.generics;
 
 	                var brandOptions = brands.reduce(
@@ -470,19 +475,28 @@
 	                	, ''
 	                	)
 
-	                //html += brandOptions;
-
-	                //$("#brandName"+rowNum).html(html);
-                    $("#brandNameDatalist"+rowNum).empty().append(brandOptions);
+	                $("#brandNameDatalist"+rowNum).empty().append(brandOptions);
 	                $("#brandName"+rowNum).focus();
 	                $("#brandName"+rowNum).val('');
-	                
-	                //console.log("---" + brandNameArr[rowNum]);
-	                //if (brandNameArr[rowNum] != "") {
-	                //	$("#modal_form_vertical").find("#brandName"+rowNum).val(brandNameArr[rowNum]);
-	                //}
 	            });
-        });
+		});
+
+		function loadBrandDataList(genericName, rowNum){
+		    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+
+				$.getJSON( contextRoot + "/api/generics/search/findByGenericName?genericName=" + genericName , {
+	                ajax : 'true'
+	            }, function(data) {
+	                var brands = data._embedded.generics;
+
+	                var brandOptions = brands.reduce(
+	                	(a,b) => a+=`<option value="${b.brandName}">${b.brandName}`
+	                	, ''
+	                	)
+
+	                $("#brandNameDatalist"+rowNum).empty().append(brandOptions);
+	            });
+		}
 
 		$(document).on('click', '.delete-medication', function(e) {
 			   e.preventDefault();
