@@ -58,6 +58,7 @@ import lombok.NoArgsConstructor;
 	private String symptoms;
 	private String physical;
 	private String intervention;
+	private String diagnosisTxt;
 
 	@ElementCollection
 	private List<EmrConsultationDiagnosis> diagnosis;

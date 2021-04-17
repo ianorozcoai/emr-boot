@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2020-07-13T06:32:52 -->
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrescriptionReport" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="ee630330-85bb-49d3-9734-0ada293e7a77">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="inventorydai"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -18,6 +17,7 @@
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
 	<parameter name="RX_LOGO" class="java.lang.String"/>
 	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
+	<parameter name="CDSI_LOGO" class="java.lang.String"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
@@ -189,20 +189,21 @@
 				<textFieldExpression><![CDATA[$P{PATIENT_GENDER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="136" y="193" width="120" height="18" uuid="a1ba6daa-4532-4a19-935b-d6860ad488fd">
+				<reportElement x="136" y="193" width="72" height="18" uuid="a1ba6daa-4532-4a19-935b-d6860ad488fd">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="0">
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{PATIENT_AGE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="170" y="460" width="147" height="34" uuid="a064c44e-5553-4c77-8256-4aca7b86070a">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement x="207" y="460" width="118" height="34" uuid="a064c44e-5553-4c77-8256-4aca7b86070a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box>
@@ -214,7 +215,7 @@
 				<textFieldExpression><![CDATA[$P{DOCTOR_NAME}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="317" y="491" width="70" height="18" forecolor="#000000" uuid="63827a3c-07b9-4825-9a70-63276703334f">
+				<reportElement x="326" y="491" width="70" height="18" forecolor="#000000" uuid="63827a3c-07b9-4825-9a70-63276703334f">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -225,15 +226,15 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[License No.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="170" y="491" width="147" height="18" uuid="8e8ecf6e-ea47-4d90-a23a-284560388f60">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement x="207" y="491" width="118" height="18" uuid="8e8ecf6e-ea47-4d90-a23a-284560388f60">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="0">
 					<bottomPen lineWidth="1.0"/>
@@ -260,7 +261,7 @@
 				<textFieldExpression><![CDATA[$P{MEDICATION1} != null ? $P{MEDICATION1} : ""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="254" y="193" width="40" height="18" forecolor="#000000" uuid="30b11107-4244-4b54-9a78-18e4643e3709">
+				<reportElement x="211" y="193" width="40" height="18" forecolor="#000000" uuid="30b11107-4244-4b54-9a78-18e4643e3709">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box topPadding="0" leftPadding="10">
@@ -275,13 +276,13 @@
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="290" y="193" width="90" height="18" uuid="78544ddb-2a20-406a-9776-a7d4d58070bb">
+				<reportElement x="251" y="193" width="129" height="18" uuid="78544ddb-2a20-406a-9776-a7d4d58070bb">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box leftPadding="0">
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
@@ -294,8 +295,8 @@
 				<imageExpression><![CDATA[$P{RX_LOGO}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="170" y="507" width="148" height="18" uuid="d1d87efe-f768-4998-a76d-468e5ba13239">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement x="207" y="507" width="118" height="18" uuid="d1d87efe-f768-4998-a76d-468e5ba13239">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box leftPadding="0">
@@ -307,7 +308,7 @@
 				<textFieldExpression><![CDATA[$P{DOCTOR_PTR_NO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="318" y="507" width="70" height="18" forecolor="#000000" uuid="b7a5ab04-b4b5-436d-993a-5595b3dcf7f9">
+				<reportElement x="327" y="507" width="70" height="18" forecolor="#000000" uuid="b7a5ab04-b4b5-436d-993a-5595b3dcf7f9">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -318,14 +319,14 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PTR No.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="170" y="523" width="148" height="18" uuid="b69330b3-b84b-4bee-9c96-c37bfd38c9ae">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement x="207" y="523" width="118" height="18" uuid="b69330b3-b84b-4bee-9c96-c37bfd38c9ae">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box leftPadding="0">
@@ -337,7 +338,7 @@
 				<textFieldExpression><![CDATA[$P{DOCTOR_S_NO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="318" y="523" width="70" height="18" forecolor="#000000" uuid="e1c91903-f2fc-4234-832d-6b809d367876">
+				<reportElement x="327" y="523" width="70" height="18" forecolor="#000000" uuid="e1c91903-f2fc-4234-832d-6b809d367876">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -348,7 +349,7 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[S2 No.]]></text>
@@ -489,6 +490,13 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="4" y="502" width="150" height="50" uuid="70f68f87-af9c-4246-b64e-3296ea8fab39">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
 		</band>
 	</pageHeader>
 </jasperReport>

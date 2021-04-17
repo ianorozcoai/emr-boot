@@ -242,7 +242,15 @@ public class EmrConsultationController {
 			emrConsultation.setDiagnosis(diagnosis);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-			model.addAttribute("", new UXMessage("ERRORCONSULT","Error converting JSON string."));
+			
+			model.addAttribute("uxmessage", new UXMessage("ERRORCONSULT","Error converting JSON string."));
+			model.addAttribute("patient", patient);
+			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAll());
+			model.addAttribute("hmos", hmoRepository.findAll());
+			
+			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
+			model.addAttribute("allClinics", clinicList);
+			
 			return "emr/emr_patient_record";
 		}
 		emrConsultation.setClinic(clinic);

@@ -111,7 +111,7 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<label for="symptoms">Complaints/Symptoms</label>
-								<textarea rows="3" class="form-control" th:field="*{symptoms}" placeholder="Complaints" cols="50" maxlength="950" ></textarea>
+								<textarea rows="3" class="form-control" th:field="*{symptoms}" placeholder="Complaints" cols="50" maxlength="500" ></textarea>
 							</div>
 						</div>
 					</div>
@@ -120,7 +120,7 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<label for="physical">Physical Examination (PE)</label>
-								<textarea rows="3" class="form-control" th:field="*{physical}" id="physical" placeholder="Physical Examination (PE)" cols="50" maxlength="950" ></textarea>
+								<textarea rows="3" class="form-control" th:field="*{physical}" id="physical" placeholder="Physical Examination (PE)" cols="50" maxlength="500" ></textarea>
 							</div>
 						</div>
 					</div>
@@ -128,7 +128,7 @@
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-12">
-								<label for="diagnosis">Diagnosis</label>
+								<label for="diagnosis">Diagnosis ICD Code</label>
 								<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
 								<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
 									   data-search-in="description"
@@ -142,12 +142,21 @@
 							</div>
 						</div>
 					</div>
+					
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-12">
+								<label for="diagnosisTxt">Diagnosis Notes</label>
+								<textarea rows="3" class="form-control" th:field="*{diagnosisTxt}" id="diagnosisTxt" placeholder="Diagnosis Notes" cols="50" maxlength="500" ></textarea>
+							</div>
+						</div>
+					</div>
 
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-12">
 								<label for="intervention">Intervention</label>
-								<textarea rows="3" class="form-control" th:field="*{intervention}" placeholder="Intervention" cols="50" maxlength="950" ></textarea>
+								<textarea rows="3" class="form-control" th:field="*{intervention}" placeholder="Intervention" cols="50" maxlength="500" ></textarea>
 							</div>
 						</div>
 					</div>
@@ -155,8 +164,8 @@
 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn bg-primary">Save Info</button>
-					<button type="submit" class="btn bg-primary" onclick="setConsultationStatus()">Save Info and Mark as PROCESSED</button>
+					<button type="button" class="btn bg-primary" id="saveInfoButton" onclick="checkLastThreeFields()">Save Info</button>
+					<button type="submit" class="btn bg-primary" onclick="setConsultationStatus('PROCESSED')" id="submitProcessedButton">Save Info and Mark as PROCESSED</button>
 				</div>
 			</form>
 		</div>
@@ -267,6 +276,7 @@
 															th:data-symptoms="${ec.symptoms}"
 															th:data-physical="${ec.physical}"
 															th:data-intervention="${ec.intervention}"
+															th:data-diagnosisTxt="${ec.diagnosisTxt}"
 															th:data-diagnosisJSON="${ec.diagnosisJSON}"
 													>View Record</button>
 												</td>
@@ -314,6 +324,32 @@
 		}
 
 	    $(document).ready(function() {
+	    	
+	    	let allClinics = /*[[${allClinics == null ? '' : allClinics} ]]*/'';
+	    	let hmos = /*[[${hmos == null ? '' : hmos} ]]*/'';
+	    	
+	    	if(allClinics.length == 0){
+	    		$("#addConsultationButton").hide();
+	    		swal({
+					title: "Clinic Missing",
+					text: "Please add a clinic first to enable Consultation Module.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				});		
+	    	} else if(hmos.length == 0){
+	    		$("#addConsultationButton").hide();
+	    		swal({
+					title: "HMO List Missing",
+					text: "Please add a HMO Entry first to enable Consultation Module.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				});	
+	    	} else {
+	    		$("#addConsultationButton").show();
+	    	}
+	    	
 			$('.flexdatalist').flexdatalist();
 	    	
 	    	$("#diagnosisArea-flexdatalist").on("keyup", function(e) {
@@ -442,6 +478,40 @@
 		function setConsultationStatus() {
 			$('#consultationStatus').val('PROCESSED');
 		}
+		
+		function checkLastThreeFields() {
+			let physical = $('#physical').val();
+			let intervention = $('#intervention').val();
+			let diagnosisTxt = $('#diagnosisTxt').val();
+			let diagnosis = $('#diagnosisArea').val();
+			
+			if (physical.length != 0 || intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
+				confirmConsultation();
+			} else {
+				// proceed with saving
+				$("#submitProcessedButton").attr("onclick", "setConsultationStatus('ON QUEUE')");
+				$("#submitProcessedButton").click();
+			}
+		}
+		
+		function confirmConsultation(){
+			swal({
+				  title: "Mark consultation as PROCESSED?",
+				  text: "You have specified either one of the following details: \n - Physical Examination (PE) \n - Diagnosis \n - Intervention",
+				  icon: "info",
+				  buttons: ["Yes", "No"],
+				  dangerMode: false,
+				})
+				.then((a) => {
+				  if (a) {
+					  // Go back to the form
+				  } else {
+					 // Save the consultation and mark it as processed
+					 setConsultationStatus('PROCESSED');
+					 $("#submitProcessedButton").click();
+				  }			
+				});
+		}
 
 		function setValuesInForm(id) {
 			let viewConsultationButton = document.querySelector('#viewConsultationButton'+id);
@@ -460,6 +530,7 @@
 			$('#symptoms').val(viewConsultationButton.dataset.symptoms);
 			$('#physical').val(viewConsultationButton.dataset.physical);
 			$('#intervention').val(viewConsultationButton.dataset.intervention);
+			$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt);
 			$('#diagnosisJSON').val(viewConsultationButton.dataset.diagnosisjson);
 
 			if ($('#paymentType').val() === 'HMO') {
@@ -484,6 +555,7 @@
 			$('#symptoms').val('');
 			$('#physical').val('');
 			$('#intervention').val('');
+			$('#diagnosisTxt').val('');
 			$('#diagnosisJSON').val('');
 		}
 

@@ -2,15 +2,12 @@ package com.cdsi.emr.clinic;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.validation.Valid;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,13 +44,17 @@ public class ClinicController {
 			,Errors errors
 			,final RedirectAttributes redirect
 			,Model model
-			
+			, Authentication auth
 			) {
+		
+		Personnel doctor = (Personnel) auth.getPrincipal();
 		
 		if (errors.hasErrors()) {
 			List<Clinic> clinicList = clinicRepository.findAll();
 			
+			model.addAttribute("doctor", doctor);
 			model.addAttribute("clinics", clinicList);
+			model.addAttribute("clinic", clinic);
 			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
 			return "emr/emr_clinic_list";
 		}

@@ -72,12 +72,15 @@ public class ReportsController {
 		String docLogo = doctor.getClinicLogoUrl();
 		
 		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
+		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
 		
 		String rxLogo = file.getAbsolutePath();
+		String cdsiLogo = cdsiFile.getAbsolutePath();
 		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));		
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RX_LOGO", rxLogo);
+		map.put("CDSI_LOGO", cdsiLogo);
 		map.put("COMPANY_LOGO", hospitalLogo);
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
@@ -184,8 +187,10 @@ public class ReportsController {
 		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
 		
 		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
+		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
 		
 		String rxLogo = file.getAbsolutePath();
+		String cdsiLogo = cdsiFile.getAbsolutePath();
 //		String hospitalLogo = hospitalLogoFile.getAbsolutePath();
 		
 		String docLogo = doctor.getClinicLogoUrl();
@@ -198,6 +203,7 @@ public class ReportsController {
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RX_LOGO", rxLogo);
+		map.put("CDSI_LOGO", cdsiLogo);
 		map.put("COMPANY_LOGO", hospitalLogo);
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");

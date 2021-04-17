@@ -6,28 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Electronic Medical Records</title>
 
-    <!-- Global stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-    <link href="global_assets/css/icons/icomoon/styles.min.css" rel="stylesheet" type="text/css">
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="assets/css/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
-    <link href="assets/css/layout.min.css" rel="stylesheet" type="text/css">
-    <link href="assets/css/components.min.css" rel="stylesheet" type="text/css">
-    <link href="assets/css/colors.min.css" rel="stylesheet" type="text/css">
-    <!-- /global stylesheets -->
-
-    <!-- Core JS files -->
-    <script src="global_assets/js/main/jquery.min.js"></script>
-    <script src="global_assets/js/main/bootstrap.bundle.min.js"></script>
-    <script src="global_assets/js/plugins/loaders/blockui.min.js"></script>
-    <!-- /core JS files -->
-
-    <!-- Theme JS files -->
-    <script src="global_assets/js/plugins/forms/styling/uniform.min.js"></script>
-
-    <script src="assets/js/app.js"></script>
-    <script src="global_assets/js/demo_pages/login.js"></script>
-    <!-- /theme JS files -->
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
 
 </head>
 
@@ -66,7 +47,7 @@
             <div class="content d-flex justify-content-center align-items-center">
 
                 <!-- Login card -->
-                <form class="flex-fill" th:action="@{/registration}" th:object="${personnel}" method="post">
+                <form id="registrationForm" class="flex-fill" th:action="@{/registration}" th:object="${personnel}" method="post">
                 	<div class="row">
 						<div class="col-lg-6 offset-lg-3">
 		                    <div class="card mb-0">
@@ -86,7 +67,7 @@
 							                <div class="col-sm-6 mb-3">									                    
 							                    <label for="password">Password</label>
 							                    <span class="validationError text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-							                    <input id="password" th:field="*{password}" placeholder="Password" type="text" class="form-control" >
+							                    <input id="password" th:field="*{password}" placeholder="Password" type="password" class="form-control" >
 							                </div>
 							            </div>					            
 										
@@ -111,11 +92,17 @@
 							            </div>
 							            
 							            <div class="row">
-							            	 <div class="col-sm-6 mb-3">									                    
+							            	 <div class="col-sm-4 mb-3">									                    
 							                    <label for="contactNumber">Mobile</label>
+							                    <span class="contactNumber text-danger" th:if="${#fields.hasErrors('contactNumber')}" th:errors="contactNumber"></span>
 							                    <input id="contactNumber" th:field="*{contactNumber}" placeholder="Mobile Number" type="text" class="form-control" >
 							                </div>
-							                <div class="col-sm-6 mb-3">									                    
+							                <div class="col-sm-4 mb-3">									                    
+							                    <label for="email">Email</label>
+							                    <span class="validationError text-danger" th:if="${#fields.hasErrors('email')}" th:errors="email"></span>
+							                    <input id="email" th:field="*{email}" placeholder="Email" type="text" class="form-control" >
+							                </div>
+							                <div class="col-sm-4 mb-3">									                    
 							                    <label for="gender">Gender</label>
 							                    <select id="_gender" th:field="*{gender}" class="form-control">
 							                        <option value="M" th:selected="*{gender == 'M'}">MALE</option>
@@ -173,10 +160,190 @@
 	
 	 <script type="text/javascript" th:inline="javascript">
 		$(document).ready(function () {
-			$(window).on('load',function(){
-	        		$('#modal_terms_conditions').modal('show');
-	            });
-	        });
+			let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
+	        
+			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+			
+			if(msgCode === 'ERROR'){
+				$('#modal_form_vertical').modal('show');
+				swal({
+					title: "Validation Error",
+					text: msgDesc,
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				});
+			} else if(msgCode === 'ERRORUSERNAME'){
+				swal({
+					title: "Validation Error",
+					text: msgDesc,
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#username').focus();
+				});
+			} else if(msgCode === 'SUCCESS'){
+				swal({
+					title: "Success!",
+					text: "Registration successful.",
+					icon: "success",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					window.location.href = contextRoot + "/login";
+				});
+			} else {
+				$('#modal_terms_conditions').modal('show');
+			}
+			
+			
+	    });
+		
+		$("#registrationForm").submit(function(e){
+            
+            e.preventDefault(e);
+            
+            let isValid = true;
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let lastname = document.getElementById("lastName").value.trim();
+            let firstname = document.getElementById("firstName").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let cellno = document.getElementById("contactNumber").value.trim();            
+            let termsConditionsAgree = $('#termsConditionsAgree').is(":checked");
+            var emailRx = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+            
+            if(username == ''){
+            	isValid = false;
+            	
+            	swal({
+					title: "Validation Error",
+					text: "Username is a required field.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#username').focus();
+				});
+            						
+			}
+			
+			if(password == '' && isValid){
+				isValid = false;
+            	
+				swal({
+					title: "Validation Error",
+					text: "Password is a required field.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#password').focus();
+				});					
+			}
+			
+			if(firstname == ''  && isValid){
+				isValid = false;
+            	
+				swal({
+					title: "Validation Error",
+					text: "First name is a required field.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#firstName').focus();
+				});					
+			}
+			
+			if(lastname == ''  && isValid){
+				isValid = false;
+            	
+				swal({
+					title: "Validation Error",
+					text: "Last name is a required field.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#lastName').focus();
+				});					
+			}
+			
+			if(cellno == ''  && isValid){
+				isValid = false;
+        	
+				swal({
+					title: "Validation Error",
+					text: "Mobile is a required field.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#contactNumber').focus();
+				});					
+			}
+			
+			if(email == ''  && isValid){
+				isValid = false;
+            	
+				swal({
+					title: "Validation Error",
+					text: "Email is a required field.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#email').focus();
+				});					
+			}			
+			
+			if(!emailRx.test(email)) {
+				isValid = false;
+            	
+				swal({
+					title: "Validation Error",
+					text: "Email is invalid. Please enter a valid email.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#email').focus();
+				});	
+		    }
+            
+            if(!termsConditionsAgree && isValid){
+				isValid = false;
+            	
+				swal({
+					title: "Terms and Condition",
+					text: "You must agree to the Terms and Conditions to proceed with the registration.",
+					icon: "warning",
+					buttons: false,
+		            timer: 2000,
+				})
+				.then((value) => {
+					$('#termsConditionsAgree').focus();
+				});
+            }
+            
+            
+            if(isValid) {
+            	registrationForm.submit();
+            }
+            
+		});
 	</script>
 </body>
 </html>

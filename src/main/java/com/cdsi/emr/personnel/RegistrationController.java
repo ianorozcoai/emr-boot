@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.validation.Valid;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,15 +50,30 @@ public class RegistrationController {
             model.addAttribute("personnels", this.personnelRepository.findAll());
             model.addAttribute("personnelDto", personnel);
             model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-            return "personnel/login";
+            return "personnel/register";
         }
+        
+        try {
         personnel.setPassword(this.passwordEncoder.encode(personnel.getPassword()));
 
         LocalDate today = LocalDate.now();
         personnel.setEndDate(today.plusMonths(1));
         this.personnelRepository.save(personnel);
         redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "System user added successfully."));
-        return "redirect:/login";
+        
+        } catch (DataIntegrityViolationException e) {
+
+        	model.addAttribute("uxmessage", new UXMessage("ERRORUSERNAME", "Username alreay used. Please choose another username."));
+            e.printStackTrace();
+            return "personnel/register";
+        } catch (Exception e) {
+
+        	model.addAttribute("uxmessage", new UXMessage("ERROR", "An Error has occured. Please contact CDSI Systems Administrator."));
+            e.printStackTrace();
+            return "personnel/register";
+        }
+        
+        return "redirect:/registration";
     }
 
     private Personnel toPersonnel(PersonnelDto p) {

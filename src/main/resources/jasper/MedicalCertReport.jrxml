@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2020-07-07T05:48:44 -->
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MedicalCertReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="ee630330-85bb-49d3-9734-0ada293e7a77">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="inventorydai"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -21,6 +20,7 @@
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
 	<parameter name="RX_LOGO" class="java.lang.String"/>
 	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
+	<parameter name="CDSI_LOGO" class="java.lang.String"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
@@ -113,7 +113,7 @@
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{PATIENT_NAME}]]></textFieldExpression>
@@ -176,7 +176,7 @@
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
@@ -222,7 +222,7 @@
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DOCTOR_NAME}]]></textFieldExpression>
@@ -479,6 +479,14 @@
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="4" y="550" width="150" height="50" uuid="0536ac77-1bd1-48bb-82c7-23bd70f500ff">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

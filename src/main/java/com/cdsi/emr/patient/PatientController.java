@@ -126,14 +126,17 @@ public class PatientController {
 	@GetMapping("/emrpatientrecord/{patientId}/{consultationId}")
     public String viewPatientRecordFromDashboard(Model model
             , @PathVariable long patientId
-            , @PathVariable long consultationId) {
+            , @PathVariable long consultationId, Authentication auth) {
+		
+		Personnel doctor = (Personnel) auth.getPrincipal();
+		
         Optional<Patient> optionalPatient = patientRepository.findById(patientId);
         Patient patient = optionalPatient.get();
         model.addAttribute("patient", patient);
         EmrConsultation emrConsultation = new EmrConsultation();
         emrConsultation.setPatient(patient);
         model.addAttribute("emrConsultation", emrConsultation);
-        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientId(patientId);
+        List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(patientId);
         Consumer<EmrConsultation> fetchDiagnosis = ec -> {
             List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();
             try {
@@ -156,7 +159,7 @@ public class PatientController {
         model.addAttribute("emrGenericsLookupList", emrGenericsLookupList);
         model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
         model.addAttribute("dosages", EHRConstants.DOSAGE);
-        
+        model.addAttribute("allClinics", clinicRepository.findAllByDoctorId(doctor.getId()));
         model.addAttribute("selectedConsultationId", consultationId);
         
         return "emr/emr_patient_record";
