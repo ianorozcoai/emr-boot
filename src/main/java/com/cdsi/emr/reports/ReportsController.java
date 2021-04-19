@@ -76,7 +76,13 @@ public class ReportsController {
 		
 		String rxLogo = file.getAbsolutePath();
 		String cdsiLogo = cdsiFile.getAbsolutePath();
-		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));		
+//		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));	
+		
+		String hospitalLogo = "";
+		
+		if(docLogo != null) {
+			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+		}
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RX_LOGO", rxLogo);
@@ -84,7 +90,7 @@ public class ReportsController {
 		map.put("COMPANY_LOGO", hospitalLogo);
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
-		map.put("SPECIALIZATION", doctor.getSpecialization());
+		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
 		
 		map.put("CLINIC_NAME", "");
 		map.put("DOCTOR_ADDRESS", "");
@@ -116,14 +122,14 @@ public class ReportsController {
 		}
 		
 		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
-		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber());
-		map.put("DOCTOR_S_NO", doctor.getSNumber());
+		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "");
+		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 		map.put("PERIOD", formatter.format(emrPatientMedication.getDateCreated()));
 		
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
-		map.put("PATIENT_ADDRESS", patient.getStreet() + " " + patient.getCity());
+		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
 		map.put("PATIENT_GENDER", patient.getGender());		
 		map.put("PATIENT_AGE", patient.getAge() + "");
 		
@@ -207,7 +213,7 @@ public class ReportsController {
 		map.put("COMPANY_LOGO", hospitalLogo);
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
-		map.put("SPECIALIZATION", doctor.getSpecialization());
+		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
 		
 		map.put("CLINIC_NAME", "");
 		map.put("DOCTOR_ADDRESS", "");
@@ -233,14 +239,14 @@ public class ReportsController {
 		}
 		
 		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
-		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber());
-		map.put("DOCTOR_S_NO", doctor.getSNumber());
+		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "" );
+		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 		map.put("PERIOD", formatter.format(emrMedicalCertificate.getDateRequested()));
 		
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
-		map.put("PATIENT_ADDRESS", patient.getStreet() + " " + patient.getCity());
+		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
 		map.put("PATIENT_GENDER", patient.getGender());		
 		map.put("PATIENT_AGE", patient.getAge() + "");
 		map.put("PATIENT_MEDICATION", emrMedicalCertificate.getMedication());

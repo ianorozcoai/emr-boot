@@ -19,8 +19,8 @@
 	<parameter name="DOCTOR_PTR_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
 	<parameter name="RX_LOGO" class="java.lang.String"/>
-	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
 	<parameter name="CDSI_LOGO" class="java.lang.String"/>
+	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
@@ -365,7 +365,7 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[License No.]]></text>
@@ -395,7 +395,7 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PTR No.]]></text>
@@ -412,7 +412,7 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[S2 No.]]></text>
@@ -474,19 +474,18 @@
 				<textFieldExpression><![CDATA[$P{PATIENT_HISTORY}]]></textFieldExpression>
 			</textField>
 			<image>
+				<reportElement x="4" y="550" width="150" height="50" uuid="ec8704c2-646c-450a-b36f-5863839a6da2">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
 				<reportElement x="9" y="6" width="70" height="70" uuid="8a8a237b-36c4-407a-af8d-5a0dce54ac2f">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
-			</image>
-			<image>
-				<reportElement x="4" y="550" width="150" height="50" uuid="0536ac77-1bd1-48bb-82c7-23bd70f500ff">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

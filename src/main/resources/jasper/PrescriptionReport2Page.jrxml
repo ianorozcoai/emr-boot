@@ -16,8 +16,8 @@
 	<parameter name="DOCTOR_PTR_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
 	<parameter name="RX_LOGO" class="java.lang.String"/>
-	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
 	<parameter name="CDSI_LOGO" class="java.lang.String"/>
+	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
@@ -925,6 +925,20 @@
 				<textFieldExpression><![CDATA[$P{MEDICATION6} != null ? $P{MEDICATION6} : ""]]></textFieldExpression>
 			</textField>
 			<image>
+				<reportElement x="4" y="502" width="150" height="50" uuid="e157351d-83c0-4c63-a0e0-060cec182ad2">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="404" y="502" width="150" height="50" uuid="e71f14a2-0523-4885-b854-cf7e00cec177">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
 				<reportElement x="9" y="6" width="70" height="70" uuid="2f1f6575-0041-4c5c-83b5-7d756d88b96d">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -960,22 +974,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="4" y="502" width="150" height="50" uuid="e157351d-83c0-4c63-a0e0-060cec182ad2">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
-			</image>
-			<image>
-				<reportElement x="404" y="502" width="150" height="50" uuid="e71f14a2-0523-4885-b854-cf7e00cec177">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
-			</image>
 		</band>
 	</pageHeader>
 </jasperReport>

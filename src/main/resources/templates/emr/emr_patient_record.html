@@ -327,6 +327,14 @@
 	    	
 	    	let allClinics = /*[[${allClinics == null ? '' : allClinics} ]]*/'';
 	    	let hmos = /*[[${hmos == null ? '' : hmos} ]]*/'';
+	    	let allDiagnosis = /*[[${allDiagnosis == null ? '' : allDiagnosis} ]]*/'';
+	    	
+	    	if(allDiagnosis.length > 0) {
+	    		//alert('with diagnosis');
+	    		$('.flexdatalist').flexdatalist('data', allDiagnosis);
+	    	} else {
+	    		$('.flexdatalist').flexdatalist();
+	    	}
 	    	
 	    	if(allClinics.length == 0){
 	    		$("#addConsultationButton").hide();
@@ -350,7 +358,7 @@
 	    		$("#addConsultationButton").show();
 	    	}
 	    	
-			$('.flexdatalist').flexdatalist();
+			
 	    	
 	    	$("#diagnosisArea-flexdatalist").on("keyup", function(e) {
 	    	    let ctxpath = /*[[${#request.getContextPath()}]]*/'';
@@ -531,7 +539,8 @@
 			$('#physical').val(viewConsultationButton.dataset.physical);
 			$('#intervention').val(viewConsultationButton.dataset.intervention);
 			$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt);
-			$('#diagnosisJSON').val(viewConsultationButton.dataset.diagnosisjson);
+			$('#diagnosisArea').val(viewConsultationButton.dataset.diagnosisjson);
+			//$('#diagnosisArea').val('[{"id":2992,"code":"E0810","description":"Diabetes mellitus due to underlying condition with ketoacidosis without coma","patientId":1}]');
 
 			if ($('#paymentType').val() === 'HMO') {
 				$('#hmoName').prop('disabled', false);

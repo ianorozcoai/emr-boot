@@ -16,8 +16,8 @@
 	<parameter name="DOCTOR_PTR_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
 	<parameter name="RX_LOGO" class="java.lang.String"/>
-	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
 	<parameter name="CDSI_LOGO" class="java.lang.String"/>
+	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
@@ -473,6 +473,13 @@
 				<textFieldExpression><![CDATA[$P{MEDICATION3} != null ? $P{MEDICATION3} : ""]]></textFieldExpression>
 			</textField>
 			<image>
+				<reportElement x="4" y="502" width="150" height="50" uuid="61fef090-d15a-4e98-87ae-ec7ffe0c9ccc">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
 				<reportElement x="9" y="6" width="70" height="70" uuid="8127d670-611c-4b7a-b69c-5908a4bccd94">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -490,13 +497,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="4" y="502" width="150" height="50" uuid="70f68f87-af9c-4246-b64e-3296ea8fab39">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
-			</image>
 		</band>
 	</pageHeader>
 </jasperReport>

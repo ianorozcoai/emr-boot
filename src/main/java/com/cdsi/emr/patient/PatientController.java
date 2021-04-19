@@ -1,5 +1,6 @@
 package com.cdsi.emr.patient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -113,9 +114,16 @@ public class PatientController {
 				e.printStackTrace();
 			}
 		};
+		
+		List<EmrConsultationDiagnosis> allDiagnosis = new ArrayList<EmrConsultationDiagnosis>();
+		
+		for(EmrConsultation consultation : emrConsultations) {
+			allDiagnosis.addAll(consultation.getDiagnosis());
+		}
 
 		emrConsultations.forEach(fetchDiagnosis);
 		model.addAttribute("emrConsultations", emrConsultations);
+		model.addAttribute("allDiagnosis", allDiagnosis);
 		model.addAttribute("hmos", hmoRepository.findAll());
 		model.addAttribute("allClinics", clinicList);
 		model.addAttribute("selectedConsultationId", 0);
@@ -145,6 +153,14 @@ public class PatientController {
                 e.printStackTrace();
             }
         };
+        
+        List<EmrConsultationDiagnosis> allDiagnosis = new ArrayList<EmrConsultationDiagnosis>();
+		
+		for(EmrConsultation consultation : emrConsultations) {
+			allDiagnosis.addAll(consultation.getDiagnosis());
+		}
+		
+		model.addAttribute("allDiagnosis", allDiagnosis);
         
         List<EMRPatientMedication> emrPatientMedicationList = emrPatientMedicationRepository.findByPatientId(patientId);
         List<String> emrGenericsLookupList = emrGenericsLookupRepository.findDistinctByGenericName();
