@@ -118,5 +118,6 @@ public class PatientMedicalHistory {
 	private boolean edd;
 	private String eddNotes;
 	private String reviewOfSystem;
+	private String others2;
 	
 }

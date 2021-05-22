@@ -48,7 +48,7 @@
 
 				<!-- Dashboard content -->
 				<div class="row">
-					<div class="col-sm-6 col-xl-3">
+					<div class="col-sm-4">
 						<div class="card card-body bg-indigo-400 has-bg-image">
 							<div class="media">
 								<div class="mr-3 align-self-center">
@@ -63,7 +63,7 @@
 						</div>
 					</div>
 
-					<div class="col-sm-6 col-xl-3">
+					<div class="col-sm-4">
 						<div class="card card-body bg-success-400 has-bg-image">
 							<div class="media">
 								<div class="mr-3 align-self-center">
@@ -78,7 +78,7 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-6 col-xl-3">
+					<div class="col-sm-4">
 						<div class="card card-body bg-violet-400 has-bg-image">
 							<div class="media">
 								<div class="mr-3 align-self-center">
@@ -93,7 +93,7 @@
 						</div>
 					</div>
 
-					<div class="col-sm-6 col-xl-3">
+					<div class="col-sm-4">
 						<div class="card card-body bg-danger-400 has-bg-image">
 							<div class="media">
 								<div class="mr-3 align-self-center">
@@ -108,7 +108,7 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-6 col-xl-3">
+					<div class="col-sm-4">
 						<div class="card card-body bg-orange-400 has-bg-image">
 							<div class="media">
 								<div class="mr-3 align-self-center">
@@ -123,7 +123,7 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-6 col-xl-3">
+					<div class="col-sm-4">
 						<div class="card card-body bg-blue-400 has-bg-image">
 							<div class="media">
 								<div class="mr-3 align-self-center">
@@ -215,24 +215,18 @@
 							<form id="cancelConsultationForm" th:action="@{/cancelEmrConsulation}" method="post">
 								<input id="consultationId" name="consultationId" type="hidden"/>
 							</form>
-								<table class="table datatable-basic">
+								<table class="table table-bordered table-hover wrap" id="consultation-list">
 									<thead>
 										<tr>
+											<th class="text-center">Action</th>
 											<th class="text-center">Patient Name</th>
-											<th class="text-center">Status</th>
-											<th colspan="2" class="text-center">Action</th>
+											<th class="text-center">Status</th>											
 											<th class="text-center">Complaints</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr th:each="ec : *{emrConsultations}">
-											<td class="text-center" th:text="${ec.patient.fullName}">
-												James Cruz
-											</td>
-											<td class="text-center" th:text="${ec.consultationStatus}">
-												ON QUEUE
-											</td>
-											<td colspan="2" class="text-center">
+											<td class="text-center">
 												<span>
 													<a th:href="|@{/emrpatientrecord}/${ec.patient.id}/${ec.id}|" class="btn btn-primary">View</a>
 												</span>
@@ -242,7 +236,12 @@
 													>Cancel</button>
 												</span>
 											</td>
-
+											<td class="text-center" th:text="${ec.patient.fullName}">
+												James Cruz
+											</td>
+											<td class="text-center" th:text="${ec.consultationStatus}">
+												ON QUEUE
+											</td>
 											<td class="text-center" th:text="${ec.symptoms}">
 												3/5
 											</td>
@@ -271,6 +270,12 @@
 	<script th:inline="javascript">		
 	
 	    $(document).ready(function() {
+	    	
+	    	$('#consultation-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
 	    		    				
 			$(".nav-link").removeClass("active");	    	  	
 			$("#emrDashboardNav").addClass("active");

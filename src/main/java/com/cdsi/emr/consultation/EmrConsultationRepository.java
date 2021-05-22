@@ -23,6 +23,8 @@ public interface EmrConsultationRepository extends JpaRepository<EmrConsultation
 	List<EmrConsultation> findAllByPersonnelIdAndPaymentTypeAndHmoPaid(long doctorId, String paymentType, String hmoPaid);
 	
 	List<EmrConsultation> findAllByPersonnelIdAndPaymentType(long doctorId, String paymentType);
+	
+	List<EmrConsultation> findAllByPersonnelIdAndPaymentTypeOrderByConsultationDate(long doctorId, String paymentType);
 
 	List<EmrConsultation> findAllByIdInAndPaymentType(List<Long> consultationIds, String paymentType);
 

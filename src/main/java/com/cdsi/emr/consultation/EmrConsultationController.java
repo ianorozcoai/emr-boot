@@ -55,7 +55,7 @@ public class EmrConsultationController {
 	public String listUnpaidHMOConsultation(Model model, Authentication auth) {
 		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		
-		List<EmrConsultation> hmoConsultations = emrConsultationRepository.findAllByPersonnelIdAndPaymentType(loggedUser.getId(), "HMO");
+		List<EmrConsultation> hmoConsultations = emrConsultationRepository.findAllByPersonnelIdAndPaymentTypeOrderByConsultationDate(loggedUser.getId(), "HMO");
 		List<EmrConsultation> unpaidHMOConsultations = new ArrayList<EmrConsultation>();
 		List<EmrConsultation> paidHMOConsultations = new ArrayList<EmrConsultation>();
 		
@@ -100,7 +100,7 @@ public class EmrConsultationController {
 	public String listConsultation(Model model, Authentication auth) {
 		
 		LocalDate dateFrom = LocalDate.now().minusDays(30);
-		LocalDate dateTo = LocalDate.now();
+		LocalDate dateTo = LocalDate.now().plusDays(1);
 		
 		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		
@@ -153,7 +153,7 @@ public class EmrConsultationController {
 		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		
 		List<EmrConsultation> emrConsultations = emrConsultationRepository
-				.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dto.getDateFrom(), dto.getDateTo());
+				.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dto.getDateFrom(), dto.getDateTo().plusDays(1));
 		
 		Consumer<EmrConsultation> fetchDiagnosis = ec -> {
 			List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();
@@ -221,8 +221,31 @@ public class EmrConsultationController {
 		if (errors.hasErrors()) {
 			model.addAttribute("uxmessage", new UXMessage("ERRORCONSULT","Please check items marked in red."));
 			model.addAttribute("patient", patient);
-			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAll());
+			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(emrConsultation.getPatient().getId()));
 			model.addAttribute("hmos", hmoRepository.findAll());
+			emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
+			
+			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
+			model.addAttribute("allClinics", clinicList);
+			
+			return "emr/emr_patient_record";
+		}
+		
+		List<EmrConsultation> consultationList = this.emrConsultationRepository.findAllByPatientId(emrConsultation.getPatient().getId());
+		boolean isDateExisting =  false;
+		for(EmrConsultation con : consultationList) {
+			if(con.getConsultationDate().plusDays(1).compareTo(emrConsultation.getConsultationDate()) == 0) {
+				isDateExisting = true;
+				break;
+			}
+		}
+		
+		if(isDateExisting && emrConsultation.getId() == 0) {
+			model.addAttribute("uxmessage", new UXMessage("DUPLICATEDATE","Consultation Date already exist."));
+			model.addAttribute("patient", patient);
+			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(emrConsultation.getPatient().getId()));
+			model.addAttribute("hmos", hmoRepository.findAll());
+			emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
 			
 			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
 			model.addAttribute("allClinics", clinicList);
@@ -245,8 +268,9 @@ public class EmrConsultationController {
 			
 			model.addAttribute("uxmessage", new UXMessage("ERRORCONSULT","Error converting JSON string."));
 			model.addAttribute("patient", patient);
-			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAll());
+			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(emrConsultation.getPatient().getId()));
 			model.addAttribute("hmos", hmoRepository.findAll());
+			emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
 			
 			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
 			model.addAttribute("allClinics", clinicList);

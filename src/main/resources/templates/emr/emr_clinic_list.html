@@ -72,9 +72,10 @@
 							            <!--  Address -->
 							            <div class="row">
 											<div class="col-sm">
-							                        <label for="scheduleRx">Schedule for RX Clinic</label>
+							                        <label for="scheduleRx">Schedule to appear on prescription pad</label>
 							                        <span class="validationError text-danger" th:if="${#fields.hasErrors('scheduleRx')}" th:errors="*{scheduleRx}"></span>
-							                        <input id="scheduleRx" name="scheduleRx" th:field="*{scheduleRx}" placeholder="Schedule for RX Clinic" type="text" class="form-control" >
+							                        
+							                        <textarea rows="3" class="form-control" id="scheduleRx" th:field="*{scheduleRx}" placeholder="Schedule for RX Clinic" cols="50" maxlength="500" ></textarea>
 							                    </div>
 							            </div>
 							        </div>

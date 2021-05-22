@@ -50,17 +50,17 @@
 					<div class="col-xl-12">					
 						<!-- Basic datatable -->
 						<div class="card">
-							<div class="card-header bg-dark text-white header-elements-inline">
+							<div class="card-header bg-purple text-white header-elements-inline">
 								<h5 class="card-title">Uncollected HMO List</h5>
 								<div class="header-elements">
 									<div class="list-icons">				                				
-				                		<button type="button" class="btn btn-outline-primary markAllAsPaidBtn">Mark All Checked as PAID</button>
+				                		<button type="button" class="btn bg-violet markAllAsPaidBtn" style="border: 1px solid white;">Mark All Checked as PAID</button>
 				                	</div>
 			                	</div>
 							</div>
 
 							<form id="markAllAsPaidForm" th:action="@{/hmoCollection}" method="post" class="form-horizontal">
-								<table class="table datatable-basic" id="dataTables-hmoCollectionList" >
+								<table class="table table-bordered table-hover wrap" id="hmo-uncollected-list" >
 									<thead>
 										<tr>
 											<th><div class="pull-left"><input type="checkbox" id="selectAllCheckBox" value=""></div></th>
@@ -73,7 +73,7 @@
 										<th:block th:each="consultation : ${unpaidHMOConsultations}">
 											<tr>
 												<td><input type="checkbox" class="checkbox1" th:name="${'consultationIdList[' + consultationStat.index + ']'}" th:value="${consultation.id}" /></td>
-												<td th:text="${#temporals.format(consultation.consultationDate,'MMMM d, yyyy hh:mm a')}">September 9 2020 02:30 PM</td>
+												<td th:text="${#temporals.format(consultation.consultationDate,'MMM d, yyyy')}">September 9 2020 02:30 PM</td>
 												<td id="hmoName" th:text="${consultation.patient.fullName}" width="40%;">Patient name</td>
 												<td th:text="${consultation.hmoName}" width="30%;">HmoName</td>
 											</tr>
@@ -95,7 +95,7 @@
 								<h5 class="card-title">Collected HMO List</h5>								
 							</div>							
 		
-							<table class="table datatable-basic" id="dataTables-hmoCollectionList" >
+							<table class="table table-bordered table-hover wrap" id="hmo-collected-list" >
 								<thead>
 									<tr>
 										<th>Consultation Date</th>	
@@ -106,7 +106,7 @@
 								<tbody>
 									<th:block th:each="consultation : ${paidHMOConsultations}">
 										<tr>
-											<td th:text="${#temporals.format(consultation.consultationDate,'MMMM d, yyyy hh:mm a')}">September 9 2020 02:30 PM</td>
+											<td th:text="${#temporals.format(consultation.consultationDate,'MMM d, yyyy hh:mm a')}">September 9 2020 02:30 PM</td>
 											<td id="hmoName" th:text="${consultation.patient.fullName}" width="40%;">Patient name</td>
 											<td th:text="${consultation.hmoName}" width="30%;">HmoName</td>											
 										</tr>
@@ -174,6 +174,18 @@
 		            timer: 2000,
 				});
 			}
+			
+			$('#hmo-collected-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
+			
+			$('#hmo-uncollected-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
 	    	   	
 	    });
 

@@ -189,7 +189,7 @@
 				<textFieldExpression><![CDATA[$P{PATIENT_GENDER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="136" y="193" width="72" height="18" uuid="a1ba6daa-4532-4a19-935b-d6860ad488fd">
+				<reportElement x="136" y="193" width="104" height="18" uuid="a1ba6daa-4532-4a19-935b-d6860ad488fd">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -261,7 +261,7 @@
 				<textFieldExpression><![CDATA[$P{MEDICATION1} != null ? $P{MEDICATION1} : ""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="211" y="193" width="40" height="18" forecolor="#000000" uuid="30b11107-4244-4b54-9a78-18e4643e3709">
+				<reportElement x="240" y="193" width="40" height="18" forecolor="#000000" uuid="30b11107-4244-4b54-9a78-18e4643e3709">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box topPadding="0" leftPadding="10">
@@ -276,8 +276,9 @@
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="251" y="193" width="129" height="18" uuid="78544ddb-2a20-406a-9776-a7d4d58070bb">
+				<reportElement x="281" y="193" width="99" height="18" uuid="78544ddb-2a20-406a-9776-a7d4d58070bb">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="0">
 					<bottomPen lineWidth="1.0"/>
@@ -393,7 +394,7 @@
 				<textFieldExpression><![CDATA[$P{DOCTOR_CONTACT_NO2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="263" width="278" height="50" uuid="9369bf72-6d3f-4a03-87b1-61d0bbff6f63">
+				<reportElement x="120" y="263" width="248" height="50" uuid="9369bf72-6d3f-4a03-87b1-61d0bbff6f63">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -409,7 +410,7 @@
 				<textFieldExpression><![CDATA[$P{INSTRUCTION1} != null ? $P{INSTRUCTION1} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="343" width="278" height="50" uuid="c8a5b845-417d-49dd-9e15-4bde1ae823fe">
+				<reportElement x="120" y="343" width="248" height="50" uuid="c8a5b845-417d-49dd-9e15-4bde1ae823fe">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -441,7 +442,7 @@
 				<textFieldExpression><![CDATA[$P{MEDICATION2} != null ? $P{MEDICATION2} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="422" width="278" height="50" uuid="075fad93-de94-4e61-8386-bf384c1510f0">
+				<reportElement x="120" y="422" width="248" height="50" uuid="075fad93-de94-4e61-8386-bf384c1510f0">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>

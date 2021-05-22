@@ -36,138 +36,7 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 
-			<form th:action="@{/emrconsultations}" th:object="${emrConsultation}" method="post" id="admit-form">
-				<input type="hidden" th:field="*{id}" id="emrConsultationId">
-				<input type="hidden" th:field="*{patient.id}">
-				<input type="hidden" th:field="*{consultationStatus}">
-				<div class="modal-body">
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-4">
-								<label for="consultationDate">Consultation Date</label>
-								<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationDate')}" th:errors="*{consultationDate}"></span>
-								<input id="consultationDate" th:field="*{consultationDate}" placeholder="Consultation Date" type="date" class="form-control" >
-							</div>
-							<div class="col-sm-4">
-								<label for="paymentType">Payment Type</label>
-								<select th:field="*{paymentType}" id="paymentType" class="form-control">
-									<option value='CASH'>CASH</option>
-									<option value='HMO'>HMO</option>
-								</select>
-							</div>
-							<div class="col-sm-4">
-								<label for="clinic_id">Clinic</label>
-								<select id="clinic_id" name="clinic.id" class="form-control">
-									<option th:each="clinic : ${allClinics}" th:value="${clinic.id}" th:text="${clinic.name}">
-								</select>
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-8">
-								<label for="hmoName">HMO Name</label>
-								<select th:field="*{hmoName}" id="hmoName" class="form-control">
-									<option value=''>- Select Service Provider -</option>
-									<option th:each="hmo : ${hmos}"
-											th:value="${hmo.hmoName}"
-											th:text="${hmo.hmoName}"
-											th:selected="${hmo.hmoName==emrConsultation.hmoName}">HMO</option>
-								</select>
-							</div>
-							<div class="col-sm-4">
-								<label for="consultationFee">Consultation Fee</label>
-								<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></span>
-								<input id="consultationFee" th:field="*{consultationFee}" placeholder="Consultation Fee" type="text" class="form-control" >
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-3">
-								<label for="temperature">Temp (&deg;C)</label>
-								<input id="temperature" th:field="*{temperature}" placeholder="0.0" type="number" class="form-control" >
-							</div>
-							<div class="col-sm-3">
-								<label for="weight">Weight (Kg)</label>
-								<span class="validationError text-danger" th:if="${#fields.hasErrors('weight')}">Invalid Value</span>
-								<input id="weight" th:field="*{weight}" placeholder="0.0" type="number" class="form-control" >
-							</div>
-							<div class="col-sm-3">
-								<label for="height">Height (cm)</label>
-								<span class="validationError text-danger" th:if="${#fields.hasErrors('height')}">Invalid Value</span>
-								<input id="height" th:field="*{height}" placeholder="0.0" type="number" class="form-control" >
-							</div>
-							<div class="col-sm-3">
-								<label for="bloodPressure">BP</label>
-								<input id="bloodPressure" th:field="*{bloodPressure}"  placeholder="0/0" type="text" class="form-control" >
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-12">
-								<label for="symptoms">Complaints/Symptoms</label>
-								<textarea rows="3" class="form-control" th:field="*{symptoms}" placeholder="Complaints" cols="50" maxlength="500" ></textarea>
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-12">
-								<label for="physical">Physical Examination (PE)</label>
-								<textarea rows="3" class="form-control" th:field="*{physical}" id="physical" placeholder="Physical Examination (PE)" cols="50" maxlength="500" ></textarea>
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-12">
-								<label for="diagnosis">Diagnosis ICD Code</label>
-								<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
-								<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
-									   data-search-in="description"
-									   data-search-by-word="true"
-									   data-min-length="3"
-									   multiple="multiple"
-									   data-selection-required="true"
-									   data-visible-properties='["code","description"]'
-									   data-text-property="{code} - {description}"
-									   data-value-property='["id","code","description"]'>
-							</div>
-						</div>
-					</div>
-					
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-12">
-								<label for="diagnosisTxt">Diagnosis Notes</label>
-								<textarea rows="3" class="form-control" th:field="*{diagnosisTxt}" id="diagnosisTxt" placeholder="Diagnosis Notes" cols="50" maxlength="500" ></textarea>
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-12">
-								<label for="intervention">Intervention</label>
-								<textarea rows="3" class="form-control" th:field="*{intervention}" placeholder="Intervention" cols="50" maxlength="500" ></textarea>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-					<button type="button" class="btn bg-primary" id="saveInfoButton" onclick="checkLastThreeFields()">Save Info</button>
-					<button type="submit" class="btn bg-primary" onclick="setConsultationStatus('PROCESSED')" id="submitProcessedButton">Save Info and Mark as PROCESSED</button>
-				</div>
-			</form>
+			
 		</div>
 	</div>
 </div>
@@ -181,121 +50,315 @@
 
 		<!-- Content area -->
 		<div class="content">
-
-			<!-- Inner container -->
-			<div class="d-md-flex align-items-md-start">
-
-				<!-- Left sidebar component -->
-				<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
-				<!-- /left sidebar component -->
-
-
-				<!-- Right content -->
-				<div class="tab-content w-100">
-					<div class="tab-pane fade active show" id="profile">
-
-						<!-- Consultation Table -->
-						<div class="row">
-							<div class="col-xl-12">
-								<!-- Basic datatable -->
-								<div class="card">
-									<div class="card-header header-elements-inline">
-										<h5 class="card-title">Consultation List</h5>
-										<div class="header-elements">
-											<div class="list-icons">
-												<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_consultation" id="addConsultationButton">Add Consultation</button>
+			<input type="hidden" id="mode" th:value="${mode}">
+			<div class="card">
+				<div class="card-body pb-0">				
+					<div class="row">												
+						<!-- Start Consultation Area -->
+						<div class="col-lg-6">
+							<form th:action="@{/emrconsultations}" th:object="${emrConsultation}" method="post" id="consultationForm">
+							<div class="card rounded-left-0">
+								<div class="card-header">
+									<div class="row" th:object="${patient}">
+										<div class="form-group">
+											<div class="media mt-0">
+												<div class="col-sm-3">
+													<img id="memberPhoto" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="140" height="140" class="rounded-circle" alt="">
+												</div>
+						
+												<div class="col-sm-4" style="margin-top:20px;">
+														<span class="memberDetails"><i class="icon-vcard mr-2"></i> Name: <th:block th:text="*{fullName}">Gigi</th:block></span><br>
+														<span class="memberDetails"><i class="icon-user mr-2"></i> Nickname: <th:block th:text="*{nickName}">Gigi</th:block></span><br>
+														<span class="memberDetails"><i class="fas fa-birthday-cake mr-2"></i> Birthday: <th:block th:text="*{#temporals.format(birthdate,'MMM d, yyyy')}">January 27, 1982</th:block></span><br>	
+														<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
+														<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
+														<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+												</div>
+												<div class="col-sm-5">
+														<button type="button" class="btn bg-violet-400" style="width: 200px; margin-bottom: 5px;" onclick="clearConsultationModalFields()" id="submitNewButton">Add New Consultation</button>		
+														<button type="button" class="btn bg-warning" style="width: 200px; margin-bottom: 5px;" onclick="loadPrevDiagnosis()" id="loadOldRecordButton">Load Previous Diagnosis</button>							
+														<button type="button" class="btn bg-primary" style="width: 200px; margin-bottom: 5px;" onclick="checkLastThreeFields()" id="saveInfoButton">Save as ON QUEUE</button>
+														<button type="button" class="btn bg-success" style="width: 200px;" onclick="saveAsProcessed()" id="submitProcessedButton">Save as PROCESSED</button>
+														
+												</div>
 											</div>
 										</div>
 									</div>
-
-									<div class="card-body">
-										<table class="table table-bordered table-hover" id="consultation-list">
-											<thead>
-											<tr>
-												<th>Date</th>
-												<th>Complaints</th>
-												<th>Physical Examination</th>
-												<th>Diagnosis</th>
-												<th>Intervention</th>
-												<th class="text-center">Actions</th>
-											</tr>
-											</thead>
-											<tbody>
-											<tr th:each="ec : ${emrConsultations}">
-												<td>
-													<div class="d-flex align-items-center">
-														<div>
-															<a href="#" class="text-default font-weight-semibold" th:text="${#temporals.format(ec.consultationDate,'MMM d, yyyy')}">2020-12-06</a>
-														</div>
-													</div>
-												</td>
-												<td>
-													<div class="d-flex align-items-center">
-														<div>
-															<a href="#" class="text-default font-weight-semibold" th:text="${ec.symptoms}">2020-12-06</a>
-														</div>
-													</div>
-												</td>
-												<td>
-													<div class="d-flex align-items-center">
-														<div>
-															<a href="#" class="text-default font-weight-semibold" th:text="${ec.physical}">2020-12-06</a>
-														</div>
-													</div>
-												</td>
-												<td>
-													<div class="d-flex align-items-center">
-														<div>
-															<a href="#" class="text-default font-weight-semibold" th:each="ecd : ${ec.diagnosis}"
-															   th:text="|${ecd.description}, |">2020-12-06</a>
-														</div>
-													</div>
-												</td>
-												<td>
-													<div class="d-flex align-items-center">
-														<div>
-															<a href="#" class="text-default font-weight-semibold" th:text="${ec.intervention}">2020-12-06</a>
-														</div>
-													</div>
-												</td>
-												<td class="text-center">
-													<button th:onclick="|setValuesInForm('${ec.id}')|" class="btn btn-primary" th:id="|viewConsultationButton${ec.id}|"
-															data-toggle="modal" data-target="#modal_form_consultation"
-															th:data-id="${ec.id}"
-															th:data-consultationDate="${ec.consultationDate}"
-															th:data-paymentType="${ec.paymentType}"
-															th:data-clinic-id="${ec.clinic.id}"
-															th:data-hmoName="${ec.hmoName}"
-															th:data-hmoPaid="${ec.hmoPaid}"
-															th:data-consultationFee="${ec.consultationFee}"
-															th:data-consultationStatus="${ec.consultationStatus}"
-															th:data-temperature="${ec.temperature}"
-															th:data-weight="${ec.weight}"
-															th:data-height="${ec.height}"
-															th:data-bloodPressure="${ec.bloodPressure}"
-															th:data-symptoms="${ec.symptoms}"
-															th:data-physical="${ec.physical}"
-															th:data-intervention="${ec.intervention}"
-															th:data-diagnosisTxt="${ec.diagnosisTxt}"
-															th:data-diagnosisJSON="${ec.diagnosisJSON}"
-													>View Record</button>
-												</td>
-											</tr>
-											</tbody>
-										</table>
-									</div>
+								
+									
 								</div>
-								<!-- /basic datatable -->
+								<div class="card-body">
+									
+										<input type="hidden" th:field="*{id}" id="emrConsultationId">
+										<input type="hidden" th:field="*{patient.id}">
+										<input type="hidden" th:field="*{consultationStatus}">
+										<div class="modal-body">
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-5">
+														<label for="consultationDate">Consultation Date (dd/mm/yyyy)</label>
+														<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationDate')}" th:errors="*{consultationDate}"></span>
+														<input id="consultationDate" th:field="*{consultationDate}" placeholder="Consultation Date" type="date" class="form-control" >
+													</div>
+													<div class="col-sm-3">
+														<label for="paymentType">Payment Type</label>
+														<select th:field="*{paymentType}" id="paymentType" class="form-control">
+															<option value='CASH'>CASH</option>
+															<option value='HMO'>HMO</option>
+														</select>
+													</div>
+													<div class="col-sm-4">
+														<label for="clinic_id">Clinic</label>
+														<select id="clinic_id" name="clinic.id" class="form-control">
+															<option th:each="clinic : ${allClinics}" th:value="${clinic.id}" th:text="${clinic.name}">
+														</select>
+													</div>
+												</div>
+											</div>
+						
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-8">
+														<label for="hmoName">HMO Name</label>
+														<select th:field="*{hmoName}" id="hmoName" class="form-control">
+															<option value=''>- Select Service Provider -</option>
+															<option th:each="hmo : ${hmos}"
+																	th:value="${hmo.hmoName}"
+																	th:text="${hmo.hmoName}"
+																	th:selected="${hmo.hmoName==emrConsultation.hmoName}">HMO</option>
+														</select>
+													</div>
+													<div class="col-sm-4">
+														<label for="consultationFee">Consultation Fee</label>
+														<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></span>
+														<input id="consultationFee" th:field="*{consultationFee}" placeholder="Consultation Fee" type="text" class="form-control" >
+													</div>
+												</div>
+											</div>
+						
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-3">
+														<label for="temperature">Temp (&deg;C)</label>
+														<input id="temperature" th:field="*{temperature}" placeholder="0.0" type="number" class="form-control" >
+													</div>
+													<div class="col-sm-3">
+														<label for="weight">Weight (Kg)</label>
+														<span class="validationError text-danger" th:if="${#fields.hasErrors('weight')}">Invalid Value</span>
+														<input id="weight" th:field="*{weight}" placeholder="0.0" type="number" class="form-control" >
+													</div>
+													<div class="col-sm-3">
+														<label for="height">Height (cm)</label>
+														<span class="validationError text-danger" th:if="${#fields.hasErrors('height')}">Invalid Value</span>
+														<input id="height" th:field="*{height}" placeholder="0.0" type="number" class="form-control" >
+													</div>
+													<div class="col-sm-3">
+														<label for="bloodPressure">BP (Ex: 100/80)</label>
+														<input id="bloodPressure" th:field="*{bloodPressure}"  placeholder="Blood Pressure" type="text" class="form-control" >
+													</div>
+												</div>
+											</div>
+						
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-12">
+														<label for="symptoms">Complaints/Symptoms</label>
+														<textarea rows="3" class="form-control" th:field="*{symptoms}" placeholder="Complaints" cols="50" maxlength="2450" ></textarea>
+													</div>
+												</div>
+											</div>
+						
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-12">
+														<label for="physical">Physical Examination (PE)</label>
+														<textarea rows="3" class="form-control" th:field="*{physical}" id="physical" placeholder="Physical Examination (PE)" cols="50" maxlength="2450" ></textarea>
+													</div>
+												</div>
+											</div>
+						
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-12">
+														<label for="diagnosis">Diagnosis ICD Code</label>
+														<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
+														<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
+															   data-search-in="description"
+															   data-search-by-word="true"
+															   data-min-length="3"
+															   multiple="multiple"
+															   data-selection-required="true"
+															   data-visible-properties='["code","description"]'
+															   data-text-property="{code} - {description}"
+															   data-value-property='["id","code","description"]'>
+													</div>
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-12">
+														<label for="diagnosisTxt">Diagnosis Notes</label>
+														<textarea rows="3" class="form-control" th:field="*{diagnosisTxt}" id="diagnosisTxt" placeholder="Diagnosis Notes" cols="50" maxlength="2450" ></textarea>
+													</div>
+												</div>
+											</div>
+						
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-12">
+														<label for="intervention">Intervention</label>
+														<textarea rows="3" class="form-control" th:field="*{intervention}" placeholder="Intervention" cols="50" maxlength="2450" ></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+						
+										<div class="modal-footer">
+											
+										</div>
+									
+								</div>													
 							</div>
-						</div>
-						<!-- /Consultation Table -->
-
-					</div>
-				</div>
-				<!-- /right content -->
-
+							</form>
+						</div>		
+						<!-- End Consultation Area -->
+						
+						
+						<!-- Start Patient Basic Info and Consultation List and Medication List -->
+						<div class="col-lg-6">
+							<div class="card rounded-left-0">
+								<div class="card-body">
+									
+									<!-- Consultation Table -->
+									<div class="row">
+										<div class="col-xl-12">
+											<!-- Basic datatable -->
+											<div class="card border-primary" >
+												<div class="card-header bg-blue header-elements-inline bg-blue">
+													<h6 class="card-title">Consultation List</h6>													
+												</div>			
+												<div class="card-body">
+													<table class="table table-bordered table-hover wrap" id="consultation-list">
+														<thead>
+														<tr class="bg-blue">
+															<th class="text-center">Actions</th>
+															<th>Date</th>															
+															<th>Complaints</th>
+															<th>Physical Examination</th>
+															<th>Diagnosis</th>
+															<th>Intervention</th>															
+														</tr>
+														</thead>
+														<tbody>
+														<tr th:each="ec : ${emrConsultations}">
+															<td class="text-center">
+																<button th:onclick="|setValuesInForm('${ec.id}')|" class="btn btn-primary" th:id="|viewConsultationButton${ec.id}|"																		
+																		th:data-id="${ec.id}"
+																		th:data-consultationDate="${ec.consultationDate}"
+																		th:data-paymentType="${ec.paymentType}"
+																		th:data-clinic-id="${ec.clinic.id}"
+																		th:data-hmoName="${ec.hmoName}"
+																		th:data-hmoPaid="${ec.hmoPaid}"
+																		th:data-consultationFee="${ec.consultationFee}"
+																		th:data-consultationStatus="${ec.consultationStatus}"
+																		th:data-temperature="${ec.temperature}"
+																		th:data-weight="${ec.weight}"
+																		th:data-height="${ec.height}"
+																		th:data-bloodPressure="${ec.bloodPressure}"
+																		th:data-symptoms="${ec.symptoms}"
+																		th:data-physical="${ec.physical}"
+																		th:data-intervention="${ec.intervention}"
+																		th:data-diagnosisTxt="${ec.diagnosisTxt}"
+																		th:data-diagnosisJSON="${ec.diagnosisJSON}"
+																>Open</button>
+															</td>
+															<td>
+																<div class="d-flex align-items-center">
+																	<div th:text="${#temporals.format(ec.consultationDate,'MMM d, yyyy')}">
+																		2020-12-06
+																	</div>
+																</div>
+															</td>
+															<td>
+																<div class="d-flex align-items-center">
+																	<div th:text="${ec.symptoms}">symptoms</div>
+																</div>
+															</td>
+															<td>
+																<div class="d-flex align-items-center">
+																	<div th:text="${ec.physical}">physical</div>
+																</div>
+															</td>
+															<td>
+																<div class="d-flex align-items-center">
+																	<div>
+																		<a href="#" class="text-default font-weight-semibold" th:each="ecd : ${ec.diagnosis}"
+																		   th:text="|${ecd.description}, |">2020-12-06</a>
+																	</div>
+																</div>
+															</td>
+															<td>
+																<div class="d-flex align-items-center wrap">
+																	<div th:text="${ec.intervention}">2020-12-06</div>
+																</div>
+															</td>
+															
+														</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<!-- /basic datatable -->
+										</div>
+									</div>
+									<!-- /Consultation Table -->
+									
+									<!-- Medication Table -->
+									<div class="row">
+										<div class="col-xl-12">
+											<!-- Basic datatable -->
+											<div class="card border-violet" >
+												<div class="card-header bg-violet header-elements-inline">
+													<h6 class="card-title">Medication List</h6>													
+												</div>			
+												<div class="card-body">
+													<table class="table table-bordered table-hover wrap" id="medication-list">
+			                                            <thead>
+			                                            <tr>
+			                                                <th>Date</th>
+			                                                <th colspan="2">Medication Given</th>
+			                                                
+			                                            </tr>
+			                                            </thead>
+			                                            <tbody>
+			                                            <tr th:each="emrPatientMedication : ${emrPatientMedicationList}">
+			                                                <td th:text="${#temporals.format(emrPatientMedication.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
+			                                                <td colspan="2">
+			                                                    <div th:each="med : ${emrPatientMedication.emrPatientMedicationItems}">
+			                                                        <ul>
+			                                                            <li th:text="${med.genericName}+' ('+${med.brandName}+') - '+${med.dosage} + ' ml'"></li>
+			                                                        </ul>
+			                                                    </div>
+			                                                </td>	
+			                                                <td>&nbsp;</td>		                                                
+			                                            </tr>
+			                                            </tbody>
+			                                        </table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- /Medication Table -->
+								</div>													
+							</div>
+						</div>													
+						<!-- End Patient Basic Info and Consultation List and Medication Lis -->										
+					</div>																		
+				</div>								
 			</div>
-			<!-- /inner container -->
+
+			
 
 
 		</div>
@@ -318,12 +381,25 @@
 		var brandNameArr = [];
 
 		let consultationId = /*[[${selectedConsultationId}]]*/0;
+		let patient = /*[[${patient}]]*/0;
 
 		function resetRowNum() {
 			i = 0;
 		}
 
 	    $(document).ready(function() {
+	    	
+	    	$('#consultation-list').DataTable({
+				"lengthMenu": [5, 10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
+	    	
+	    	$('#medication-list').DataTable({
+				"lengthMenu": [5, 10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
 	    	
 	    	let allClinics = /*[[${allClinics == null ? '' : allClinics} ]]*/'';
 	    	let hmos = /*[[${hmos == null ? '' : hmos} ]]*/'';
@@ -337,7 +413,10 @@
 	    	}
 	    	
 	    	if(allClinics.length == 0){
-	    		$("#addConsultationButton").hide();
+	    		$("#submitNewButton").hide();
+	    		$("#loadOldRecordButton").hide();
+	    		$("#saveInfoButton").hide();
+	    		$("#submitProcessedButton").hide();
 	    		swal({
 					title: "Clinic Missing",
 					text: "Please add a clinic first to enable Consultation Module.",
@@ -346,7 +425,10 @@
 		            timer: 2000,
 				});		
 	    	} else if(hmos.length == 0){
-	    		$("#addConsultationButton").hide();
+	    		$("#submitNewButton").hide();
+	    		$("#loadOldRecordButton").hide();
+	    		$("#saveInfoButton").hide();
+	    		$("#submitProcessedButton").hide();
 	    		swal({
 					title: "HMO List Missing",
 					text: "Please add a HMO Entry first to enable Consultation Module.",
@@ -355,7 +437,10 @@
 		            timer: 2000,
 				});	
 	    	} else {
-	    		$("#addConsultationButton").show();
+	    		$("#submitNewButton").show();
+	    		$("#loadOldRecordButton").show();
+	    		$("#saveInfoButton").show();
+	    		$("#submitProcessedButton").show();
 	    	}
 	    	
 			
@@ -393,8 +478,8 @@
 	    		viewConsultationButton.click();
 	    	}
 
-	    	$(".navbar-nav-link").removeClass("bg-slate-300");
-			$("#emrPatientDashboard2ndNav").addClass("bg-slate-300");
+	    	//$(".navbar-nav-link").removeClass("bg-slate-300");
+			//$("#emrPatientDashboard2ndNav").addClass("bg-slate-300");
 
 			if ($('#paymentType').val() === 'HMO') {
 				$('#hmoName').prop('disabled', false);
@@ -411,57 +496,14 @@
 					$('#hmoName').prop('disabled', true);
 				}
 			});
-
-			const fileSelect = document.getElementById('fileSelect');
-		    const profilePhoto = document.getElementById('profilePhoto');
-			fileSelect.addEventListener('click', (e) => {
-	        	if (profilePhoto) {
-	        		profilePhoto.click();
-	        	}
-	        }, false);
-		    profilePhoto.addEventListener('change', previewImage, false);
-
-		    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
-        	let uploadUrl = contextRoot + '/file/upload/profilePhoto';
-        	let fileUploadForm = document.getElementById('fileUploadForm');
-		    fileUploadForm.onsubmit = async (e) => {
-		    	e.preventDefault();
-		    	let fd = new FormData(fileUploadForm);
-		    	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
-		    	let response = await fetch(uploadUrl, {
-		    		method: 'POST',
-		    		body: fd
-		    	});
-
-		    	if(response.ok){
-		    		swal({
-						title: "Success!",
-						text: "Patient Photo successfully saved.",
-						icon: "success",
-						buttons: false,
-			            timer: 2000,
-					});
-		    	} else {
-		    		swal({
-						title: "Upload Failure!",
-						text: "Patient Photo not uploaded successfully.",
-						icon: "error",
-						buttons: false,
-			            timer: 2000,
-					});
-		    	}
-
-
-		    	//document.getElementById('photoPreview').src = contextRoot + result.downloadUri;
-		    };
+        	
 
 	    });
 
 	    let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
 		let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
 
-		if(msgCode === 'ERRORCONSULT'){
-			$('#modal_form_consultation').modal('show');
+		if(msgCode === 'ERRORCONSULT'){			
 			swal({
 				title: "Error!",
 				text: msgDesc,
@@ -469,22 +511,77 @@
 				buttons: false,
 	            timer: 2000,
 			});
+		} else if(msgCode === 'DUPLICATEDATE'){			
+			swal({
+				title: "Error!",
+				text: msgDesc,
+				icon: "error",
+				buttons: false,
+	            timer: 2000,
+			});	
 		} else if(msgCode === 'SUCCESSCONSULT'){
 			swal({
 				title: "Success!",
-				text: "Patient info saved successfully.",
+				text: "Consultation Record successfully saved.",
 				icon: "success",
 				buttons: false,
 	            timer: 2000,
 			})
 			.then((value) => {
-				window.location.reload();
+				let contextPath = /*[[${#request.getContextPath()}]]*/'';
+				window.location.href = contextPath + "/emrpatientrecord/" + patient.id;
 			    //window.location.href = /*[[${#request.getContextPath() + '/emrdashboard'}]]*/"";
 			});
 		}
 
-		function setConsultationStatus() {
-			$('#consultationStatus').val('PROCESSED');
+		function setConsultationStatus(status) {
+			$('#consultationStatus').val(status);
+		}
+		
+		function saveAsProcessed(){
+			let physical = $('#physical').val();
+			let intervention = $('#intervention').val();
+			let diagnosisTxt = $('#diagnosisTxt').val();
+			let diagnosis = $('#diagnosisArea').val();
+			let paymentType = $('#paymentType').val();
+			let hmoName = $('#hmoName').val();
+			let isValid = true;
+			
+			if (paymentType === 'HMO') {
+				if (hmoName === '') {
+					isValid = false;
+					swal({
+						title: "Validation Error",
+						text: "HMO is mandatory if payment type is HMO.",
+						icon: "warning",
+						buttons: false,
+			            timer: 2000,
+					})
+					.then((value) => {
+						$('#hmoName').focus();
+					});
+				}
+			}
+			
+			
+			if(isValid){
+				if (physical.length != 0 || intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
+					setConsultationStatus('PROCESSED');
+					$('#consultationForm').trigger('submit');
+				} else {
+					swal({
+						title: "Notification",
+						text: "Consultation cannot be marked as PROCESSED. Please fill up at least one of the following (Physical Examination, Diagnosis or Intervention)",
+						icon: "warning",
+						buttons: false,
+			            timer: 3000,
+					})
+					.then((value) => {
+						$('#physical').focus();
+					});
+				}
+				
+			}
 		}
 		
 		function checkLastThreeFields() {
@@ -492,14 +589,78 @@
 			let intervention = $('#intervention').val();
 			let diagnosisTxt = $('#diagnosisTxt').val();
 			let diagnosis = $('#diagnosisArea').val();
+			let paymentType = $('#paymentType').val();
+			let hmoName = $('#hmoName').val();
+			let isValid = true;
 			
-			if (physical.length != 0 || intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
-				confirmConsultation();
-			} else {
-				// proceed with saving
-				$("#submitProcessedButton").attr("onclick", "setConsultationStatus('ON QUEUE')");
-				$("#submitProcessedButton").click();
+			if (paymentType === 'HMO') {
+				if (hmoName === '') {
+					isValid = false;
+					swal({
+						title: "Validation Error",
+						text: "HMO is mandatory if payment type is HMO.",
+						icon: "warning",
+						buttons: false,
+			            timer: 2000,
+					})
+					.then((value) => {
+						$('#hmoName').focus();
+					});
+				}
 			}
+			
+			
+			if(isValid){
+				if (physical.length != 0 || intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
+					confirmConsultation();
+				} else {
+					// proceed with saving
+					setConsultationStatus('ON QUEUE');
+					$('#consultationForm').trigger('submit');
+					//$("#submitProcessedButton").attr("onclick", "setConsultationStatus('ON QUEUE')");
+					//$("#submitProcessedButton").click();
+				}
+			}
+		}
+		
+		$("#consultationForm").submit(function(e){
+            
+            e.preventDefault(e);
+            var isErrorExist = "N"
+                        
+            if(isErrorExist === "N"){
+            	consultationForm.submit();
+            }
+            
+        });
+		
+		function loadPrevDiagnosis() {
+			let consultationId = $('#emrConsultationId').val();
+			let contextPath = /*[[${#request.getContextPath()}]]*/'';			
+			
+			if(consultationId != "0"){
+				swal({
+					  title: "Question",
+					  text: "Loading old diagnosis is for new consultation only. Do you want to add a new record?",
+					  icon: "info",
+					  buttons: ["Yes", "No"],
+					  dangerMode: false,
+					})
+					.then((a) => {
+					  if (a) {
+						  // Go back to the form
+					  } else {
+						 // Yes
+						  window.location.href = contextPath + "/emrpatientrecord/" + patient.id + "/0";
+					  }			
+					});
+				
+				
+			} else {
+				window.location.href = contextPath + "/emrpatientrecord/" + patient.id + "/0";
+			}
+			
+			
 		}
 		
 		function confirmConsultation(){
@@ -516,56 +677,94 @@
 				  } else {
 					 // Save the consultation and mark it as processed
 					 setConsultationStatus('PROCESSED');
-					 $("#submitProcessedButton").click();
+					 $('#consultationForm').trigger('submit');
+					 //$("#submitProcessedButton").click();
 				  }			
 				});
 		}
 
 		function setValuesInForm(id) {
-			let viewConsultationButton = document.querySelector('#viewConsultationButton'+id);
-			$('#emrConsultationId').val(viewConsultationButton.dataset.id);
-			$('#consultationDate').val(viewConsultationButton.dataset.consultationdate);
-			$('#paymentType').val(viewConsultationButton.dataset.paymenttype);
-			$('#clinic_id').val(viewConsultationButton.dataset.clinicId);
-			$('#hmoName').val(viewConsultationButton.dataset.hmoname);
-			//$('#hmoPaid').val(viewConsultationButton.dataset.hmoPaid);
-			$('#consultationFee').val(viewConsultationButton.dataset.consultationfee);
-			$('#consultationStatus').val(viewConsultationButton.dataset.consultationstatus);
-			$('#temperature').val(viewConsultationButton.dataset.temperature);
-			$('#weight').val(viewConsultationButton.dataset.weight);
-			$('#height').val(viewConsultationButton.dataset.height);
-			$('#bloodPressure').val(viewConsultationButton.dataset.bloodpressure);
-			$('#symptoms').val(viewConsultationButton.dataset.symptoms);
-			$('#physical').val(viewConsultationButton.dataset.physical);
-			$('#intervention').val(viewConsultationButton.dataset.intervention);
-			$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt);
-			$('#diagnosisArea').val(viewConsultationButton.dataset.diagnosisjson);
-			//$('#diagnosisArea').val('[{"id":2992,"code":"E0810","description":"Diabetes mellitus due to underlying condition with ketoacidosis without coma","patientId":1}]');
-
-			if ($('#paymentType').val() === 'HMO') {
-				$('#hmoName').prop('disabled', false);
+			
+			
+			let mode = $('#mode').val();
+			
+			//alert(mode);
+			
+			if(mode === 'L'){
+				let viewConsultationButton = document.querySelector('#viewConsultationButton'+id);
+				$('#emrConsultationId').val('0');
+				$('#physical').val(viewConsultationButton.dataset.physical === undefined ? '' : viewConsultationButton.dataset.physical);
+				$('#intervention').val(viewConsultationButton.dataset.intervention === undefined ? '' : viewConsultationButton.dataset.intervention);
+				$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt === undefined ? '' : viewConsultationButton.dataset.diagnosistxt);
+				$('#diagnosisArea').val(viewConsultationButton.dataset.diagnosisjson === undefined ? '' : viewConsultationButton.dataset.diagnosisjson);
+				$('#mode').val("N");
 			} else {
-				$('#hmoName').val('');
-				$('#hmoName').prop('disabled', true);
-			}
+				let viewConsultationButton = document.querySelector('#viewConsultationButton'+id);
+				$('#emrConsultationId').val(viewConsultationButton.dataset.id);
+				$('#consultationDate').val(viewConsultationButton.dataset.consultationdate);
+				$('#paymentType').val(viewConsultationButton.dataset.paymenttype);
+				$('#clinic_id').val(viewConsultationButton.dataset.clinicId);
+				$('#hmoName').val(viewConsultationButton.dataset.hmoname === undefined ? '' : viewConsultationButton.dataset.hmoname);
+				//$('#hmoPaid').val(viewConsultationButton.dataset.hmoPaid);
+				$('#consultationFee').val(viewConsultationButton.dataset.consultationfee === undefined ? '' : viewConsultationButton.dataset.consultationfee);
+				$('#consultationStatus').val(viewConsultationButton.dataset.consultationstatus === undefined ? '' : viewConsultationButton.dataset.consultationstatus);
+				$('#temperature').val(viewConsultationButton.dataset.temperature === undefined ? '' : viewConsultationButton.dataset.temperature);
+				$('#weight').val(viewConsultationButton.dataset.weight === undefined ? '' : viewConsultationButton.dataset.weight);
+				$('#height').val(viewConsultationButton.dataset.height === undefined ? '' : viewConsultationButton.dataset.height);
+				$('#bloodPressure').val(viewConsultationButton.dataset.bloodpressure === undefined ? '' : viewConsultationButton.dataset.bloodpressure);
+				$('#symptoms').val(viewConsultationButton.dataset.symptoms === undefined ? '' : viewConsultationButton.dataset.symptoms);
+				
+				$('#physical').val(viewConsultationButton.dataset.physical === undefined ? '' : viewConsultationButton.dataset.physical);
+				$('#intervention').val(viewConsultationButton.dataset.intervention === undefined ? '' : viewConsultationButton.dataset.intervention);
+				$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt === undefined ? '' : viewConsultationButton.dataset.diagnosistxt);
+				$('#diagnosisArea').val(viewConsultationButton.dataset.diagnosisjson === undefined ? '' : viewConsultationButton.dataset.diagnosisjson);
+				
+				//$('#diagnosisArea').val('[{"id":2992,"code":"E0810","description":"Diabetes mellitus due to underlying condition with ketoacidosis without coma","patientId":1}]');
+				
+				if ($('#paymentType').val() === 'HMO') {
+					$('#hmoName').prop('disabled', false);
+				} else {
+					$('#hmoName').val('');
+					$('#hmoName').prop('disabled', true);
+				}
+			}		
+			
+			swal({
+				title: "Loading Record..",
+				text: "Record sucessfully loaded.",
+				icon: "success",
+				buttons: false,
+	            timer: 1000,
+			});
 		}
 
 		function clearConsultationModalFields() {
-			$('#emrConsultationId').val('');
-			$('#consultationDate').val('');
-			$('#paymentType').val('');
-			$('#hmoName').val('');
-			$('#consultationFee').val('');
-			$('#consultationStatus').val('');
-			$('#temperature').val('');
-			$('#weight').val('');
-			$('#height').val('');
-			$('#bloodPressure').val('');
-			$('#symptoms').val('');
-			$('#physical').val('');
-			$('#intervention').val('');
-			$('#diagnosisTxt').val('');
-			$('#diagnosisJSON').val('');
+			//$('#emrConsultationId').val('0');
+			//$('#consultationDate').val('');
+			//$('#paymentType').val('');
+			//$('#hmoName').val('');
+			//$('#consultationFee').val('');
+			//$('#consultationStatus').val('');
+			//$('#temperature').val('');
+			//$('#weight').val('');
+			//$('#height').val('');
+			//$('#bloodPressure').val('');
+			//$('#symptoms').val('');
+			//$('#physical').val('');
+			//$('#intervention').val('');
+			//$('#diagnosisTxt').val('');
+			//$('#diagnosisJSON').val('');
+			
+			
+			swal({
+				title: "New Record",
+				text: "Form initialized successfully.",
+				icon: "success",
+				buttons: false,
+	            timer: 1000,
+			});
+			
+			window.location.reload();
 		}
 
 		function previewImage() {

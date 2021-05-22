@@ -28,7 +28,7 @@
 				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
-							<div class="modal-header bg-primary">
+							<div class="modal-header bg-slate">
 								<h5 class="modal-title">Others Information</h5>
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
@@ -70,7 +70,7 @@
 
 								<div class="modal-footer">
 									<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-									<button type="submit" class="btn bg-primary">Save Info</button>
+									<button type="submit" class="btn bg-slate">Save Info</button>
 								</div>
 							</form>
 						</div>
@@ -91,76 +91,54 @@
 			<!-- Content area -->
 			<div class="content">
 			
-				<!-- Inner container -->
-				<div class="d-md-flex align-items-md-start">
-
-					<!-- Left sidebar component -->
-					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
-					<!-- /left sidebar component -->
-
-					<!-- Right content -->
-					<div class="tab-content w-100">
-						<div class="tab-pane fade active show" id="profile">
-						
-							<!-- Consultation Table -->
-							<div class="row">
-								<div class="col-xl-12">
-									<!-- Basic datatable -->
-									<div class="card">
-										<div class="card-header header-elements-inline">
-											<h5 class="card-title">Others List</h5>
-											<div class="header-elements">
-												<div class="list-icons">				                				
-							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addOthersButton">Add Others</button>		                		
-							                	</div>
-						                	</div>
-										</div>
-					
-										<div class="card-body">
-											<table class="table table-bordered table-hover" id="system-user-list">
-												<thead>
-													<tr>
-														<th>Date</th>
-														<th>Notes</th>
-														<th><i class="fas fa-paperclip"></i></th>
-														<th class="text-center">Actions</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr th:each="others : ${emrPatientOthersList}">
-														<td th:text="${#temporals.format(others.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>								
-														<td th:text="${others.remarks}">Remarks</td>
-														<td width="5px;">																			
-															<span th:if="!${#lists.isEmpty(others.othersFileUrls)}"><i class="fas fa-paperclip"></i></span>
-															<span th:unless="${others.othersFileUrls != ''}">&nbsp;</span>
-														</td>
-														<td class="text-center">
-															<button th:id="|editOthersButton${others.id}|" class="btn btn-primary"
-															    data-toggle="modal" data-target="#modal_form_vertical"
-															    th:onclick="|editPatientOthers('${others.id}')|"
-															    >View Record</button>
-														</td>
-													</tr>								
-												</tbody>
-											</table>
-										</div>
-					
-										
-									</div>
-									<!-- /basic datatable -->					
-								</div>
-							</div>
-							<!-- /Consultation Table -->
-
-								
-
-					    </div>				    	
+				<div class="row">
+					<div class="col-xl-2">
+						<div th:replace="fragments/common::no_upload_pic_emr-left-side-patient-profile"></div>
 					</div>
-					<!-- /right content -->
-
-				</div>
-				<!-- /inner container -->
-				
+					<div class="col-xl-10">
+						<!-- Others datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline bg-slate">
+								<h5 class="card-title">Others List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                				
+						           		<button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addOthersButton">Add Others</button>		                		
+						           	</div>
+						       	</div>
+							</div>
+					
+							<div class="card-body">
+								<table class="table table-bordered table-hover" id="others-list">
+									<thead>
+										<tr>
+											<th class="text-center">Actions</th>
+											<th>Date</th>
+											<th><i class="fas fa-paperclip"></i></th>	
+											<th>Notes</th>																					
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="others : ${emrPatientOthersList}">
+											<td class="text-center">
+												<button th:id="|editOthersButton${others.id}|" class="btn bg-slate"
+												    data-toggle="modal" data-target="#modal_form_vertical"
+												    th:onclick="|editPatientOthers('${others.id}')|"
+												    >View Record</button>
+											</td>
+											<td th:text="${#temporals.format(others.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>			
+											<td width="5px;">																			
+												<span th:if="!${#lists.isEmpty(others.othersFileUrls)}"><i class="fas fa-paperclip"></i></span>
+												<span th:unless="${others.othersFileUrls != ''}">&nbsp;</span>
+											</td>					
+											<td th:text="${others.remarks}">Remarks</td>						
+										</tr>								
+									</tbody>
+								</table>
+							</div>							
+						</div>
+						<!-- /Others datatable -->	
+					</div>
+				</div>		
 
 			</div>
 			<!-- /content area -->
@@ -178,10 +156,15 @@
 	
 	<script th:inline="javascript">
 	
-	    $(document).ready(function() {	    		    				
+	    $(document).ready(function() {	  
+	    	$('#others-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
 			
-	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
-			$("#emrPatientOthers2ndNav").addClass("bg-slate-300");
+	    	//$(".navbar-nav-link").removeClass("bg-slate-300");		
+			//$("#emrPatientOthers2ndNav").addClass("bg-slate-300");
 	    	
 			FileUpload.init();
 	    });	    

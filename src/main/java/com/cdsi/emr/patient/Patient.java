@@ -3,6 +3,7 @@ package com.cdsi.emr.patient;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -79,6 +80,13 @@ import lombok.NoArgsConstructor;
 	@Transient
 	private MultipartFile photoFile;
 	
+	@Transient
+	int totalNewLab;
+	@Transient
+	int totalNewImaging;
+	@Transient
+	int totalNewProcedure;
+	
 	public String getFullName() {
         return getFirstName() + " " + getLastName();
     }
@@ -91,5 +99,31 @@ import lombok.NoArgsConstructor;
 	@JsonIgnore
 	public Long getAgeInMonths() {
 		return ChronoUnit.MONTHS.between(getBirthdate(), LocalDate.now());
+	}
+	
+	@JsonIgnore
+	public String getAgeStr() {
+		int age_years = getAge();
+		long age_months = getAgeInMonths();
+		
+		long calculated_year = age_years * 12;
+		long ageMonths = age_months - calculated_year;
+		
+		String ageStr = "";
+		
+        if(age_years > 1){
+        	ageStr = age_years + " years and " + ageMonths + (ageMonths > 1 ? " months" : " month");
+        } else if (age_years == 1) {
+        	ageStr = "1 year and " + ageMonths + (ageMonths > 1 ? " months" : " month");
+        } else {
+        	if(ageMonths == 0){
+        		ageStr = "Patient is less than a month";
+        	} else {
+        		ageStr = ageMonths + (ageMonths > 1 ? " months" : " month");
+        	}
+        	
+        }
+        
+		return ageStr;		
 	}
 }

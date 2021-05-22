@@ -28,7 +28,7 @@
 				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
-							<div class="modal-header bg-primary">
+							<div class="modal-header bg-orange">
 								<h5 class="modal-title">Medical Certificate Information</h5>
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
@@ -86,13 +86,13 @@
 
 								<div class="modal-footer">
 									<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-									<button type="submit" class="btn bg-primary">Save Info</button>
+									<button type="submit" class="btn bg-orange">Save Info</button>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
-				<!-- /vertical form modal -->
+	<!-- /vertical form modal -->
 					
 	<!-- Page content -->
 	<div class="page-content">	
@@ -102,78 +102,65 @@
 
 			<!-- Content area -->
 			<div class="content">
-			
-				<!-- Inner container -->
-				<div class="d-md-flex align-items-md-start">
-
-					<!-- Left sidebar component -->
-					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
-					<!-- /left sidebar component -->
-
-					<!-- Right content -->
-					<div class="tab-content w-100">
-						<div class="tab-pane fade active show" id="profile">
-						
-							<!-- Consultation Table -->
-							<div class="row">
-								<div class="col-xl-12">
-									<!-- Basic datatable -->
-									<div class="card">
-										<div class="card-header header-elements-inline">
-											<h5 class="card-title">Medical Certificate List</h5>
-											<div class="header-elements">
-												<div class="list-icons">				                				
-							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addImagingButton">Add Medical Certificate</button>		                		
-							                	</div>
-						                	</div>
-										</div>
-					
-										<div class="card-body">
-											<table class="table table-bordered table-hover" id="system-user-list">
-												<thead>
-													<tr>
-														<th>Date</th>
-														<th>History</th>
-														<th>Diagnosis</th>
-														<th>Recommendation</th>
-														<th>Medication</th>
-														<th class="text-center">Actions</th>
-														<th class="text-center">Actions</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr th:each="mc : ${emrMedicalCertificateList}">
-														<td th:text="${#temporals.format(mc.dateRequested,'MMM d, yyyy')}">Date</td>								
-														<td th:text="${mc.history}">History</td>
-														<td th:text="${mc.diagnosis}">Diagnosis</td>
-														<td th:text="${mc.recommendation}">Recommendation</td>
-														<td th:text="${mc.medication}">Medication</td>
-														<td class="text-center">
-															<button id="editMedicalCertificateButton" type="button" class="showMedicalCertificateDetails btn btn-primary" 
-																	th:data-row-history="${mc.history}"
-																	th:data-row-diagnosis="${mc.diagnosis}"
-																	th:data-row-recommendation="${mc.recommendation}"
-																	th:data-row-medication="${mc.medication}"
-																	th:data-row-id="${mc.id}"
-																	data-toggle="modal" data-target="#modal_form_vertical">View Record</button>
-														</td>
-														<td>                                                	
-		                                                	<a class="btn btn-primary" th:href="|@{/viewMedCert}/${mc.id}|" target="_blank">Print</a>
-		                                                </td>
-													</tr>								
-												</tbody>
-											</table>
-										</div>
-									</div>
-									<!-- /basic datatable -->					
-								</div>
-							</div>
-							<!-- /Consultation Table -->
-					    </div>				    	
+				<div class="row">
+					<div class="col-xl-2">
+						<div th:replace="fragments/common::no_upload_pic_emr-left-side-patient-profile"></div>
 					</div>
-					<!-- /right content -->
+					<div class="col-xl-10">
+						<!-- Med Cert datatable -->
+						<div class="card">
+							<div class="card-header header-elements-inline bg-orange">
+								<h5 class="card-title">Medical Certificate List</h5>
+								<div class="header-elements">
+									<div class="list-icons">				                				
+						           		<button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addImagingButton">Add Medical Certificate</button>		                		
+						           	</div>
+						       	</div>
+							</div>
+					
+							<div class="card-body">
+								<table class="table table-bordered table-hover" id="medcert-list">
+									<thead>
+										<tr>
+											<th class="text-center">Actions</th>
+											<th class="text-center">Actions</th>
+											<th>Date</th>
+											<th>History</th>
+											<th>Diagnosis</th>
+											<th>Recommendation</th>
+											<th>Medication</th>
+											
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="mc : ${emrMedicalCertificateList}">
+											<td class="text-center">
+												<button id="editMedicalCertificateButton" type="button" class="showMedicalCertificateDetails btn bg-orange" 
+													th:data-row-history="${mc.history}"
+													th:data-row-diagnosis="${mc.diagnosis}"
+													th:data-row-recommendation="${mc.recommendation}"
+													th:data-row-medication="${mc.medication}"
+													th:data-row-id="${mc.id}"
+													data-toggle="modal" data-target="#modal_form_vertical">View Record</button>
+											</td>
+											<td>                                                	
+		                                       	<a class="btn bg-orange" th:href="|@{/viewMedCert}/${mc.id}|" target="_blank">Print</a>
+											</td>
+											<td th:text="${#temporals.format(mc.dateRequested,'MMM d, yyyy')}">Date</td>								
+											<td th:text="${mc.history}">History</td>
+											<td th:text="${mc.diagnosis}">Diagnosis</td>
+											<td th:text="${mc.recommendation}">Recommendation</td>
+											<td th:text="${mc.medication}">Medication</td>											
+										</tr>								
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- /Med Cert datatable -->
+					</div>
 				</div>
-				<!-- /inner container -->
+			
+				
 			</div>
 			<!-- /content area -->
 
@@ -188,10 +175,16 @@
 	<!-- /page content -->
 	
 	<script th:inline="javascript">
-	    $(document).ready(function() {	    		    				
+	    $(document).ready(function() {	    	
+	    	
+	    	$('#medcert-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
 			
-	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
-			$("#emrPatientMedicalForms2ndNav").addClass("bg-slate-300");
+	    	//$(".navbar-nav-link").removeClass("bg-slate-300");		
+			//$("#emrPatientMedicalForms2ndNav").addClass("bg-slate-300");
 			
 			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
 			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';

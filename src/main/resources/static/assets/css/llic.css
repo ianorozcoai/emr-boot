@@ -37,6 +37,10 @@ h2 {
   opacity: 0;
 }
 
+.whiteText {
+	color: #fff !important;
+}
+
 #loader {
   position: absolute;
   left: 50%;

@@ -26,7 +26,7 @@
 	<div id="modal_form_vertical" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<div class="modal-header bg-primary">
+				<div class="modal-header bg-warning">
 					<h5 class="modal-title">Laboratory Information</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
@@ -82,7 +82,7 @@
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn bg-primary">Save Info</button>
+						<button type="submit" class="btn bg-warning">Save Info</button>
 					</div>
 				</form>
 			</div>
@@ -99,27 +99,20 @@
 
 			<!-- Content area -->
 			<div class="content">
-			
-				<!-- Inner container -->
-				<div class="d-md-flex align-items-md-start">
-
-					<!-- Left sidebar component -->
-					<div th:replace="fragments/common::emr-left-side-patient-profile"></div>
-					<!-- /left sidebar component -->
-
-					<!-- Right content -->
-					<div class="tab-content w-100">
-						<div class="tab-pane fade active show" id="profile">
-						
-							<!-- Consultation Table -->
+				<div class="row">
+					<div class="col-xl-2">
+						<div th:replace="fragments/common::no_upload_pic_emr-left-side-patient-profile"></div>
+					</div>
+					<div class="col-xl-10">
+						<!-- Consultation Table -->
 							<div class="row">
 								<div class="col-xl-12">
 									<div class="card">
-										<div class="card-header header-elements-inline">
+										<div class="card-header header-elements-inline bg-warning">
 											<h6 class="card-title">Laboratory Summary</h6>
 											<div class="header-elements">
 												<div class="list-icons">				                				
-							                		<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addLaboratoryButton">Add Laboratory</button>		                		
+							                		<button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addLaboratoryButton">Add Laboratory</button>		                		
 							                	</div>
 						                	</div>
 										</div>
@@ -140,33 +133,33 @@
 															<h5 class="card-title">Laboratory List</h5>											
 														</div>					
 														<div class="card-body">
-															<table class="table table-bordered table-hover" id="system-user-list">
+															<table class="table table-bordered table-hover" id="lab-list">
 																<thead>
 																	<tr>
+																		<th class="text-center">Actions</th>
 																		<th>Date</th>
+																		<th><i class="fas fa-paperclip"></i></th>
 																		<th>Result</th>
 																		<th>Type</th>
-																		<th>Notes</th>
-																		<th><i class="fas fa-paperclip"></i></th>
-																		<th class="text-center">Actions</th>
+																		<th>Notes</th>													
 																	</tr>
 																</thead>
 																<tbody>
 																	<tr th:each="lab : ${emrPatientLaboratoryList}">
-																		<td th:text="${#temporals.format(lab.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>								
-																		<td th:text="${lab.labResult}">labResult</td>
-																		<td th:text="${lab.emrPatientLaboratoryType.labTypeName}">labTypeName</td>
-																		<td th:text="${lab.remarks}">Remarks</td>
-																		<td width="5px;">																			
-																			<span th:if="!${#lists.isEmpty(lab.labFileUrls)}"><i class="fas fa-paperclip"></i></span>
-																			<span th:unless="${lab.labFileUrls != ''}">&nbsp;</span>
-																		</td>
 																		<td class="text-center">
-																			<button th:id="|editLabButton${lab.id}|" class="btn btn-primary"
+																			<button th:id="|editLabButton${lab.id}|" class="btn bg-warning"
 																			    data-toggle="modal" data-target="#modal_form_vertical"
 																			    th:onclick="|editPatientLaboratory('${lab.id}')|"
 																			    >View Record</button>
 																		</td>
+																		<td th:text="${#temporals.format(lab.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>	
+																		<td width="5px;">																			
+																			<span th:if="!${#lists.isEmpty(lab.labFileUrls)}"><i class="fas fa-paperclip"></i></span>
+																			<span th:unless="${lab.labFileUrls != ''}">&nbsp;</span>
+																		</td>							
+																		<td th:text="${lab.labResult}">labResult</td>
+																		<td th:text="${lab.emrPatientLaboratoryType.labTypeName}">labTypeName</td>
+																		<td th:text="${lab.remarks}">Remarks</td>															
 																	</tr>								
 																</tbody>
 															</table>
@@ -188,8 +181,8 @@
 															<div class="card-body">
 																
 																<div class="card">								
-																	<div class="card-body">
-																		<table class="table table-bordered table-hover" id="system-user-list">
+																	<div class="card-body" style="overflow-x:auto;">
+																		<table class="table table-bordered table-hover" id="labDetailed-list">
 																			<thead>
 																				<tr>	
 																					<th:block th:each="header : ${lType.headerListFinal}">												
@@ -229,17 +222,9 @@
 								</div>
 							</div>
 							<!-- /Consultation Table -->
-
-								
-
-					    </div>				    	
 					</div>
-					<!-- /right content -->
-
 				</div>
-				<!-- /inner container -->
-				
-
+			
 			</div>
 			<!-- /content area -->
 
@@ -255,10 +240,18 @@
 	<!-- /page content -->
 	
 	<script th:inline="javascript">
-	    $(document).ready(function() {	    		    				
+	    $(document).ready(function() {	 
+	    	
+	    	$('#lab-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
+	    	
+	    	
 			
-	    	$(".navbar-nav-link").removeClass("bg-slate-300");		
-			$("#emrPatientLaboratory2ndNav").addClass("bg-slate-300");
+	    	//$(".navbar-nav-link").removeClass("bg-slate-300");		
+			//$("#emrPatientLaboratory2ndNav").addClass("bg-slate-300");
 			
 			FileUpload.init();
 	    });	    

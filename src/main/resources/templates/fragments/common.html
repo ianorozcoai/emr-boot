@@ -36,6 +36,12 @@
             position: absolute;
             z-index: -1;
         }
+        .whiteText {
+			color: #fff !important;
+		}
+		.navbar-collapse {
+			margin-left: -3rem !important;
+		}
     </style>
 </th:block>
 
@@ -367,6 +373,66 @@
     <!-- /main navbar -->
 </th:block>
 
+<th:block th:fragment="new_emr-left-side-patient-profile">
+	<div class="card" th:object="${patient}">								
+		<div class="card card-body text-center">
+			<div class="mb-3">
+				<h6 class="font-weight-semibold mb-0 mt-1" th:text="*{fullName}">Hanna Dorman</h6>				
+			</div>						
+			<div class="card-img-actions d-inline-block mb-3 ">									
+				<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">
+										
+				<div class="card-img-actions-overlay card-img rounded-circle">
+					<button id="fileSelect" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
+						<i class="icon-camera"></i>
+					</button>											
+				</div>									
+			</div>									
+		</div>
+								
+		<form id="fileUploadForm" method="post" enctype="multipart/form-data">
+		    <input type="file" name="profilePhoto" id="profilePhoto" accept="image/*" class="inputfile" />
+		    <input type="hidden" name="patientId" th:value="${patient.id}">
+		    <div style="text-align: center;">
+			    <button type="submit" class="btn btn-primary" style="padding: 10px 40px;">Update Photo</button>
+		    </div>
+		</form>
+		<div class="d-inline-block mb-3" style="padding: 10px 30px;">
+			<div class="infoMember">
+				<span class="memberDetails"><i class="icon-user mr-2"></i> Nickname: <th:block th:text="*{nickName}">Gigi</th:block></span><br>
+				<span class="memberDetails"><i class="fas fa-birthday-cake mr-2"></i> B-day: <th:block th:text="*{#temporals.format(birthdate,'MMM d, yyyy')}">January 27, 1982</th:block></span><br>	
+				<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
+				<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
+				<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+			</div>
+		</div>
+	</div>
+</th:block>
+
+<th:block th:fragment="no_upload_pic_emr-left-side-patient-profile">
+	<div class="card" th:object="${patient}">								
+		<div class="card card-body text-center">
+			<div class="mb-3">
+				<h6 class="font-weight-semibold mb-0 mt-1" th:text="*{fullName}">Hanna Dorman</h6>				
+			</div>						
+			<div class="card-img-actions d-inline-block mb-3 ">									
+				<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">									
+			</div>									
+		</div>
+								
+		
+		<div class="d-inline-block mb-3" style="padding: 10px 30px;">
+			<div class="infoMember">
+				<span class="memberDetails"><i class="icon-user mr-2"></i> Nickname: <th:block th:text="*{nickName}">Gigi</th:block></span><br>
+				<span class="memberDetails"><i class="fas fa-birthday-cake mr-2"></i> B-day: <th:block th:text="*{#temporals.format(birthdate,'MMM d, yyyy')}">January 27, 1982</th:block></span><br>	
+				<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
+				<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
+				<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+			</div>
+		</div>
+	</div>
+</th:block>
+
 <th:block th:fragment="emr-left-side-patient-profile">
 					<!-- Left sidebar component -->
 					<div class="sidebar sidebar-light bg-transparent sidebar-component sidebar-component-left wmin-300 border-0 shadow-0  sidebar-expand-md">
@@ -403,7 +469,7 @@
 									<div class="infoMember">
 										<span class="memberDetails"><i class="icon-user mr-2"></i> Nickname: <th:block th:text="*{nickName}">Gigi</th:block></span><br>
 										<span class="memberDetails"><i class="icon-gift mr-2"></i> Birthday: <th:block th:text="*{birthdate}">January 27, 1982</th:block></span><br>	
-										<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{age}">38 years and 10 months</th:block></span><br>									
+										<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 										<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
 										<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
 									</div>
@@ -428,72 +494,77 @@
 
         <div class="navbar-collapse collapse" id="navbar-navigation" th:object="${patient}">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a th:href="|@{/emrpatientrecord}/*{id}|" class="navbar-nav-link" id="emrPatientDashboard2ndNav">
+                <li class="nav-item bg-primary">
+                    <a th:href="|@{/emrpatientrecord}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientDashboard2ndNav">
                         <i class="icon-meter2 mr-2"></i>
                         Consultation List
                     </a>
                 </li>
-                <li class="nav-item">
-					<a th:href="|@{/emrpatientProfile}/*{id}|" class="navbar-nav-link" id="emrPatientProfile2ndNav">
+                <li class="nav-item bg-violet">
+					<a th:href="|@{/emrpatientProfile}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientProfile2ndNav">
 						<i class="icon-profile mr-2"></i>
 						Profile
 					</a>
 				</li>
-                
-                <li class="nav-item">
-                    <a th:href="|@{/emrpatientLaboratory}/*{id}|" class="navbar-nav-link" id="emrPatientLaboratory2ndNav">
+				<li class="nav-item bg-danger">
+					<a th:href="|@{/emrpatientHistory}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientProfile2ndNav">
+						<i class="icon-profile mr-2"></i>
+						Med History
+					</a>
+				</li>                
+                <li class="nav-item bg-warning">
+                    <a th:href="|@{/emrpatientLaboratory}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientLaboratory2ndNav">
                         <i class="icon-lab mr-2"></i>
                         Laboratories
+						<th:block th:if="*{totalNewLab != 0}">
+							<span class="badge badge-light badge-pill" style="margin-left: 10px;" th:text="*{totalNewLab}"></span>
+						</th:block>                                                
                     </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a th:href="|@{/emrpatientImaging}/*{id}|" class="navbar-nav-link" id="emrPatientImaging2ndNav">
+                </li>                
+                <li class="nav-item bg-success">
+                    <a th:href="|@{/emrpatientImaging}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientImaging2ndNav">
                         <i class="icon-file-picture mr-2"></i>
                         Imaging
+                        <th:block th:if="*{totalNewImaging != 0}">
+							<span class="badge badge-light badge-pill" style="margin-left: 10px;" th:text="*{totalNewImaging}"></span>
+						</th:block> 
                     </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a th:href="|@{/emrpatientProcedure}/*{id}|" class="navbar-nav-link" id="emrPatientProcedure2ndNav">
+                </li>                
+                <li class="nav-item bg-teal">
+                    <a th:href="|@{/emrpatientProcedure}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientProcedure2ndNav">
                         <i class="icon-archive mr-2"></i>
                         Procedures
+                        <th:block th:if="*{totalNewProcedure != 0}">
+							<span class="badge badge-light badge-pill" style="margin-left: 10px;" th:text="*{totalNewProcedure}"></span>
+						</th:block> 
                     </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a th:href="|@{/emrpatientVaccination}/*{id}|" class="navbar-nav-link" id="emrPatientVaccination2ndNav">
+                </li>                
+                <li class="nav-item bg-pink">
+                    <a th:href="|@{/emrpatientVaccination}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientVaccination2ndNav">
                         <i class="icon-archive mr-2"></i>
                         Vaccination
                     </a>
                 </li>
-                
-                
-                
-                <li class="nav-item">
-                    <a th:href="|@{/emrpatientOthers}/*{id}|" class="navbar-nav-link" id="emrPatientOthers2ndNav">
+                <li class="nav-item bg-orange">
+                    <a th:href="|@{/emrPatientMedicalCertificate}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientMedicalForms2ndNav">
+                        <i class="icon-archive mr-2"></i>
+                        Forms
+                    </a>
+                </li>
+
+				<li class="nav-item bg-purple">
+					<a th:href="|@{/emrPatientMedication}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientMedication2ndNav">
+						<i class="icon-archive mr-2"></i>
+						Medication
+					</a>
+				</li>               
+                <li class="nav-item bg-slate">
+                    <a th:href="|@{/emrpatientOthers}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientOthers2ndNav">
                         <i class="icon-archive mr-2"></i>
                         Others
                     </a>
                 </li>
-                
-                <li class="nav-item">
-                    <a th:href="|@{/emrPatientMedicalCertificate}/*{id}|" class="navbar-nav-link" id="emrPatientMedicalForms2ndNav">
-                        <i class="icon-archive mr-2"></i>
-                        Medical Forms
-                    </a>
-                </li>
-
-				<li class="nav-item">
-					<a th:href="|@{/emrPatientMedication}/*{id}|" class="navbar-nav-link" id="emrPatientMedication2ndNav">
-						<i class="icon-archive mr-2"></i>
-						Medication
-					</a>
-				</li>
-
 			</ul>
-
         </div>
     </div>
     <!-- /secondary navbar admin -->
@@ -526,7 +597,7 @@
 					<div class="infoMember">
 						<span class="memberDetails"><i class="icon-user mr-2"></i> Nickname: <th:block th:text="*{nickName}">Gigi</th:block></span><br>
 						<span class="memberDetails"><i class="icon-gift mr-2"></i> Birthday: <th:block th:text="*{birthdate}">January 27, 1982</th:block></span><br>
-						<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{age}">38 years and 10 months</th:block></span><br>									
+						<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 						<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
 						<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
 					</div>

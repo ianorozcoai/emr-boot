@@ -1,5 +1,7 @@
 package com.cdsi.emr.imaging;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +25,13 @@ import com.cdsi.emr.fileupload.FileDTO;
 import com.cdsi.emr.fileupload.FileInputInitialPreviewConfig;
 import com.cdsi.emr.fileupload.FileInputResponse;
 import com.cdsi.emr.fileupload.StorageService;
+import com.cdsi.emr.labs.EMRPatientLaboratory;
+import com.cdsi.emr.labs.EMRPatientLaboratoryRepository;
 import com.cdsi.emr.patient.Patient;
 import com.cdsi.emr.patient.PatientRepository;
 import com.cdsi.emr.personnel.Personnel;
+import com.cdsi.emr.procedures.EMRPatientProcedure;
+import com.cdsi.emr.procedures.EMRPatientProcedureRepository;
 import com.cdsi.emr.util.UXMessage;
 
 @Controller
@@ -34,26 +40,68 @@ public class EMRPatientImagingController {
     private EMRPatientImagingRepository emrPatientImagingRepository;
     private EMRPatientImagingTypeRepository emrPatientImagingTypeRepository;
     private PatientRepository patientRepository;
+    private EMRPatientLaboratoryRepository emrPatientLaboratoryRepository;
+    private EMRPatientProcedureRepository emrPatientProcedureRepository;
 
     public EMRPatientImagingController (EMRPatientImagingRepository emrPatientImagingRepository
             ,EMRPatientImagingTypeRepository emrPatientImagingTypeRepository
             ,PatientRepository patientRepository
             ,StorageService storageService
+            ,EMRPatientLaboratoryRepository emrPatientLaboratoryRepository
+            ,EMRPatientProcedureRepository emrPatientProcedureRepository
             ) {
         this.emrPatientImagingRepository = emrPatientImagingRepository;
         this.emrPatientImagingTypeRepository = emrPatientImagingTypeRepository;
         this.patientRepository = patientRepository;
         this.storageService = storageService;
+        this.emrPatientLaboratoryRepository = emrPatientLaboratoryRepository;
+		this.emrPatientProcedureRepository = emrPatientProcedureRepository;
     }
 
     @GetMapping("/emrpatientImaging/{patientId}")
     public String listAll(Model model, @PathVariable long patientId
             ,@AuthenticationPrincipal Personnel doctor
             ) {
-        List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-        List<EMRPatientImagingType> emrPatientImagingTypeList = this.emrPatientImagingTypeRepository.findAllByDoctorId(doctor.getId());
-        Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);
+    	Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);
         Patient patient = optionalPatient.get();
+        
+    	List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		
+		int totalNewLab = 0;
+		int totalNewImaging = 0;
+		int totalNewProcedure = 0;
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+        String today = dateFormatter.format(LocalDateTime.now());
+
+        for(EMRPatientLaboratory obj : emrPatientLaboratoryList) {
+        	String dateCreated = dateFormatter.format(obj.getDateCreated());
+        	if(dateCreated.equals(today)) {
+        		totalNewLab++;
+        	}        	
+        }
+        
+        for(EMRPatientImaging obj : emrPatientImagingList) {
+        	String dateCreated = dateFormatter.format(obj.getDateCreated());
+        	if(dateCreated.equals(today)) {
+        		totalNewImaging++;
+        	}        	
+        }
+        
+        for(EMRPatientProcedure obj : emrPatientProcedureList) {
+        	String dateCreated = dateFormatter.format(obj.getDateCreated());
+        	if(dateCreated.equals(today)) {
+        		totalNewProcedure++;
+        	}        	
+        }
+        
+        patient.setTotalNewLab(totalNewLab);
+        patient.setTotalNewImaging(totalNewImaging);
+        patient.setTotalNewProcedure(totalNewProcedure);
+        
+        List<EMRPatientImagingType> emrPatientImagingTypeList = this.emrPatientImagingTypeRepository.findAllByDoctorId(doctor.getId());
+        
         model.addAttribute("patient", patient);
         model.addAttribute("emrPatientImagingList", emrPatientImagingList);
         model.addAttribute("allImagingTypes", emrPatientImagingTypeList);

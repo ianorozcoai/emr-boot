@@ -31,7 +31,7 @@
 <div id="modal_form_vertical" class="modal fade" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-purple">
                 <h5 class="modal-title">Medication Information</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
@@ -100,8 +100,8 @@
 
                 <div class="modal-footer">
                     <button onclick="resetRowNum()" type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                    <button onclick="addMedicine()" type="button" class="btn bg-primary">Add Medicine</button>
-                    <button type="submit" class="btn bg-success">Save Info</button>
+                    <button onclick="addMedicine()" type="button" class="btn bg-purple">Add Medicine</button>
+                    <button type="submit" class="btn bg-purple">Save Info</button>
                 </div>
             </form>
         </div>
@@ -118,29 +118,21 @@
 
         <!-- Content area -->
         <div class="content">
-
-            <!-- Inner container -->
-            <div class="d-md-flex align-items-md-start">
-
-                <!-- Left sidebar component -->
-                <div th:replace="fragments/common::emr-left-side-patient-profile"></div>
-                <!-- /left sidebar component -->
-
-
-                <!-- Right content -->
-                <div class="tab-content w-100">
-                    <div class="tab-pane fade active show" id="profile">
-
-                        <!-- Medication Table -->
+			<div class="row">
+				<div class="col-xl-2">
+					<div th:replace="fragments/common::no_upload_pic_emr-left-side-patient-profile"></div>
+				</div>
+				<div class="col-xl-10">
+					<!-- Medication Table -->
                         <div class="row">
                             <div class="col-xl-12">
                                 <!-- Basic datatable -->
                                 <div class="card">
-                                    <div class="card-header header-elements-inline">
+                                    <div class="card-header header-elements-inline bg-purple">
                                         <h5 class="card-title">Medication List</h5>
                                         <div class="header-elements">
                                             <div class="list-icons">
-                                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton">Add Medication</button>
+                                                <button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addSystemUserButton">Add Medication</button>
                                             </div>
                                         </div>
                                     </div>
@@ -165,14 +157,14 @@
                                                         </ul>
                                                     </div>
                                                 </td>
-                                                <td><button class="btn btn-primary showMedicationDetails"
+                                                <td><button class="btn bg-purple showMedicationDetails"
                                                             th:data-row-med="${emrPatientMedication}"
                                                             th:data-row-date="${emrPatientMedication.dateCreated}"
                                                             th:data-row-id="${emrPatientMedication.id}"
                                                             th:data-row-items="${emrPatientMedication.emrPatientMedicationItems}"
                                                             data-toggle="modal" data-target="#modal_form_vertical" id="editMedication">View</button></td>
                                                 <td>
-                                                    <a class="btn btn-primary" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">Print</a>
+                                                    <a class="btn bg-purple" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">Print</a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -185,17 +177,9 @@
                             </div>
                         </div>
                         <!-- /Medication Table -->
-
-
-                    </div>
-                </div>
-                <!-- /right content -->
-
-            </div>
-            <!-- /inner container -->
-
-
-        </div>
+				</div>
+			</div>
+		</div>
         <!-- /content area -->
 
 
@@ -222,8 +206,8 @@
 
 			$('.flexdatalist').flexdatalist();
 
-	    	$(".navbar-nav-link").removeClass("bg-slate-300");
-			$("#emrPatientMedication2ndNav").addClass("bg-slate-300");
+	    	//$(".navbar-nav-link").removeClass("bg-slate-300");
+			//$("#emrPatientMedication2ndNav").addClass("bg-slate-300");
 
 			const fileSelect = document.getElementById('fileSelect');
 		    const profilePhoto = document.getElementById('profilePhoto');

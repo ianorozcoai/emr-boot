@@ -4,18 +4,24 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.util.UXMessage;
 import com.cdsi.emr.consultation.EmrConsultation;
 import com.cdsi.emr.consultation.EmrConsultationRepository;
 import com.cdsi.emr.personnel.Personnel;
 
 @Controller
 public class DashboardController {
+	
+	private static final String CANCELLED = "CANCELLED";
 
     private EmrConsultationRepository emrConsultationRepository;
 
@@ -23,6 +29,22 @@ public class DashboardController {
 
         this.emrConsultationRepository = emrConsultationRepository;
 
+    }
+    
+    @PostMapping("/cancelEmrConsulation")
+    public String cancelEmrConsulation(
+            Long consultationId
+            ,final RedirectAttributes redirect
+            ){
+        Optional<EmrConsultation> oEmrConsultation = this.emrConsultationRepository.findById(consultationId);
+        oEmrConsultation.ifPresent(emrConsultation -> {
+            emrConsultation.setConsultationStatus(CANCELLED);
+            //Temporary Fix
+    		emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().plusDays(1));
+            this.emrConsultationRepository.saveAndFlush(emrConsultation);
+        });
+        redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Consultation Successfully Cancelled."));
+        return "redirect:/emrdashboard";
     }
 
     @GetMapping({"/","/dashboard","/emrdashboard"})

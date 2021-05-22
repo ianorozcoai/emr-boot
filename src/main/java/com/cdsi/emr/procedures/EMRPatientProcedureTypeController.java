@@ -55,6 +55,7 @@ public class EMRPatientProcedureTypeController {
 			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
 			return "emr/emr_Procedure_type_list";
 		}
+		emrPatientProcedureType.setDoctorId(doctor.getId());
 		emrPatientProcedureTypeRepository.save(emrPatientProcedureType);
 		redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Procedure Type successfully saved."));
 		return "redirect:/patientProcedureTypes";

@@ -131,7 +131,7 @@ public class ReportsController {
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
 		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
 		map.put("PATIENT_GENDER", patient.getGender());		
-		map.put("PATIENT_AGE", patient.getAge() + "");
+		map.put("PATIENT_AGE", patient.getAgeStr());
 		
 		ctr = 1;
 		
@@ -248,7 +248,7 @@ public class ReportsController {
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
 		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
 		map.put("PATIENT_GENDER", patient.getGender());		
-		map.put("PATIENT_AGE", patient.getAge() + "");
+		map.put("PATIENT_AGE", patient.getAgeStr() + "");
 		map.put("PATIENT_MEDICATION", emrMedicalCertificate.getMedication());
 		map.put("PATIENT_RECOMMENDATION", emrMedicalCertificate.getRecommendation());
 		map.put("PATIENT_DIAGNOSIS", emrMedicalCertificate.getDiagnosis());

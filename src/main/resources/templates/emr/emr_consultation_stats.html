@@ -57,12 +57,12 @@
 									<div class="form-group">
 										<div class="row">
 											<div class="col-sm-5">													    
-												<label for="dateFrom">Date From</label>									                    
+												<label for="dateFrom">Date From (dd/mm/yyyy)</label>									                    
 												<input th:field="*{dateFrom}" type="date" class="form-control" >
 											</div>									                
 									                
 											<div class="col-sm-5">									                    
-												<label for="dateTo">Date To</label>									                    
+												<label for="dateTo">Date To (dd/mm/yyyy)</label>									                    
 												<input th:field="*{dateTo}" type="date" class="form-control" >
 											</div>
 											
@@ -87,7 +87,7 @@
 								<h5 class="card-title">Summary</h5>
 							</div>							
 		
-							<table class="table datatable-basic">
+							<table class="table table-bordered table-hover wrap" id="consultationStat-list">
 								<thead>
 									<tr>										           
                                     	<th>Date From</th>           
@@ -102,8 +102,8 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td th:text="${#temporals.format(dto.dateFrom,'MMMM d, yyyy')}">September 9, 2020</td>
-										<td th:text="${#temporals.format(dto.dateTo,'MMMM d, yyyy')}">September 9, 2020</td>
+										<td th:text="${#temporals.format(dto.dateFrom,'MMM d, yyyy')}">September 9, 2020</td>
+										<td th:text="${#temporals.format(dto.dateTo,'MMM d, yyyy')}">September 9, 2020</td>
 										<td th:text="${dto.totalPatients}">0</td>
 										<td th:text="${dto.totalMale}">0</td>
 										<td th:text="${dto.totalFemale}">0</td>
@@ -127,7 +127,7 @@
 								<h5 class="card-title">Consultation Statistics</h5>								
 							</div>							
 		
-							<table class="table datatable-basic" id="dataTables-hmoCollectionList" >
+							<table class="table table-bordered table-hover wrap" id="consultation-list">
 								<thead>
 									<tr>
 										<th>Date</th>	
@@ -141,7 +141,7 @@
 								<tbody>
 									<th:block th:each="consultation : ${dto.emrConsultations}">
 										<tr>
-											<td th:text="${#temporals.format(consultation.consultationDate,'MMMM d, yyyy')}">September 9 2020 02:30 PM</td>
+											<td th:text="${#temporals.format(consultation.consultationDate,'MMM d, yyyy')}">September 9 2020</td>
 											<td th:text="${consultation.patient.fullName}">Patient name</td>
 											<td th:text="${consultation.patient.gender}" >gender</td>	
 											<td th:text="${consultation.paymentType}" >paymentType</td>	
@@ -185,6 +185,12 @@
 			
 			$("#dateFrom").val(dateFrom);
 	    	$("#dateTo").val(dateTo);
+	    	
+	    	$('#consultation-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
 	    	   	
 	    });
     
