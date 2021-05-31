@@ -10,6 +10,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface PatientRepository extends CrudRepository<Patient, Long> {
 	
 	List<Patient> findAllByDoctorId(long doctorId);
+	List<Patient> findAllByDoctorIdOrderByFirstName(long doctorId);
 	
 	List<Patient> findByIdIn(List<Long> patientIds);
 	

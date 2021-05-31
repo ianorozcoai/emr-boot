@@ -29,7 +29,7 @@ public class ClinicController {
 	public String listAll(Model model, Authentication auth) {
 		Personnel doctor = (Personnel) auth.getPrincipal();
 		
-		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());		
+		List<Clinic> clinicList = clinicRepository.findAllByDoctorIdOrderByName(doctor.getId());		
 		
 		model.addAttribute("doctor", doctor);
 		model.addAttribute("clinics", clinicList);
@@ -50,7 +50,7 @@ public class ClinicController {
 		Personnel doctor = (Personnel) auth.getPrincipal();
 		
 		if (errors.hasErrors()) {
-			List<Clinic> clinicList = clinicRepository.findAll();
+			List<Clinic> clinicList = clinicRepository.findAllByDoctorIdOrderByName(doctor.getId());
 			
 			model.addAttribute("doctor", doctor);
 			model.addAttribute("clinics", clinicList);
@@ -67,10 +67,16 @@ public class ClinicController {
 	
 	@GetMapping("/emrclinicsdelete/{clinicId}")
 	public String deleteEMRClinic(@PathVariable long clinicId
-		,final RedirectAttributes redirect) {
+		,final RedirectAttributes redirect, Authentication auth) {
 	    Optional<Clinic> clinic = clinicRepository.findById(clinicId);
-	    clinicRepository.delete(clinic.get());
-	    redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Clinic has been deleted."));
+	    Personnel doctor = (Personnel) auth.getPrincipal();
+	    try {
+			clinicRepository.delete(clinic.get());
+			redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Clinic has been deleted."));
+		} catch (Exception e) {
+			redirect.addFlashAttribute("uxmessage", new UXMessage("ERRORDELETE", "Clinic cannot be deleted. It has been used in other records."));			
+		}
+	    
 		return "redirect:/emrclinics";
 	}
 }

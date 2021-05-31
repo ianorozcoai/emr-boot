@@ -99,7 +99,7 @@ public class PatientController {
 	@GetMapping("/emrpatients")
 	public String listAllPatientsByDoctorId(Model model, Authentication auth) {
 		Personnel doctor = (Personnel) auth.getPrincipal();
-		Iterable<Patient> patients = patientRepository.findAllByDoctorId(doctor.getId());
+		Iterable<Patient> patients = patientRepository.findAllByDoctorIdOrderByFirstName(doctor.getId());
 		Patient patient = new Patient();
 		patient.setDoctor(doctor);
 		patient.setIsActive("A");
@@ -152,7 +152,7 @@ public class PatientController {
         
         
         
-		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+		List<Clinic> clinicList = clinicRepository.findAllByDoctorIdOrderByName(doctor.getId());
 		
 		
 		model.addAttribute("patient", patient);
@@ -182,7 +182,7 @@ public class PatientController {
 		emrConsultations.forEach(fetchDiagnosis);
 		model.addAttribute("emrConsultations", emrConsultations);
 		model.addAttribute("allDiagnosis", allDiagnosis);
-		model.addAttribute("hmos", hmoRepository.findAll());
+		model.addAttribute("hmos", hmoRepository.findAllByOrderByHmoName());
 		model.addAttribute("allClinics", clinicList);
 		model.addAttribute("selectedConsultationId", 0);
 		model.addAttribute("mode", "N");
@@ -274,7 +274,7 @@ public class PatientController {
         
         emrConsultations.forEach(fetchDiagnosis);
         model.addAttribute("emrConsultations", emrConsultations);
-        model.addAttribute("hmos", hmoRepository.findAll());
+        model.addAttribute("hmos", hmoRepository.findAllByOrderByHmoName());
         
         EMRPatientMedicationForm emrPatientMedicationForm = new EMRPatientMedicationForm();
         emrPatientMedicationForm.getEmrPatientMedicationItems().add(new EMRPatientMedicationItem());
@@ -459,9 +459,9 @@ public class PatientController {
 		if (errors.hasErrors()) {
 			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
 			model.addAttribute("patients", patientRepository.findAll());
-			model.addAttribute("hmos", hmoRepository.findAll());
+			model.addAttribute("hmos", hmoRepository.findAllByOrderByHmoName());
 			if (request.getServletPath().equalsIgnoreCase("/emrpatients")) {
-				Iterable<Patient> patients = patientRepository.findAllByDoctorId(patient.getDoctor().getId());
+				Iterable<Patient> patients = patientRepository.findAllByDoctorIdOrderByFirstName(patient.getDoctor().getId());
 				model.addAttribute("patients", patients);
 			    	return "emr/emr_patient_list";
 			} else if (request.getServletPath().equalsIgnoreCase("/emrpatientprofile")) {

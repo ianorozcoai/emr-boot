@@ -118,7 +118,7 @@ public class EMRPatientMedicationController {
 			,Model model
 			) {
 		if (errors.hasErrors()) {
-			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check Generic and Dosage values. They are mandatory."));
 			Optional<Patient> optionalPatient = patientRepository.findById(emrPatientMedicationForm.getEmrPatientMedication().getPatient().getId());
 			Patient patient = optionalPatient.get();
 			model.addAttribute("patient", patient);

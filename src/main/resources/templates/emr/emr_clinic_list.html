@@ -225,6 +225,14 @@
 					buttons: false,
 		            timer: 2000,
 				});
+			} else if(msgCode === 'ERRORDELETE'){
+				swal({
+					title: "Error!",
+					text: msgDesc,
+					icon: "error",
+					buttons: false,
+		            timer: 2000,
+				});			
 			} else if(msgCode === 'SUCCESS'){
 				swal({
 					title: "Success!",

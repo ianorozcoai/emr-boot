@@ -283,26 +283,26 @@
 		
 							
 		
-							<table class="table datatable-basic" id="dataTables-hmoList" >
+							<table class="table table-bordered table-hover wrap" id="dataTables-patientList" >
 								<thead>
 									<tr>
+										<th class="text-center">Actions</th>
 										<th>Patient Name</th>
 										<th>Gender</th>										
 										<th>Patient Notes</th>		
 										<th>Contact No.</th>										
-										<th class="text-center">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="patient : ${patients}">
 										<tr>
-											<td id="hmoName" th:text="${patient.fullName}" width="30%;">Patient name</td>
-											<td th:text="${patient.gender}" width="10%;">Gender</td>		
-											<td th:text="${patient.notes}" width="30%;">Notes</td>										
-											<td th:text="${patient.contactNumber}" width="15%;">Contact number</td>										
 											<td class="text-center" width="15%;">
 												<button th:onclick="|viewRecord('${patient.id}')|" class="btn btn-primary">View Record</button>
 											</td>
+											<td id="hmoName" th:text="${patient.fullName}" width="30%;">Patient name</td>
+											<td th:text="${patient.gender}" width="10%;">Gender</td>		
+											<td th:text="${patient.notes}" width="30%;">Notes</td>										
+											<td th:text="${patient.contactNumber}" width="15%;">Contact number</td>											
 										</tr>
 									</th:block>
 								</tbody>
@@ -374,7 +374,13 @@
 	    }
 //end update profile photo
 
-	    $(document).ready(function() {     
+	    $(document).ready(function() {  
+	    	$('#dataTables-patientList').DataTable({
+				"lengthMenu": [25, 50],
+				"ordering": false, 
+				"scrollX": true,
+			});
+	    	
 	    	loadProvinces('province');
 	    	
 	    	$(".nav-link").removeClass("active");
@@ -411,7 +417,7 @@
 				});
 			}
 	    	
-	    	
+			
 	    	
 	    });
     

@@ -144,6 +144,10 @@ public class EMRPatientOthersController {
 		List<String> othersFileUrls = new ArrayList<>();
 		long patientId = emrPatientOthers.getPatient().getId();
 		MultipartFile[] files = emrPatientOthers.getOthersFiles();
+		
+		Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);
+		Patient patient = optionalPatient.get();
+		
 		if(files.length > 0 && files[0].getOriginalFilename().isEmpty()) {
 			EMRPatientOthers emrImg = emrPatientOthersRepository.findById(emrPatientOthers.getId())
 					.orElseGet(() -> new EMRPatientOthers());
@@ -152,7 +156,8 @@ public class EMRPatientOthersController {
 		    for (int i = 0; i < files.length; i++) {
 		    	try {
 		    		String fileExt = files[i].getOriginalFilename().substring(files[i].getOriginalFilename().lastIndexOf("."));
-		    		String fileName = "patient_othersfile_" + patientId + '_' + i + "_" + System.currentTimeMillis() + fileExt;
+		    		String fileName = "patient_othersfile_" + patient.getDoctor().getId() + "_" + patientId + '_' + i + "_" + System.currentTimeMillis() + fileExt;
+//		    		String fileName = "patient_othersfile_" + patient.getDoctor().getId() + "_" + patientId + '_' + i + fileExt;
 		    		FileDTO fileDTO = storageService.uploadFile(files[i], fileName);
 		    		othersFileUrls.add(fileDTO.getDownloadUri());
 		    		initialPreview.add(fileDTO.getDownloadUri());
@@ -170,7 +175,7 @@ public class EMRPatientOthersController {
 		    }
 		}
 		emrPatientOthers.setOthersFileUrls(othersFileUrls);
-		Patient patient = patientRepository.findById(patientId).orElseGet(() -> new Patient());
+//		Patient patient = patientRepository.findById(patientId).orElseGet(() -> new Patient());
 		emrPatientOthers.setPatient(patient);
 		emrPatientOthersRepository.save(emrPatientOthers);
 		

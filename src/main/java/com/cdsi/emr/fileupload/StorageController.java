@@ -41,7 +41,8 @@ public class StorageController {
         //upload files
         Patient patient = this.patientRepository.findById(patientId)
                 .orElseGet(Patient::new);
-        String fileName = "patient_" + patient.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+//        String fileName = "patient_" + patient.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = "patient_" + patient.getDoctor().getId() + "_" + patient.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         FileDTO fileDTO = this.storageService.uploadFile(file, fileName);
         patient.setPatientPhoto(fileDTO.getDownloadUri());
         this.patientRepository.save(patient);
