@@ -57,7 +57,7 @@ public class CalendarController {
                     eventCalendarDtoList.add(
                             new CalendarDto(
                                     String.valueOf(item.getId()),
-                                    item.getPatient().getLastName()+", "+item.getPatient().getFirstName(),
+                                    item.getPatient().getFullName(),
                                     DateUtil.getDateInString(item.getConsultationDate()),
                                     null,
                                     color)

@@ -104,12 +104,12 @@
 									<tr>
 										<td th:text="${#temporals.format(dto.dateFrom,'MMM d, yyyy')}">September 9, 2020</td>
 										<td th:text="${#temporals.format(dto.dateTo,'MMM d, yyyy')}">September 9, 2020</td>
-										<td th:text="${dto.totalPatients}">0</td>
-										<td th:text="${dto.totalMale}">0</td>
-										<td th:text="${dto.totalFemale}">0</td>
-										<td th:text="${dto.totalHmo}">0</td>
-										<td th:text="${dto.totalCash}">0</td>
-										<td th:text="${dto.totalCashAmount}">0</td>								
+										<td th:text="${#numbers.formatDecimal(dto.totalPatients, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalMale, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalFemale, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalHmo, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalCash, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalCashAmount, 0, 'COMMA', 0, 'POINT')}">0</td>								
 									</tr>
 								</tbody>
 							</table>
@@ -145,7 +145,7 @@
 											<td th:text="${consultation.patient.fullName}">Patient name</td>
 											<td th:text="${consultation.patient.gender}" >gender</td>	
 											<td th:text="${consultation.paymentType}" >paymentType</td>	
-											<td th:text="${consultation.consultationFee}" >paymentType</td>											
+											<td th:text="${#numbers.formatDecimal(consultation.consultationFee, 0, 'COMMA', 0, 'POINT')}" >paymentType</td>											
 											<td><span th:each="ecd : ${consultation.diagnosis}" th:text="|${ecd.description}, |"></span></td>																		
 										</tr>
 									</th:block>

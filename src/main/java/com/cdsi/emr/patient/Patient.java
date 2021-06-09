@@ -3,8 +3,6 @@ package com.cdsi.emr.patient;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,14 +14,11 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.cdsi.emr.config.data.Auditable;
 import com.cdsi.emr.personnel.Personnel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -88,7 +83,7 @@ import lombok.NoArgsConstructor;
 	int totalNewProcedure;
 	
 	public String getFullName() {
-        return getFirstName() + " " + getLastName();
+        return getLastName().toUpperCase() + ", " + getFirstName().toUpperCase();
     }
 	
 	@JsonIgnore

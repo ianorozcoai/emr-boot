@@ -353,62 +353,12 @@
             }
    	    }();
 
-// start update profile photo
-		const fileSelect = document.getElementById('fileSelect');
-		const profilePhoto = document.getElementById('profilePhoto');
-		fileSelect.addEventListener('click', (e) => {
-	    	if (profilePhoto) {
-	    		profilePhoto.click();
-	    	}
-	    }, false);
-		profilePhoto.addEventListener('change', previewImage, false);
-		
-        let uploadUrl = /*[[${#request.getContextPath() + '/file/upload/profilePhoto'}]]*/'';
-        let fileUploadForm = document.getElementById('fileUploadForm');
-		fileUploadForm.onsubmit = async (e) => {
-			e.preventDefault();
-			let fd = new FormData(fileUploadForm);
-			fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
-			let response = await fetch(uploadUrl, {
-				method: 'POST',
-				body: fd
-			});
-			
-			if(response.ok){
-				swal({
-					title: "Success!",
-					text: "Patient Photo successfully saved.",
-					icon: "success",
-					buttons: false,
-		            timer: 2000,
-				});
-			} else {
-				swal({
-					title: "Upload Failure!",
-					text: "Patient Photo not uploaded successfully.",
-					icon: "error",
-					buttons: false,
-		            timer: 2000,
-				});
-			}
-		};
-		
-		function previewImage() {
-			let input = document.getElementById('profilePhoto');
-			let img = document.getElementById('photoPreview');
-			if (input.files && input.files[0]) {
-	    		var reader = new FileReader();
-	    		reader.onload = function(e) {
-	    			img.src = e.target.result;
-	    		}
-	    		reader.readAsDataURL(input.files[0]);
-	    	}
-		}
-// end update profile photo
+
 
         $('#addImagingButton').click((e) => {
         	//clear values in form
         	$('#id').val(0);
+        	console.log("ID Value: " + $('#id').val());
         	$('#dateCreated').val(moment(new Date()).format('YYYY-MM-DDTHH:mm'));
         	$('#imaging_type_id').val(0);
         	$('#remarks').val('');

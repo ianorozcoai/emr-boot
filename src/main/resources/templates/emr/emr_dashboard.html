@@ -196,29 +196,16 @@
 						<!-- Consultation List -->
 						<div class="card">
 							<div class="card-header header-elements-inline">
-								<h5 class="card-title">Consultation Appointment List</h5>
-								<div class="header-elements">
-									<div class="list-icons">
-										<div class="list-icons-item">
-											<div class="form-group form-group-feedback form-group-feedback-right">
-													<input type="text" class="form-control" id="mobile" placeholder="Search">
-													<div class="form-control-feedback">
-														<i class="icon-search4 text-muted" id="mobileIcon"></i>
-													</div>
-											</div>
-										</div>
-										
-									</div>
-								</div>
+								<h5 class="card-title">Consultation Appointment List</h5>								
 							</div>
 
 							<form id="cancelConsultationForm" th:action="@{/cancelEmrConsulation}" method="post">
 								<input id="consultationId" name="consultationId" type="hidden"/>
 							</form>
-								<table class="table table-bordered table-hover wrap" id="consultation-list">
+								<table class="table table-bordered table-hover" id="consultation-list">
 									<thead>
 										<tr>
-											<th class="text-center">Action</th>
+											<th class="text-center" width="30px;">Action</th>
 											<th class="text-center">Patient Name</th>
 											<th class="text-center">Status</th>											
 											<th class="text-center">Complaints</th>
@@ -227,6 +214,27 @@
 									<tbody>
 										<tr th:each="ec : *{emrConsultations}">
 											<td class="text-center">
+												<div class="list-icons">
+													<div class="dropdown">
+														<a href="#" class="list-icons-item" data-toggle="dropdown">
+															<i class="icon-menu9"></i>
+														</a>
+	
+														<div class="dropdown-menu dropdown-menu-right">
+															
+															<a class="dropdown-item viewRecord" th:href="|@{/emrpatientrecord}/${ec.patient.id}/${ec.id}|">
+												    			<i class="icon-search4 text-success"></i> View Consultation
+												    		</a>
+															<a class="dropdown-item setLoanApprovalDetails" th:classappend="${ec.consultationStatus == 'CANCELLED'} ? disabled : cancelConsultation"
+																th:data-row-id="${ec.id}">
+												    			<i class="icon-cancel-square text-danger"></i> Cancel Consultation
+												    		</a>											    		
+														</div>
+													</div>
+												</div>
+											</td>
+											<!-- 
+											<td>
 												<span>
 													<a th:href="|@{/emrpatientrecord}/${ec.patient.id}/${ec.id}|" class="btn btn-primary">View</a>
 												</span>
@@ -236,13 +244,14 @@
 													>Cancel</button>
 												</span>
 											</td>
-											<td class="text-center" th:text="${ec.patient.fullName}">
+											 -->
+											<td th:text="${ec.patient.fullName}">
 												James Cruz
 											</td>
-											<td class="text-center" th:text="${ec.consultationStatus}">
+											<td th:text="${ec.consultationStatus}">
 												ON QUEUE
 											</td>
-											<td class="text-center" th:text="${ec.symptoms}">
+											<td th:text="${ec.symptoms}">
 												3/5
 											</td>
 										</tr>
@@ -274,7 +283,7 @@
 	    	$('#consultation-list').DataTable({
 				"lengthMenu": [10, 25, 50],
 				"ordering": false, 
-				"scrollX": true,
+				
 			});
 	    		    				
 			$(".nav-link").removeClass("active");	    	  	

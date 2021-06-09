@@ -209,48 +209,7 @@
 	    	//$(".navbar-nav-link").removeClass("bg-slate-300");
 			//$("#emrPatientMedication2ndNav").addClass("bg-slate-300");
 
-			const fileSelect = document.getElementById('fileSelect');
-		    const profilePhoto = document.getElementById('profilePhoto');
-			fileSelect.addEventListener('click', (e) => {
-	        	if (profilePhoto) {
-	        		profilePhoto.click();
-	        	}
-	        }, false);
-		    profilePhoto.addEventListener('change', previewImage, false);
-
-		    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/ '';
-        	let uploadUrl = contextRoot + '/file/upload/profilePhoto';
-        	let fileUploadForm = document.getElementById('fileUploadForm');
-		    fileUploadForm.onsubmit = async (e) => {
-		    	e.preventDefault();
-		    	let fd = new FormData(fileUploadForm);
-		    	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
-		    	let response = await fetch(uploadUrl, {
-		    		method: 'POST',
-		    		body: fd
-		    	});
-
-		    	if(response.ok){
-		    		swal({
-						title: "Success!",
-						text: "Patient Photo successfully saved.",
-						icon: "success",
-						buttons: false,
-			            timer: 2000,
-					});
-		    	} else {
-		    		swal({
-						title: "Upload Failure!",
-						text: "Patient Photo not uploaded successfully.",
-						icon: "error",
-						buttons: false,
-			            timer: 2000,
-					});
-		    	}
-
-
-		    	//document.getElementById('photoPreview').src = contextRoot + result.downloadUri;
-		    };
+			
 
 		    $('[id="medicationFormRow"]').each(function() {
 				var rowNumbered = "medicationFormRow"+i;
