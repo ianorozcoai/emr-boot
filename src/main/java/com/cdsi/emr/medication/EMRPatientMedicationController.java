@@ -2,6 +2,7 @@ package com.cdsi.emr.medication;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,6 +118,7 @@ public class EMRPatientMedicationController {
 			,final RedirectAttributes redirect
 			,Model model
 			) {
+	    
 		if (errors.hasErrors()) {
 			model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check Generic and Dosage values. They are mandatory."));
 			Optional<Patient> optionalPatient = patientRepository.findById(emrPatientMedicationForm.getEmrPatientMedication().getPatient().getId());
@@ -134,6 +136,15 @@ public class EMRPatientMedicationController {
 			return "emr/emr_patient_medication";
 		}
 
+		List<EMRPatientMedicationItem> itemList = new ArrayList<>();
+		itemList.addAll(emrPatientMedicationForm.getEmrPatientMedicationItems());
+        
+        for (EMRPatientMedicationItem medItem : itemList) {
+            if (medItem.getGenericName().equalsIgnoreCase("genericName") || medItem.getDosage().equalsIgnoreCase("dosage")) {
+                emrPatientMedicationForm.getEmrPatientMedicationItems().remove(medItem);
+            }
+        }
+        
 		EMRPatientMedication emrPatientMedication = emrPatientMedicationForm.getEmrPatientMedication();
 		emrPatientMedication.setEmrPatientMedicationItems(emrPatientMedicationForm.getEmrPatientMedicationItems());
 

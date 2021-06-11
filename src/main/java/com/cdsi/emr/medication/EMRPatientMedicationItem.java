@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -23,12 +24,12 @@ public class EMRPatientMedicationItem {
     private long id;
 
     @NotBlank(message = " is mandatory.")
-    private String genericName;
+    private String genericName = "genericName";
 
     private String brandName;
 
     @NotBlank(message = " is mandatory.")
-    private String dosage;
+    private String dosage = "dosage";
 
 //    @NotBlank(message = " is mandatory.")
     private String remarks;
