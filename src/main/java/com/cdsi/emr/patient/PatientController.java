@@ -499,7 +499,8 @@ public class PatientController {
 		Patient dbPatient = patientRepository.save(patient);
 		
 		if (request.getServletPath().equalsIgnoreCase("/emrpatients")) {
-			return "redirect:/emrpatients";
+			//return "redirect:/emrpatients";
+			return "redirect:/emrpatientrecord/"+dbPatient.getId();
 		} else if (request.getServletPath().equalsIgnoreCase("/emrpatientprofile")) {
 			return "redirect:/emrpatientProfile/"+dbPatient.getId();
 		} else {

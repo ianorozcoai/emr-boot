@@ -11,6 +11,15 @@
     
 	<title>Electronic Medical Records</title>
 	
+	<style type="text/css">
+	
+		table.dataTable tbody td {
+		    word-break: break-word;
+		    vertical-align: top;
+		}
+
+	</style>
+	
 </head>
 
 <body>
@@ -51,7 +60,7 @@
 											<div class="col-sm-12">
 												<label for="history">History</label>
 												<span class="validationError text-danger" th:if="${#fields.hasErrors('history')}" th:errors="*{history}"></span>
-												<textarea th:field="*{history}" class="form-control instructions" rows="4"></textarea>
+												<textarea th:field="*{history}" class="form-control instructions" rows="4" maxlength="250"></textarea>
 											</div>                    
 							            </div>
 									</div>	
@@ -60,7 +69,7 @@
 											<div class="col-sm-12">
 												<label for="diagnosis">Diagnosis</label>
 												<span class="validationError text-danger" th:if="${#fields.hasErrors('diagnosis')}" th:errors="*{diagnosis}"></span>
-												<textarea th:field="*{diagnosis}" class="form-control instructions" rows="4"></textarea>
+												<textarea th:field="*{diagnosis}" class="form-control instructions" rows="4" maxlength="250"></textarea>
 											</div>                    
 							            </div>
 									</div>	
@@ -69,7 +78,7 @@
 											<div class="col-sm-12">
 												<label for="recommendation">Recommendation</label>
 												<span class="validationError text-danger" th:if="${#fields.hasErrors('recommendation')}" th:errors="*{recommendation}"></span>
-												<textarea th:field="*{recommendation}" class="form-control instructions" rows="4"></textarea>
+												<textarea th:field="*{recommendation}" class="form-control instructions" rows="4" maxlength="250"></textarea>
 											</div>                    
 							            
 									</div>
@@ -78,7 +87,7 @@
 											<div class="col-sm-12">
 												<label for="medication">Medication</label>
 												<span class="validationError text-danger" th:if="${#fields.hasErrors('medication')}" th:errors="*{medication}"></span>
-												<textarea th:field="*{medication}" class="form-control instructions" rows="4"></textarea>
+												<textarea th:field="*{medication}" class="form-control instructions" rows="4" maxlength="250"></textarea>
 											</div>                    
 							            </div>
 									</div>				
@@ -121,9 +130,8 @@
 							<div class="card-body">
 								<table class="table table-bordered table-hover" id="medcert-list">
 									<thead>
-										<tr>
-											<th class="text-center">Actions</th>
-											<th class="text-center">Actions</th>
+										<tr>											
+											<th width="30px;" class="text-center">Actions</th>
 											<th>Date</th>
 											<th>History</th>
 											<th>Diagnosis</th>
@@ -134,6 +142,33 @@
 									</thead>
 									<tbody>
 										<tr th:each="mc : ${emrMedicalCertificateList}">
+											<td class="text-center">
+													<div class="list-icons">
+														<div class="dropdown">
+															<a href="#" class="list-icons-item" data-toggle="dropdown">
+																<i class="icon-menu9"></i>
+															</a>
+		
+															<div class="dropdown-menu dropdown-menu-right">
+																
+																<a id="editMedicalCertificateButton" class="dropdown-item showMedicalCertificateDetails"
+		                                                            th:data-row-history="${mc.history}"
+																	th:data-row-diagnosis="${mc.diagnosis}"
+																	th:data-row-dateRequested="${mc.dateRequested}"
+																	th:data-row-recommendation="${mc.recommendation}"
+																	th:data-row-medication="${mc.medication}"
+																	th:data-row-id="${mc.id}"
+                                                           	 		data-toggle="modal" data-target="#modal_form_vertical">
+													    			<i class="icon-search4 text-success"></i> View Record
+													    		</a>
+																<a class="dropdown-item viewRecord" th:href="|@{/viewMedCert}/${mc.id}|" target="_blank">
+													    			<i class="icon-printer text-primary"></i> Print
+													    		</a>											    		
+															</div>
+														</div>
+													</div>
+												</td>
+											<!-- 
 											<td class="text-center">
 												<button id="editMedicalCertificateButton" type="button" class="showMedicalCertificateDetails btn bg-orange" 
 													th:data-row-history="${mc.history}"
@@ -146,6 +181,7 @@
 											<td>                                                	
 		                                       	<a class="btn bg-orange" th:href="|@{/viewMedCert}/${mc.id}|" target="_blank">Print</a>
 											</td>
+											 -->
 											<td th:text="${#temporals.format(mc.dateRequested,'MMM d, yyyy')}">Date</td>								
 											<td th:text="${mc.history}">History</td>
 											<td th:text="${mc.diagnosis}">Diagnosis</td>
@@ -180,7 +216,7 @@
 	    	$('#medcert-list').DataTable({
 				"lengthMenu": [10, 25, 50],
 				"ordering": false, 
-				"scrollX": true,
+				"scrollX": false,
 			});
 			
 	    	//$(".navbar-nav-link").removeClass("bg-slate-300");		
@@ -217,12 +253,14 @@
 			var diagnosis = $(this).attr('data-row-diagnosis');
 			var recommendation = $(this).attr('data-row-recommendation');
 			var medication = $(this).attr('data-row-medication');
+			var dateRequested = $(this).attr('data-row-dateRequested');
 			
 			$("#modal_form_vertical").find("#id").val(id);
 			$("#modal_form_vertical").find("#history").val(history);
 			$("#modal_form_vertical").find("#diagnosis").val(diagnosis);
 			$("#modal_form_vertical").find("#recommendation").val(recommendation);
 			$("#modal_form_vertical").find("#medication").val(medication);
+			$("#modal_form_vertical").find("#dateRequested").val(dateRequested);
 		});
 	    
 	</script>

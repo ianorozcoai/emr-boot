@@ -136,7 +136,7 @@
 															<table class="table table-bordered table-hover" id="lab-list">
 																<thead>
 																	<tr>
-																		<th class="text-center">Actions</th>
+																		<th><i class="icon-search4"></i></th>
 																		<th>Date</th>
 																		<th><i class="fas fa-paperclip"></i></th>
 																		<th>Result</th>
@@ -146,12 +146,19 @@
 																</thead>
 																<tbody>
 																	<tr th:each="lab : ${emrPatientLaboratoryList}">
+																		<td  width="5px;" title="View Record">
+																			<a class="list-icons-item" th:id="|editLabButton${lab.id}|"
+																			    data-toggle="modal" data-target="#modal_form_vertical"
+																			    th:onclick="|editPatientLaboratory('${lab.id}')|"><i class="icon-search4"></i></a>
+																		</td>
+																		<!-- 
 																		<td class="text-center">
 																			<button th:id="|editLabButton${lab.id}|" class="btn bg-warning"
 																			    data-toggle="modal" data-target="#modal_form_vertical"
 																			    th:onclick="|editPatientLaboratory('${lab.id}')|"
 																			    >View Record</button>
 																		</td>
+																		 -->
 																		<td th:text="${#temporals.format(lab.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>	
 																		<td width="5px;">																			
 																			<span th:if="!${#lists.isEmpty(lab.labFileUrls)}"><i class="fas fa-paperclip"></i></span>

@@ -121,7 +121,7 @@
 								<table class="table table-bordered table-hover" id="procedure-list">
 									<thead>
 										<tr>
-											<th class="text-center">Actions</th>
+											<th><i class="icon-search4"></i></th>
 											<th>Date</th>
 											<th><i class="fas fa-paperclip"></i></th>
 											<th>Type</th>
@@ -130,12 +130,19 @@
 									</thead>
 									<tbody>
 										<tr th:each="procedure : ${emrPatientProcedureList}">
+											<td  width="5px;" title="View Record">
+												<a class="list-icons-item" th:id="|editprocedureButton${procedure.id}|"
+												    data-toggle="modal" data-target="#modal_form_vertical"
+												    th:onclick="|editPatientProcedure('${procedure.id}')|"><i class="icon-search4"></i></a>
+											</td>
+											<!-- 
 											<td class="text-center">
 												<button id="|editprocedureButton${procedure.id}|" class="btn bg-teal"
 												    data-toggle="modal" data-target="#modal_form_vertical"
 												    th:onclick="|editPatientProcedure('${procedure.id}')|"
 												    >View Record</button>
 											</td>
+											 -->
 											<td th:text="${#temporals.format(procedure.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
 											<td width="5px;">																			
 												<span th:if="!${#lists.isEmpty(procedure.procedureFileUrls)}"><i class="fas fa-paperclip"></i></span>

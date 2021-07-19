@@ -12,6 +12,15 @@
     <th:block th:replace="fragments/common::header-import-js"></th:block>
 
 	<title>Electronic Medical Records</title>
+	
+	<style type="text/css">
+	
+		table.dataTable tbody td {
+		    word-break: break-word;
+		    vertical-align: top;
+		}
+
+	</style>
 
 
 </head>
@@ -182,13 +191,13 @@
 													<div class="col-sm-12">
 														<label for="diagnosis">Diagnosis ICD Code</label>
 														<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
-														<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"
-															   data-search-in="description"
+														<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"															   
+															   data-search-in='["description","groupDescription","code"]'
 															   data-search-by-word="true"
 															   data-min-length="3"
 															   multiple="multiple"
 															   data-selection-required="true"
-															   data-visible-properties='["code","description"]'
+															   data-visible-properties='["code","description", "groupDescription"]'
 															   data-text-property="{code} - {description}"
 															   data-value-property='["id","code","description"]'>
 													</div>
@@ -242,7 +251,7 @@
 													<table class="table table-bordered table-hover wrap" id="consultation-list">
 														<thead>
 														<tr class="bg-blue">
-															<th class="text-center">Actions</th>
+															<th>&nbsp;</th>
 															<th>Date</th>															
 															<th>Complaints</th>
 															<th>Physical Examination</th>
@@ -252,6 +261,61 @@
 														</thead>
 														<tbody>
 														<tr th:each="ec : ${emrConsultations}">
+															<td title="Open Record">
+																<a class="list-icons-item" th:onclick="|setValuesInForm('${ec.id}')|" th:id="|viewConsultationButton${ec.id}|"																		
+																				th:data-id="${ec.id}"
+																				th:data-consultationDate="${ec.consultationDate}"
+																				th:data-paymentType="${ec.paymentType}"
+																				th:data-clinic-id="${ec.clinic.id}"
+																				th:data-hmoName="${ec.hmoName}"
+																				th:data-hmoPaid="${ec.hmoPaid}"
+																				th:data-consultationFee="${ec.consultationFee}"
+																				th:data-consultationStatus="${ec.consultationStatus}"
+																				th:data-temperature="${ec.temperature}"
+																				th:data-weight="${ec.weight}"
+																				th:data-height="${ec.height}"
+																				th:data-bloodPressure="${ec.bloodPressure}"
+																				th:data-symptoms="${ec.symptoms}"
+																				th:data-physical="${ec.physical}"
+																				th:data-intervention="${ec.intervention}"
+																				th:data-diagnosisTxt="${ec.diagnosisTxt}"
+																				th:data-diagnosisJSON="${ec.diagnosisJSON}"><i class="icon-search4"></i></a>
+															</td>
+															<!-- 
+															<td class="text-center">
+																<div class="list-icons">
+																	<div class="dropdown">
+																		<a href="#" class="list-icons-item" data-toggle="dropdown">
+																			<i class="icon-menu9"></i>
+																		</a>
+					
+																		<div class="dropdown-menu dropdown-menu-right">
+																			<a class="dropdown-item viewRecord" th:onclick="|setValuesInForm('${ec.id}')|" th:id="|viewConsultationButton${ec.id}|"																		
+																				th:data-id="${ec.id}"
+																				th:data-consultationDate="${ec.consultationDate}"
+																				th:data-paymentType="${ec.paymentType}"
+																				th:data-clinic-id="${ec.clinic.id}"
+																				th:data-hmoName="${ec.hmoName}"
+																				th:data-hmoPaid="${ec.hmoPaid}"
+																				th:data-consultationFee="${ec.consultationFee}"
+																				th:data-consultationStatus="${ec.consultationStatus}"
+																				th:data-temperature="${ec.temperature}"
+																				th:data-weight="${ec.weight}"
+																				th:data-height="${ec.height}"
+																				th:data-bloodPressure="${ec.bloodPressure}"
+																				th:data-symptoms="${ec.symptoms}"
+																				th:data-physical="${ec.physical}"
+																				th:data-intervention="${ec.intervention}"
+																				th:data-diagnosisTxt="${ec.diagnosisTxt}"
+																				th:data-diagnosisJSON="${ec.diagnosisJSON}"><i class="icon-search4 text-success"></i>Open</a>
+																			
+																												    		
+																		</div>
+																	</div>
+																</div>
+															</td>
+															 -->
+															<!-- 
 															<td class="text-center">
 																<button th:onclick="|setValuesInForm('${ec.id}')|" class="btn btn-primary" th:id="|viewConsultationButton${ec.id}|"																		
 																		th:data-id="${ec.id}"
@@ -273,6 +337,7 @@
 																		th:data-diagnosisJSON="${ec.diagnosisJSON}"
 																>Open</button>
 															</td>
+															-->
 															<td>
 																<div class="d-flex align-items-center">
 																	<div th:text="${#temporals.format(ec.consultationDate,'MMM d, yyyy')}">
@@ -293,7 +358,7 @@
 															<td>
 																<div class="d-flex align-items-center">
 																	<div>
-																		<a href="#" class="text-default font-weight-semibold" th:each="ecd : ${ec.diagnosis}"
+																		<a href="#" class="text-default" th:each="ecd : ${ec.diagnosis}"
 																		   th:text="|${ecd.description}, |">2020-12-06</a>
 																	</div>
 																</div>
@@ -327,7 +392,7 @@
 			                                            <thead>
 			                                            <tr>
 			                                                <th>Date</th>
-			                                                <th colspan="2">Medication Given</th>
+			                                                <th>Medication Given</th>
 			                                                
 			                                            </tr>
 			                                            </thead>
@@ -340,8 +405,7 @@
 			                                                            <li th:text="${med.genericName}+' ('+${med.brandName}+') - '+${med.dosage} + ' ml'"></li>
 			                                                        </ul>
 			                                                    </div>
-			                                                </td>	
-			                                                <td>&nbsp;</td>		                                                
+			                                                </td>	                                                
 			                                            </tr>
 			                                            </tbody>
 			                                        </table>
@@ -392,7 +456,7 @@
 	    	$('#consultation-list').DataTable({
 				"lengthMenu": [5, 10, 25, 50],
 				"ordering": false, 
-				"scrollX": true,
+				"scrollX": false,
 			});
 	    	
 	    	$('#medication-list').DataTable({

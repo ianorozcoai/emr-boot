@@ -111,7 +111,7 @@
 								<table class="table table-bordered table-hover" id="others-list">
 									<thead>
 										<tr>
-											<th class="text-center">Actions</th>
+											<th><i class="icon-search4"></i></th>
 											<th>Date</th>
 											<th><i class="fas fa-paperclip"></i></th>	
 											<th>Notes</th>																					
@@ -119,12 +119,19 @@
 									</thead>
 									<tbody>
 										<tr th:each="others : ${emrPatientOthersList}">
+											<td  width="5px;" title="View Record">
+												<a class="list-icons-item" th:id="|editOthersButton${others.id}|"
+												    data-toggle="modal" data-target="#modal_form_vertical"
+												    th:onclick="|editPatientOthers('${others.id}')|"><i class="icon-search4"></i></a>
+											</td>
+											<!-- 
 											<td class="text-center">
 												<button th:id="|editOthersButton${others.id}|" class="btn bg-slate"
 												    data-toggle="modal" data-target="#modal_form_vertical"
 												    th:onclick="|editPatientOthers('${others.id}')|"
 												    >View Record</button>
 											</td>
+											 -->
 											<td th:text="${#temporals.format(others.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>			
 											<td width="5px;">																			
 												<span th:if="!${#lists.isEmpty(others.othersFileUrls)}"><i class="fas fa-paperclip"></i></span>

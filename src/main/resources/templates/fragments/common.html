@@ -170,8 +170,8 @@
 		</div>
 
 		<div class="navbar-collapse collapse" id="navbar-footer">
-			<span class="navbar-text">
-				&copy; 2021 <a href="#">Electronic Hospital Records</a> by <a href="http://cdsi.ph" target="_blank">Complete Digital Solutions Inc.</a>
+			<span class="navbar-text" style="margin-left: 30px;">
+				&copy; 2021 <a href="#">Electronic Medical Records</a> by <a href="http://cdsi.ph" target="_blank">Complete Digital Solutions Inc.</a>
 			</span>
 
 			<ul class="navbar-nav ml-lg-auto">
@@ -272,14 +272,22 @@
 						<li class="nav-item nav-item-submenu" id="fileMaintenanceNav">
 							<a href="#" class="nav-link"><i class="icon-gear"></i> <span>File Maintenance</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="File Maintenance">
-								<li class="nav-item"><a th:href="@{/emrclinics}" class="nav-link" id="emrClinics2ndNav"><i class="icon-folder-plus2"></i> Clinics</a></li>
-                                <li class="nav-item"><a th:href="@{/cliniclogo}" class="nav-link" id="emrClinicLogo2ndNav"><i class="icon-folder-plus2"></i> Clinic Logo</a></li>
+								<li class="nav-item"><a th:href="@{/emrclinics}" class="nav-link" id="emrClinics2ndNav"><i class="icon-location4"></i> Clinics</a></li>
+                                <li class="nav-item"><a th:href="@{/cliniclogo}" class="nav-link" id="emrClinicLogo2ndNav"><i class="icon-image2"></i> Clinic Logo</a></li>
                                 <li class="nav-item"><a th:href="@{/mystaffs}" class="nav-link" id="emrStaffs2ndNav"><i class="icon-folder-plus2"></i> My Staff</a></li>
-								<li class="nav-item"><a th:href="@{/hmos}" class="nav-link" id="hmo2ndNav"><i class="icon-library2"></i> HMO Management</a></li>								
+								<!-- 
+								<li class="nav-item"><a th:href="@{/hmos}" class="nav-link" id="hmo2ndNav"><i class="icon-library2"></i> HMO Management</a></li>
+								 -->
+								<li class="nav-item"><a href="https://icd.who.int/browse10/2019/en" class="nav-link" target=”_blank”><i class="icon-book"></i> ICD Reference</a></li>
+								<li class="nav-item"><a href="https://crs.philhealth.gov.ph/" class="nav-link" target=”_blank”><i class="icon-book3"></i> Philhealth ICD Case Rate</a></li>	
+								<li class="nav-item"><a th:href="@{/emrMedicalRequestGroup}" class="nav-link" id="medicalRequestGroup2ndNav"><i class="icon-color-sampler"></i> Medical Request Group</a></li>	
+								<li class="nav-item"><a th:href="@{/emrMedicalRequest}" class="nav-link" id="medicalRequest2ndNav"><i class="icon-download7"></i> Medical Request</a></li>						
 								<li class="nav-item"><a th:href="@{/patientImagingTypes}" class="nav-link" id="imagingType2ndNav"><i class="icon-camera"></i> Imaging Type</a></li>
-								<li class="nav-item"><a th:href="@{/patientProcedureTypes}" class="nav-link" id="procedureType2ndNav"><i class="icon-camera"></i> Procedure Type</a></li>
+								<li class="nav-item"><a th:href="@{/patientProcedureTypes}" class="nav-link" id="procedureType2ndNav"><i class="icon-equalizer2"></i> Procedure Type</a></li>
 								<li class="nav-item"><a th:href="@{/patientLaboratoryTypes}" class="nav-link" id="labType2ndNav"><i class="icon-lab"></i> Laboratory Type</a></li>
-                                <li class="nav-item"><a th:href="@{/exportdata}" class="nav-link" id="exportData2ndNav"><i class="icon-folder-download"></i> Export Data</a></li>															
+								<!-- 
+                                <li class="nav-item"><a th:href="@{/exportdata}" class="nav-link" id="exportData2ndNav"><i class="icon-folder-download"></i> Export Data</a></li>	
+                                 -->														
 							</ul>
 						</li>								
 						<li class="nav-item">
@@ -551,6 +559,13 @@
                         Forms
                     </a>
                 </li>
+                
+                <li class="nav-item bg-success">
+                    <a th:href="|@{/emrPatientMedicalRequest}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientMedicalForms2ndNav">
+                        <i class="icon-archive mr-2"></i>
+                        Request
+                    </a>
+                </li>
 
 				<li class="nav-item bg-purple">
 					<a th:href="|@{/emrPatientMedication}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientMedication2ndNav">
@@ -623,7 +638,7 @@
 
         <div class="navbar-collapse collapse" id="navbar-footer">
                     <span class="navbar-text">
-                        &copy; 2021 <a href="#">Electronic Hospital Records</a> by <a href="http://cdsi.ph" target="_blank">Complete Digital Solutions Inc.</a>
+                        &copy; 2021 <a href="#">Electronic Medical Records</a> by <a href="http://cdsi.ph" target="_blank">Complete Digital Solutions Inc.</a>
                     </span>
 
             <ul class="navbar-nav ml-lg-auto">

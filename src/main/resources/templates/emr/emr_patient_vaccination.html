@@ -127,7 +127,7 @@
 								<table class="table table-bordered table-hover" id="vaccine-list">
 									<thead>
 										<tr>
-											<th class="text-center">Actions</th>
+											<th><i class="icon-search4"></i></th>
 											<th>Date</th>
 											<th><i class="fas fa-paperclip"></i></th>
 											<th>Vaccine Name</th>
@@ -136,6 +136,16 @@
 									</thead>
 									<tbody>
 										<tr th:each="vaccination : ${emrPatientVaccinationList}">
+											
+											<td  width="5px;" title="View Record">
+												<a class="list-icons-item showVaccinationDetails" th:id="|editVaccinationButton${vaccination.id}|"
+												    	data-toggle="modal" data-target="#modal_form_vertical"
+												    	th:data-row-id="${vaccination.id}"
+														th:data-row-date-created="${vaccination.dateCreated}"
+														th:data-row-vaccine-name="${vaccination.vaccineName}"
+														th:data-row-remarks="${vaccination.remarks}"><i class="icon-search4"></i></a>
+											</td>
+											 <!-- 
 											<td class="text-center" width="40px;">
 												<button th:id="|editVaccinationButton${vaccination.id}|" type="button" class="showVaccinationDetails btn bg-pink" 
 														th:data-row-id="${vaccination.id}"
@@ -144,6 +154,7 @@
 														th:data-row-remarks="${vaccination.remarks}"
 														data-toggle="modal" data-target="#modal_form_vertical">View Record</button>
 											</td>
+											-->
 											<td th:text="${#temporals.format(vaccination.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>			
 											<td width="5px;">																			
 												<span th:if="!${#lists.isEmpty(vaccination.vaccineFileUrls)}"><i class="fas fa-paperclip"></i></span>

@@ -115,7 +115,7 @@
 								<table class="table table-bordered table-hover" id="imaging-list">
 									<thead>
 										<tr>
-											<th class="text-center">Actions</th>
+											<th><i class="icon-search4"></i></th>
 											<th>Date</th>
 											<th><i class="fas fa-paperclip"></i></th>
 											<th>Type</th>
@@ -124,12 +124,19 @@
 									</thead>
 									<tbody>
 										<tr th:each="img : ${emrPatientImagingList}">
+											<td  width="5px;" title="View Record">
+												<a class="list-icons-item" th:id="|editImgButton${img.id}|"
+												    data-toggle="modal" data-target="#modal_form_vertical"
+												    th:onclick="|editPatientImaging('${img.id}')|"><i class="icon-search4"></i></a>
+											</td>
+											<!-- 
 											<td class="text-center">
 												<button th:id="|editImgButton${img.id}|" class="btn btn-success"
 												    data-toggle="modal" data-target="#modal_form_vertical"
 												    th:onclick="|editPatientImaging('${img.id}')|"
 												    >View Record</button>
 											</td>
+											 -->
 											<td th:text="${#temporals.format(img.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
 											<td width="5px;">																			
 												<span th:if="!${#lists.isEmpty(img.imgFileUrls)}"><i class="fas fa-paperclip"></i></span>

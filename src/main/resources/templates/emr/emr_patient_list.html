@@ -286,7 +286,7 @@
 							<table class="table table-bordered table-hover wrap" id="dataTables-patientList" >
 								<thead>
 									<tr>
-										<th class="text-center">Actions</th>
+										<th width="5px;">&nbsp;</th>
 										<th>Patient Name</th>
 										<th>Gender</th>										
 										<th>Patient Notes</th>		
@@ -296,13 +296,35 @@
 								<tbody>
 									<th:block th:each="patient : ${patients}">
 										<tr>
+											<td title="View Record">
+												<a th:onclick="|viewRecord('${patient.id}')|" class="list-icons-item"><i class="icon-search4"></i></a>
+											</td>
+											<!-- 
+											<td class="text-center" width="30px;">
+												<div class="list-icons">
+													<div class="dropdown">
+														<a href="#" class="list-icons-item" data-toggle="dropdown">
+															<i class="icon-menu9"></i>
+														</a>
+					
+														<div class="dropdown-menu dropdown-menu-right">
+															<a class="dropdown-item viewRecord" th:onclick="|viewRecord('${patient.id}')|">
+																<i class="icon-search4 text-success"></i>View Record
+															</a>																												    		
+														</div>
+													</div>
+												</div>
+											</td>
+											 -->
+											<!-- 
 											<td class="text-center" width="15%;">
 												<button th:onclick="|viewRecord('${patient.id}')|" class="btn btn-primary">View Record</button>
 											</td>
-											<td id="hmoName" th:text="${patient.fullName}" width="30%;">Patient name</td>
-											<td th:text="${patient.gender}" width="10%;">Gender</td>		
-											<td th:text="${patient.notes}" width="30%;">Notes</td>										
-											<td th:text="${patient.contactNumber}" width="15%;">Contact number</td>											
+											 -->
+											<td id="hmoName" th:text="${patient.fullName}">Patient name</td>
+											<td th:text="${patient.gender}" >Gender</td>		
+											<td th:text="${patient.notes}" >Notes</td>										
+											<td th:text="${patient.contactNumber}">Contact number</td>											
 										</tr>
 									</th:block>
 								</tbody>
@@ -379,6 +401,9 @@
 				"lengthMenu": [25, 50],
 				"ordering": false, 
 				"scrollX": true,
+				"columnDefs": [
+				    { "width": "5%", "targets": 0 }
+				  ],
 			});
 	    	
 	    	loadProvinces('province');

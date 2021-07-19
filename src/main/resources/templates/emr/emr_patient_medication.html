@@ -13,6 +13,14 @@
 
     <title>Electronic Medical Records</title>
 
+	<style type="text/css">
+	
+		table.dataTable tbody td {
+		    word-break: break-word;
+		    vertical-align: top;
+		}
+
+	</style>
 
 </head>
 
@@ -138,17 +146,40 @@
                                     </div>
 
                                     <div class="card-body">
-                                        <table class="table table-bordered table-hover" id="system-user-list">
+                                        <table class="table table-bordered table-hover" id="medcert-list">
                                             <thead>
                                             <tr>
+                                            	<th width="30px;">Action</th>
                                                 <th>Date</th>
                                                 <th>Medication Given</th>
-                                                <th>Action</th>
-                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr th:each="emrPatientMedication : ${emrPatientMedicationList}">
+                                            	<td class="text-center">
+													<div class="list-icons">
+														<div class="dropdown">
+															<a href="#" class="list-icons-item" data-toggle="dropdown">
+																<i class="icon-menu9"></i>
+															</a>
+		
+															<div class="dropdown-menu dropdown-menu-right">
+																
+																<a class="dropdown-item viewRecord showMedicationDetails"
+		                                                            th:data-row-med="${emrPatientMedication}"
+		                                                            th:data-row-date="${emrPatientMedication.dateCreated}"
+		                                                            th:data-row-id="${emrPatientMedication.id}"
+		                                                            th:data-row-items="${emrPatientMedication.emrPatientMedicationItems}"
+                                                           	 		data-toggle="modal" data-target="#modal_form_vertical" id="editMedication">
+													    			<i class="icon-search4 text-success"></i> View Record
+													    		</a>
+																<a class="dropdown-item viewRecord" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">
+													    			<i class="icon-printer text-primary"></i> Print
+													    		</a>											    		
+															</div>
+														</div>
+													</div>
+												</td>
                                                 <td th:text="${#temporals.format(emrPatientMedication.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
                                                 <td>
                                                     <div th:each="med : ${emrPatientMedication.emrPatientMedicationItems}">
@@ -157,6 +188,7 @@
                                                         </ul>
                                                     </div>
                                                 </td>
+                                                <!-- 
                                                 <td><button class="btn bg-purple showMedicationDetails"
                                                             th:data-row-med="${emrPatientMedication}"
                                                             th:data-row-date="${emrPatientMedication.dateCreated}"
@@ -166,6 +198,7 @@
                                                 <td>
                                                     <a class="btn bg-purple" th:href="|@{/viewPrescription}/${emrPatientMedication.id}|" target="_blank">Print</a>
                                                 </td>
+                                                 -->
                                             </tr>
                                             </tbody>
                                         </table>
@@ -209,7 +242,11 @@
 	    	//$(".navbar-nav-link").removeClass("bg-slate-300");
 			//$("#emrPatientMedication2ndNav").addClass("bg-slate-300");
 
-			
+			$('#medcert-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": false,
+			});
 
 		    $('[id="medicationFormRow"]').each(function() {
 				var rowNumbered = "medicationFormRow"+i;

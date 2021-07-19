@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FlexDatalistResult {
 
-    private List<Icd> results;
+//    private List<Icd> results;
+	private List<EmrIcd> results;
 }

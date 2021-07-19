@@ -19,11 +19,14 @@ import com.cdsi.emr.util.UXMessage;
 @Controller
 public class IcdController {
     private IcdRepository icdRepository;
+    private EmrIcdRepository emrIcdRepository;
 
     public IcdController (
-            IcdRepository icdRepository
+            IcdRepository icdRepository,
+            EmrIcdRepository emrIcdRepository
             ) {
         this.icdRepository = icdRepository;
+        this.emrIcdRepository = emrIcdRepository;
     }
 
     @GetMapping("/icds")
@@ -68,13 +71,19 @@ public class IcdController {
     
     @GetMapping("/icd/datalist")
     public ResponseEntity<FlexDatalistResult> flexDatalistForIcd() {
-        List<Icd> result = this.icdRepository.findAll();
+//        List<Icd> result = this.icdRepository.findAll();
+//        return ResponseEntity.ok().body(new FlexDatalistResult(result));
+        
+        List<EmrIcd> result = this.emrIcdRepository.findAll();
         return ResponseEntity.ok().body(new FlexDatalistResult(result));
     }
 
     @GetMapping("/icd/datalist/{keyword}")
     public ResponseEntity<FlexDatalistResult> flexDatalistForIcdByKeyWord(@PathVariable String keyword) {
-        List<Icd> result = this.icdRepository.findAllByDescriptionContaining(keyword);
+//        List<Icd> result = this.icdRepository.findAllByDescriptionContaining(keyword);
+//        return ResponseEntity.ok().body(new FlexDatalistResult(result));
+        
+        List<EmrIcd> result = this.emrIcdRepository.findAllByDescriptionContaining(keyword);
         return ResponseEntity.ok().body(new FlexDatalistResult(result));
     }
 }

@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.cdsi.emr.medicalreports.EMRMedicalCertificate;
 import com.cdsi.emr.medicalreports.EMRMedicalCertificateRepository;
+import com.cdsi.emr.medicalrequest.EMRPatientMedicalRequest;
+import com.cdsi.emr.medicalrequest.EMRPatientMedicalRequestItem;
+import com.cdsi.emr.medicalrequest.EMRPatientMedicalRequestRepository;
 import com.cdsi.emr.clinic.Clinic;
 import com.cdsi.emr.clinic.ClinicRepository;
 import com.cdsi.emr.fileupload.FileStorageProperties;
@@ -41,18 +44,21 @@ public class ReportsController {
 	private ClinicRepository clinicRepository;
 	private EMRMedicalCertificateRepository emrMedicalCertificateRepository;
 	private FileStorageProperties fileStorageProperties;
+	private EMRPatientMedicalRequestRepository emrPatientMedicalRequestRepository;
 	
 	public ReportsController (PatientRepository patientRepository, 
 			EMRPatientMedicationRepository emrPatientMedicationRepository,
 			ClinicRepository clinicRepository,
 			EMRMedicalCertificateRepository emrMedicalCertificateRepository,
-			FileStorageProperties fileStorageProperties) {
+			FileStorageProperties fileStorageProperties,
+			EMRPatientMedicalRequestRepository emrPatientMedicalRequestRepository) {
 	    	
 		this.emrPatientMedicationRepository = emrPatientMedicationRepository;		
 		this.patientRepository = patientRepository;
 		this.clinicRepository = clinicRepository;
 		this.emrMedicalCertificateRepository = emrMedicalCertificateRepository;
 		this.fileStorageProperties = fileStorageProperties;
+		this.emrPatientMedicalRequestRepository = emrPatientMedicalRequestRepository;
 		
 	}
 	
@@ -178,6 +184,149 @@ public class ReportsController {
 		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
 		
 	}	
+	
+	@GetMapping("/viewMedicalRequest/{requestId}")
+	public void viewMedicalRequest(Model model, @PathVariable long requestId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
+		
+		Personnel doctor = (Personnel) auth.getPrincipal();
+		
+		Optional<EMRPatientMedicalRequest> oEMRPatientMedicalRequest = emrPatientMedicalRequestRepository.findById(requestId);
+		EMRPatientMedicalRequest emrPatientMedicalRequest = oEMRPatientMedicalRequest.orElseGet(() -> new EMRPatientMedicalRequest());
+		
+		Optional<Patient> oPatient = patientRepository.findById(emrPatientMedicalRequest.getPatient().getId());
+		Patient patient = oPatient.orElseGet(() -> new Patient());
+		
+		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+		
+		String docLogo = doctor.getClinicLogoUrl();
+		
+		//File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
+		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
+		
+		//String rxLogo = file.getAbsolutePath();
+		String cdsiLogo = cdsiFile.getAbsolutePath();
+//		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));	
+		
+		String hospitalLogo = "";
+		
+		if(docLogo != null) {
+			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+		}
+				
+		Map<String, Object> map = new HashMap<String, Object>();
+		//map.put("RX_LOGO", rxLogo);
+		map.put("CDSI_LOGO", cdsiLogo);
+		map.put("COMPANY_LOGO", hospitalLogo);
+		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
+		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
+		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
+		
+		map.put("CLINIC_NAME", "");
+		map.put("DOCTOR_ADDRESS", "");
+		map.put("DOCTOR_CONTACT_NO", "");	
+		
+		map.put("CLINIC_NAME2", "");
+		map.put("DOCTOR_ADDRESS2", "");
+		map.put("DOCTOR_CONTACT_NO2", "");
+		
+		int ctr = 1;
+		
+		for(Clinic clinic : clinicList){
+			
+			if(ctr == 1){
+				map.put("CLINIC_NAME", clinic.getName());
+				map.put("DOCTOR_ADDRESS", clinic.getAddress());
+				map.put("DOCTOR_ADDRESS", clinic.getScheduleRx());
+				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
+			} else if (ctr == 2) {
+				map.put("CLINIC_NAME2", clinic.getName());
+				map.put("DOCTOR_ADDRESS2", clinic.getAddress());
+				map.put("DOCTOR_ADDRESS2", clinic.getScheduleRx());
+				map.put("DOCTOR_CONTACT_NO2", "Contact No: " + clinic.getContactNumber());			
+			} else {
+				break;
+			}
+			
+			ctr++;
+		}
+		
+		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
+		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "");
+		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+		map.put("PERIOD", formatter.format(emrPatientMedicalRequest.getDateCreated()));
+		
+		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
+		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
+		map.put("PATIENT_GENDER", patient.getGender());		
+		map.put("PATIENT_AGE", patient.getAgeStr());
+		
+				
+		StringBuffer medicalRequestItems = new StringBuffer();
+		StringBuffer medicalRequestItems2 = new StringBuffer();
+		StringBuffer medicalRequestItems3 = new StringBuffer();
+		
+		medicalRequestItems.append("");
+		medicalRequestItems2.append("");
+		medicalRequestItems3.append("");
+		
+//		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
+//			
+//			medicalRequestItems.append(medItem.getRequestName() != null ? "- " + medItem.getRequestName() + "\n" : "");		
+//			
+//		}
+		
+		int x = 1;
+//		for(int x = 1; x <= 30; x++) {		
+		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
+			if(x > 10 && x <= 20) {
+				//medicalRequestItems2.append(x + ".) Item " + x + "\n");
+				medicalRequestItems2.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + "\n" : "");
+			} else if (x > 20) {
+				//medicalRequestItems3.append(x + ".) Item " + x + "\n");
+				medicalRequestItems3.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + "\n" : "");
+			} else {
+				//medicalRequestItems.append(x + ".) Item " + x + "\n");
+				medicalRequestItems.append(medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + "\n" : "");		
+			}
+			x++;
+		}
+		
+		
+		map.put("DATE_REQUESTED", formatter.format(emrPatientMedicalRequest.getDateCreated()));
+		map.put("PATIENT_REQUEST", medicalRequestItems.toString());
+		map.put("PATIENT_REQUEST2", medicalRequestItems2.toString());
+		map.put("PATIENT_REQUEST3", medicalRequestItems3.toString());
+		map.put("PATIENT_INSTRUCTION", emrPatientMedicalRequest.getInstructions() != null ? emrPatientMedicalRequest.getInstructions() : "");
+		map.put("PATIENT_DIAGNOSIS", emrPatientMedicalRequest.getDiagnosis() != null ? emrPatientMedicalRequest.getDiagnosis() : "");
+		
+		List<Patient> dataList = new ArrayList<Patient>();	
+		
+		Patient dummyData = new Patient();
+		dummyData.setFirstName("test");
+		
+		dataList.add(dummyData);
+		
+		
+		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+		
+		response.setContentType("application/pdf");
+		
+		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/MedicalRequestReport.jasper");
+		
+		
+		if(reportStream == null){
+			System.out.println("reportStream is NULL");
+		}
+		
+		if(response.getOutputStream() == null){
+			System.out.println("response.getOutputStream() is NULL");
+		}
+		
+		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
+		
+	}
 	
 	@GetMapping("/viewMedCert/{medCertId}")
 	public void listAllMedCert(Model model, @PathVariable long medCertId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {

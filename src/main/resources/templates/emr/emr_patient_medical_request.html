@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments/common::header-meta"></th:block>
+
+    <!-- common import of css & js goes here -->
+    <th:block th:replace="fragments/common::header-import-css"></th:block>
+
+    <link rel="stylesheet" th:href="@{/js/jquery.flexdatalist.min.css}">
+
+    <th:block th:replace="fragments/common::header-import-js"></th:block>
+
+    <title>Electronic Medical Records</title>
+
+	<style type="text/css">
+	
+		table.dataTable tbody td {
+		    word-break: break-word;
+		    vertical-align: top;
+		}
+
+	</style>
+
+</head>
+
+<body>
+
+<!-- Main Navbar -->
+<div th:replace="fragments/common::main-navbar-patient-record-emr"></div>
+<!-- /Main Navbar -->
+
+<!-- Secondary navbar -->
+<div th:replace="fragments/common::emr-secondary-navbar-patient-record"></div>
+<!-- /secondary navbar -->
+
+
+<!-- Vertical form modal -->
+<div id="modal_form_vertical" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-purple">
+                <h5 class="modal-title">Medical Request Information</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form th:action="@{/emrPatientMedicalRequest}" th:object="${emrPatientMedicalRequestForm}" method="post" id="modalForm">
+                <input type="hidden" th:field="*{emrPatientMedicalRequest.id}" id="id"/>
+                <input type="hidden" name="emrPatientMedicalRequest.patient.id" th:value="${patient.id}" />
+                <datalist id="medicalRequestDatalist">
+                    <option th:each="generics : ${medicalRequestLookupList}"
+                            th:value="${generics}"
+                            th:text="${generics}">Medical Request Name</option>
+                </datalist>
+                <div class="modal-body" id="medicineFormContainer">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="dateCreated">Date</label>
+                                <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedicalRequest.dateCreated')}" th:errors="*{emrPatientMedicalRequest.dateCreated}"></span>
+                                <input id="dateCreated" name="dateCreated" th:field="*{emrPatientMedicalRequest.dateCreated}" placeholder="Date" type="datetime-local" class="form-control" >
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="dateCreated">Diagnosis</label>
+                                <textarea id="diagnosis" name="diagnosis" th:field="*{emrPatientMedicalRequest.diagnosis}" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="dateCreated">Special Instructions</label>
+                                <textarea id="instructions" name="instructions" th:field="*{emrPatientMedicalRequest.instructions}" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="medicalRequestFormRow" class="medicalRequestFormRow" th:each="med, i : ${emrPatientMedicalRequestForm.emrPatientMedicalRequestItems}">
+                        <input type="hidden" th:field="*{emrPatientMedicalRequestItems[__${i.index}__].id}" id="id"/>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label th:for="|requestName${i.index}|">Medical Request Name</label>
+                                    <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedicalRequestItems[__${i.index}__].requestName')}"
+                                          th:errors="*{emrPatientMedicalRequestItems[__${i.index}__].requestName}"></span>
+                                    <input th:id="|requestName${i.index}|" list="medicalRequestDatalist" name="requestName" th:field="*{emrPatientMedicalRequestItems[__${i.index}__].requestName}" class="form-control requestName" >
+                                </div>                          
+                            </div>
+                        </div>                        
+                    </div>
+                    
+                    
+
+                </div>
+
+                <div class="modal-footer">
+                    <button onclick="resetRowNum()" type="button" class="btn btn-link" data-dismiss="modal">Close</button>     
+                    <button onclick="addMedicalRequest()" type="button" class="btn bg-purple">Add Medical Request</button>               
+                    <button type="submit" class="btn bg-purple">Save Info</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /vertical form modal -->
+
+
+<!-- Page content -->
+<div class="page-content">
+
+    <!-- Main content -->
+    <div class="content-wrapper">
+
+        <!-- Content area -->
+        <div class="content">
+			<div class="row">
+				<div class="col-xl-2">
+					<div th:replace="fragments/common::no_upload_pic_emr-left-side-patient-profile"></div>
+				</div>
+				<div class="col-xl-10">
+					<!-- Medication Table -->
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <!-- Basic datatable -->
+                                <div class="card">
+                                    <div class="card-header header-elements-inline bg-success">
+                                        <h5 class="card-title">Medical Request List</h5>
+                                        <div class="header-elements">
+                                            <div class="list-icons">
+                                                <button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addButton">Add Medical Request</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-hover" id="medcert-list">
+                                            <thead>
+                                            <tr>
+                                            	<th width="30px;">Action</th>
+                                                <th>Date</th>
+                                                <th>Special Instructions</th>
+                                                <th>Medical Request</th>    
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="emrPatientMedicalRequest : ${emrPatientMedicalRequestList}">
+                                            	<td class="text-center">
+													<div class="list-icons">
+														<div class="dropdown">
+															<a href="#" class="list-icons-item" data-toggle="dropdown">
+																<i class="icon-menu9"></i>
+															</a>
+		
+															<div class="dropdown-menu dropdown-menu-right">
+																
+																<a class="dropdown-item viewRecord showMedicationDetails"
+                                                            th:data-row-med="${emrPatientMedicalRequest}"
+                                                            th:data-row-date="${emrPatientMedicalRequest.dateCreated}"
+                                                            th:data-row-instructions="${emrPatientMedicalRequest.instructions}"
+                                                            th:data-row-diagnosis="${emrPatientMedicalRequest.diagnosis}"
+                                                            th:data-row-id="${emrPatientMedicalRequest.id}"
+                                                            th:data-row-items="${emrPatientMedicalRequest.emrPatientMedicalRequestItems}"
+                                                            data-toggle="modal" data-target="#modal_form_vertical" id="editMedicalRequest">
+													    			<i class="icon-search4 text-success"></i> View Record
+													    		</a>
+																<a class="dropdown-item viewRecord" th:href="|@{/viewMedicalRequest}/${emrPatientMedicalRequest.id}|" target="_blank">
+													    			<i class="icon-printer text-primary"></i> Print
+													    		</a>											    		
+															</div>
+														</div>
+													</div>
+												</td>
+                                            
+                                                <td th:text="${#temporals.format(emrPatientMedicalRequest.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
+                                                <td th:text="${emrPatientMedicalRequest.instructions}">Date</td>
+                                                <td>
+                                                    <div th:each="med : ${emrPatientMedicalRequest.emrPatientMedicalRequestItems}">
+                                                        <ul>
+                                                            <li th:text="${med.requestName}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <!-- 
+                                                <td><button class="btn bg-success showMedicationDetails"
+                                                            th:data-row-med="${emrPatientMedicalRequest}"
+                                                            th:data-row-date="${emrPatientMedicalRequest.dateCreated}"
+                                                            th:data-row-instructions="${emrPatientMedicalRequest.instructions}"
+                                                            th:data-row-diagnosis="${emrPatientMedicalRequest.diagnosis}"
+                                                            th:data-row-id="${emrPatientMedicalRequest.id}"
+                                                            th:data-row-items="${emrPatientMedicalRequest.emrPatientMedicalRequestItems}"
+                                                            data-toggle="modal" data-target="#modal_form_vertical" id="editMedicalRequest">View</button></td>
+                                                <td>
+                                                    <a class="btn bg-success" th:href="|@{/viewMedicalRequest}/${emrPatientMedicalRequest.id}|" target="_blank">Print</a>
+                                                </td>
+                                                 -->
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                                <!-- /basic datatable -->
+                            </div>
+                        </div>
+                        <!-- /Medication Table -->
+				</div>
+			</div>
+		</div>
+        <!-- /content area -->
+
+
+        <!-- Footer -->
+        <div th:replace="fragments/common::footer"></div>
+        <!-- /Footer -->
+
+    </div>
+    <!-- /main content -->
+
+</div>
+<!-- /page content -->
+<script th:src="@{/js/jquery.flexdatalist.min.js}"></script>
+<script th:inline="javascript">
+
+		var i = 0;
+		
+
+		function resetRowNum() {
+			i = 0;
+		}
+
+	    $(document).ready(function() {
+
+			$('.flexdatalist').flexdatalist();
+
+	    	//$(".navbar-nav-link").removeClass("bg-slate-300");
+			//$("#emrPatientMedicalRequest2ndNav").addClass("bg-slate-300");
+
+			$('#medcert-list').DataTable({
+				"lengthMenu": [10, 25, 50],
+				"ordering": false, 
+				"scrollX": false,
+			});
+
+		    $('[id="medicalRequestFormRow"]').each(function() {
+				var rowNumbered = "medicalRequestFormRow"+i;
+				$(this).attr("id", rowNumbered);
+				i++;
+			});
+
+			$('#addButton').on('load click', function(){
+			    clearMedicalRequest();
+			});
+	    });
+
+	    $(document).on("click", ".showMedicationDetails", function() {
+
+	    	// clear all medication forms
+	    	$(".medicalRequestFormRow").remove();
+	    	resetRowNum();
+	    	
+
+			var id = $(this).attr('data-row-id');
+			var emrPatientMedicalRequest = $(this).attr('data-row-med');
+			var medDate = $(this).attr('data-row-date');
+			var instructions = $(this).attr('data-row-instructions');
+			var diagnosis = $(this).attr('data-row-diagnosis');
+			var str = $(this).attr('data-row-items');
+			console.log(str);
+
+			var medicationItems = str.replaceAll("=", ":").replaceAll("emrPatientMedicalRequestItem(", "{").replaceAll(")", "}").replaceAll("},", "};").replaceAll("[", "").replaceAll("]", "");
+			var itemSplit = medicationItems.split(";");
+
+			var rowNum = 0;
+
+			for (var item of itemSplit) {
+				var itemFields = item.split(",");
+
+				// add medication form row
+				addMedicalRequest();
+
+				for (var i = 0; i < itemFields.length; i++) {
+					var field = itemFields[i].split(":");
+					var fieldName = field[0].replaceAll("{", "").trim();
+					var fieldVal = field[1].replaceAll("}", "");
+
+					var rowId = fieldName+rowNum;
+
+					console.log("rowNumAA: " + rowNum + " - " + rowId + " - " + fieldVal);
+
+					if (fieldName == "isRequested") {
+						console.log(fieldVal);
+						//$("#modal_form_vertical").find("#isRequested"+rowNum).val(fieldVal);
+						//loadBrandDataList(fieldVal,rowNum);
+					}
+
+					if (fieldName == "requestName") {
+						$("#modal_form_vertical").find("#requestName"+rowNum).val(fieldVal);
+					}
+					//$("#modal_form_vertical").find("#"+rowId).val(fieldVal);
+				}
+				rowNum++;
+			}
+			$("#modal_form_vertical").find("#id").val(id);
+			$("#modal_form_vertical").find("#dateCreated").val(medDate);
+			$("#modal_form_vertical").find("#instructions").val(instructions);
+			$("#modal_form_vertical").find("#diagnosis").val(diagnosis);
+		});
+
+	    let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+		let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+
+		if(msgCode === 'ERROR'){
+			$('#modal_form_vertical').modal('show');
+			swal({
+				title: "Error!",
+				text: msgDesc,
+				icon: "error",
+				buttons: false,
+	            timer: 2000,
+			});
+		} else if(msgCode === 'SUCCESS'){
+			swal({
+				title: "Success!",
+				text: "Medical Request successfully saved.",
+				icon: "success",
+				buttons: false,
+	            timer: 2000,
+			});
+		}
+
+		function clearMedicalRequest() {
+			$(".medicalRequestFormRow").remove();
+	    	resetRowNum();
+	    	addMedicalRequest();
+	    	
+		}
+		
+		function addMedicalRequest() {
+
+			 let generics = /*[[${medicalRequestLookupList}]]*/[];
+
+			 var options = generics.reduce(
+				(a,g) => a+=`<option value="${g}">${g}</option>`
+              	, ''
+			 )
+
+
+			 var medicalRequestFormRowWrapper =
+				 $(`
+					<div id="medicalRequestFormRow`+i+`" class="medicalRequestFormRow">
+						<hr/>
+						<div class="form-group">
+						<input type="hidden" name="emrPatientMedicalRequestItems[`+i+`].id}" id="id`+i+`"/>
+							<!-- Remove Button -->
+							${i == 0 ? '' : '<span class="float-right"><i class="icon-trash delete-medication"></i></span>'}
+							<div class="row">
+								<!-- Generic Name -->
+								<div class="col-sm-12">
+									<div class="form-group">
+										<label for="emrPatientMedicalRequestItems[`+i+`].requestName">Medical Request Name</label>
+										<input list="medicalRequestDatalist" name="emrPatientMedicalRequestItems[`+i+`].requestName" id="requestName`+i+`" class="form-control requestName">
+									</div>
+								</div>								
+							</div>
+						</div>						
+					</div>
+				 `);
+
+			 $("#medicineFormContainer").append(medicalRequestFormRowWrapper);
+			 i++;
+		 }
+		
+		 
+		 $(document).on('click', '.delete-medication', function(e) {
+			   e.preventDefault();
+			   $(this).closest('.medicalRequestFormRow').remove();
+			   return false;
+		});
+		 
+		 $("#modalForm").submit(function(e){
+	            
+	            e.preventDefault(e);
+	            var isErrorExist = "N";
+	            var inputs = $(".requestName");
+	            var savedValues = [];
+	            
+	            for(var i = 0; i < inputs.length; i++){
+	            	if(savedValues.includes($(inputs[i]).val())){
+	            		isErrorExist = "Y"
+	            		//alert("Medical Request Name: " + $(inputs[i]).val() + " - has a duplicate entry.");
+	            		swal({
+	        				title: "Duplicate Entry!",
+	        				text: "Medical Request Name: " + $(inputs[i]).val() + " - has a duplicate entry.",
+	        				icon: "error",
+	        				buttons: false,
+	        	            timer: 2500,
+	        			});
+	            		
+	            		return 1;
+	            	} else {
+	            		savedValues.push($(inputs[i]).val());
+	            	}
+	            	
+	            }
+	                        
+	            if(isErrorExist === "N"){
+	            	modalForm.submit(); 
+	            	//alert('No Error');
+	            }
+	            
+	        });
+
+	</script>
+
+</body>
+</html>
