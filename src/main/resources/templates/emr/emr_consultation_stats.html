@@ -98,6 +98,10 @@
 										<th>HMO</th>
 										<th>Cash</th>
 										<th>Cash Amount</th>
+										<th>GCash</th>
+										<th>GCash Amount</th>
+										<th>Paymaya</th>
+										<th>Paymaya Amount</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -109,7 +113,11 @@
 										<td th:text="${#numbers.formatDecimal(dto.totalFemale, 0, 'COMMA', 0, 'POINT')}">0</td>
 										<td th:text="${#numbers.formatDecimal(dto.totalHmo, 0, 'COMMA', 0, 'POINT')}">0</td>
 										<td th:text="${#numbers.formatDecimal(dto.totalCash, 0, 'COMMA', 0, 'POINT')}">0</td>
-										<td th:text="${#numbers.formatDecimal(dto.totalCashAmount, 0, 'COMMA', 0, 'POINT')}">0</td>								
+										<td th:text="${#numbers.formatDecimal(dto.totalCashAmount, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalGCash, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalGCashAmount, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalPaymaya, 0, 'COMMA', 0, 'POINT')}">0</td>
+										<td th:text="${#numbers.formatDecimal(dto.totalPaymayaAmount, 0, 'COMMA', 0, 'POINT')}">0</td>								
 									</tr>
 								</tbody>
 							</table>

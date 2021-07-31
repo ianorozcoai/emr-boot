@@ -113,7 +113,9 @@
 														<label for="paymentType">Payment Type</label>
 														<select th:field="*{paymentType}" id="paymentType" class="form-control">
 															<option value='CASH'>CASH</option>
+															<option value='GCASH'>GCASH</option>
 															<option value='HMO'>HMO</option>
+															<option value='PAYMAYA'>PAYMAYA</option>
 														</select>
 													</div>
 													<div class="col-sm-4">
@@ -649,7 +651,7 @@
 		}
 		
 		function checkLastThreeFields() {
-			let physical = $('#physical').val();
+			//let physical = $('#physical').val();
 			let intervention = $('#intervention').val();
 			let diagnosisTxt = $('#diagnosisTxt').val();
 			let diagnosis = $('#diagnosisArea').val();
@@ -675,7 +677,8 @@
 			
 			
 			if(isValid){
-				if (physical.length != 0 || intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
+				//if (physical.length != 0 || intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
+				if (intervention.length != 0 || diagnosis.length != 0 || diagnosisTxt.length != 0) {
 					confirmConsultation();
 				} else {
 					// proceed with saving
@@ -730,7 +733,7 @@
 		function confirmConsultation(){
 			swal({
 				  title: "Mark consultation as PROCESSED?",
-				  text: "You have specified either one of the following details: \n - Physical Examination (PE) \n - Diagnosis \n - Intervention",
+				  text: "You have specified either one of the following details: \n - Diagnosis \n - Intervention",
 				  icon: "info",
 				  buttons: ["Yes", "No"],
 				  dangerMode: false,

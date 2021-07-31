@@ -496,6 +496,8 @@ public class PatientController {
 			}
 		}
 		
+		patient.setBirthdate(patient.getBirthdate().plusDays(1));
+		
 		Patient dbPatient = patientRepository.save(patient);
 		
 		if (request.getServletPath().equalsIgnoreCase("/emrpatients")) {

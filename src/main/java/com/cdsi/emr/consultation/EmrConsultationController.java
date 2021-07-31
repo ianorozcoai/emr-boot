@@ -100,11 +100,11 @@ public class EmrConsultationController {
 	public String listConsultation(Model model, Authentication auth) {
 		
 		LocalDate dateFrom = LocalDate.now().minusDays(30);
-		LocalDate dateTo = LocalDate.now().plusDays(1);
+		LocalDate dateTo = LocalDate.now();
 		
 		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		
-		List<EmrConsultation> emrConsultations = emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dateFrom, dateTo);
+		List<EmrConsultation> emrConsultations = emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dateFrom, LocalDate.now().plusDays(1));
 		
 		EmrConsultationStatsDto dto = new EmrConsultationStatsDto();
 		
@@ -114,7 +114,11 @@ public class EmrConsultationController {
 		int femaleCount = 0;
 		int hmoCount = 0;
 		int cashCount = 0;
+		int gcashCount = 0;
+		int paymayaCount = 0;
 		BigDecimal cashAmount = BigDecimal.ZERO;
+		BigDecimal gcashAmount = BigDecimal.ZERO;
+		BigDecimal paymayaAmount = BigDecimal.ZERO;
 		
 		for(EmrConsultation consultation : emrConsultations) {
 			if("MALE".equals(consultation.getPatient().getGender())) {
@@ -125,9 +129,15 @@ public class EmrConsultationController {
 			
 			if("HMO".equals(consultation.getPaymentType())) {
 				hmoCount++;				
-			} else {
+			} else if("CASH".equals(consultation.getPaymentType())) {
 				cashCount++;
 				cashAmount = cashAmount.add(consultation.getConsultationFee() != null ? consultation.getConsultationFee() : BigDecimal.ZERO);
+			} else if("GCASH".equals(consultation.getPaymentType())) {
+				gcashCount++;
+				gcashAmount = gcashAmount.add(consultation.getConsultationFee() != null ? consultation.getConsultationFee() : BigDecimal.ZERO);
+			} else {
+				paymayaCount++;
+				paymayaAmount = paymayaAmount.add(consultation.getConsultationFee() != null ? consultation.getConsultationFee() : BigDecimal.ZERO);
 			}
 		}
 		
@@ -138,7 +148,12 @@ public class EmrConsultationController {
 		dto.setTotalFemale(femaleCount);
 		dto.setTotalHmo(hmoCount);
 		dto.setTotalMale(maleCount);
+		dto.setTotalGCash(gcashCount);
+		dto.setTotalPaymaya(paymayaCount);
 		dto.setTotalPatients(femaleCount+maleCount);
+		dto.setTotalGCashAmount(gcashAmount);
+		dto.setTotalPaymayaAmount(paymayaAmount);
+		
 		
 		model.addAttribute("dto", dto);
 				
@@ -172,7 +187,11 @@ public class EmrConsultationController {
 		int femaleCount = 0;
 		int hmoCount = 0;
 		int cashCount = 0;
+		int gcashCount = 0;
+		int paymayaCount = 0;
 		BigDecimal cashAmount = BigDecimal.ZERO;
+		BigDecimal gcashAmount = BigDecimal.ZERO;
+		BigDecimal paymayaAmount = BigDecimal.ZERO;
 		
 		for(EmrConsultation consultation : emrConsultations) {
 			if("MALE".equals(consultation.getPatient().getGender())) {
@@ -183,9 +202,15 @@ public class EmrConsultationController {
 			
 			if("HMO".equals(consultation.getPaymentType())) {
 				hmoCount++;				
-			} else {
+			} else if("CASH".equals(consultation.getPaymentType())) {
 				cashCount++;
 				cashAmount = cashAmount.add(consultation.getConsultationFee() != null ? consultation.getConsultationFee() : BigDecimal.ZERO);
+			} else if("GCASH".equals(consultation.getPaymentType())) {
+				gcashCount++;
+				gcashAmount = gcashAmount.add(consultation.getConsultationFee() != null ? consultation.getConsultationFee() : BigDecimal.ZERO);
+			} else {
+				paymayaCount++;
+				paymayaAmount = paymayaAmount.add(consultation.getConsultationFee() != null ? consultation.getConsultationFee() : BigDecimal.ZERO);
 			}
 		}
 				
@@ -194,7 +219,11 @@ public class EmrConsultationController {
 		dto.setTotalFemale(femaleCount);
 		dto.setTotalHmo(hmoCount);
 		dto.setTotalMale(maleCount);
+		dto.setTotalGCash(gcashCount);
+		dto.setTotalPaymaya(paymayaCount);
 		dto.setTotalPatients(femaleCount+maleCount);
+		dto.setTotalGCashAmount(gcashAmount);
+		dto.setTotalPaymayaAmount(paymayaAmount);
 		
 		model.addAttribute("dto", dto);
 		

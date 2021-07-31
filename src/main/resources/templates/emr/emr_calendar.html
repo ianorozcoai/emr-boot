@@ -130,7 +130,7 @@
 			//Set Id in Modal for CJ
 			console.log($('#patientId').val());
 			$('#patientId').val(id);
-			console.log(document.getElementById('patientId').value);
+			//console.log(document.getElementById('patientId').value);
 		}
 
 		function viewRecord(id){
@@ -195,6 +195,7 @@
                         right: 'dayGridMonth,dayGridWeek,dayGridDay'
                     },
                     //editable: true,
+                    eventLimit: true,
                     events: eventArray
                 }).render();
             }

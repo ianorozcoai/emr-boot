@@ -13,6 +13,7 @@ public class CalendarDto implements Comparable<CalendarDto> {
     private String start;
     private String end;
     private String color;
+    private String url;
 
     @Override
     public int compareTo(CalendarDto o) {

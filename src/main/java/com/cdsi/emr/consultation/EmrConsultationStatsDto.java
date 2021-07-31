@@ -30,7 +30,15 @@ public class EmrConsultationStatsDto {
 	
 	private int totalCash;
 	
+	private int totalGCash;
+	
+	private int totalPaymaya;
+	
 	private BigDecimal totalCashAmount;
+	
+	private BigDecimal totalGCashAmount;
+	
+	private BigDecimal totalPaymayaAmount;
 	
 	private List<EmrConsultation> emrConsultations;	
 	

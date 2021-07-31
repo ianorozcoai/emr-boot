@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class CalendarController {
 
@@ -28,20 +30,21 @@ public class CalendarController {
     }
 
     @GetMapping("/emrCalendar")
-    public String getCalendarPage(Model model, Authentication auth) {
+    public String getCalendarPage(Model model, Authentication auth, HttpServletRequest request) {
         Personnel loggedUser = (Personnel) auth.getPrincipal();
-
+        
         List<EmrConsultation> emrConsultations =
                 emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(),
                         DateUtil.getCurrentDateMinusMonths(6), DateUtil.getCurrentDatePlusMonths(6));
 
-        model.addAttribute("eventCalendarDtoList", toCalendarDto(emrConsultations));
+        model.addAttribute("eventCalendarDtoList", toCalendarDto(emrConsultations, request));
 
         return "emr/emr_calendar";
     }
 
-    private List<CalendarDto> toCalendarDto(List<EmrConsultation> emrConsultations) {
+    private List<CalendarDto> toCalendarDto(List<EmrConsultation> emrConsultations, HttpServletRequest request) {
         final List<CalendarDto> eventCalendarDtoList = new ArrayList<>();
+        String contextPath = request.getContextPath();
 
         emrConsultations.forEach(
                 item -> {
@@ -60,7 +63,8 @@ public class CalendarController {
                                     item.getPatient().getFullName(),
                                     DateUtil.getDateInString(item.getConsultationDate()),
                                     null,
-                                    color)
+                                    color,
+                                    contextPath + "/emrpatientrecord/" + item.getPatient().getId() + "/" + item.getId())
                     );
                 }
         );
