@@ -344,9 +344,19 @@
             fathersoccupation: row.fathersoccupation,
             fathersmobile: row.fathersmobile,
         }));
-      
-        const csvData = objectToCsv(data);
-        download(csvData, 'patientList.csv');
+        console.log(data);
+        if (data.length != 0) {
+          const csvData = objectToCsv(data);
+          download(csvData, 'patientList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }
     };
       
     const exportPatientConsultationListFunc = async function() {
@@ -372,8 +382,18 @@
             bloodPressure: row.bloodPressure
         }));
       
+        if (data.length != 0) {
         const csvData = objectToCsv(data);
         download(csvData, 'patientConsultationList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }
     };
       
     const exportPatientMedicationListFunc = async function() {
@@ -391,8 +411,18 @@
           instructions: row.remarks,
           }));
       
-        const csvData = objectToCsv(data);
-        download(csvData, 'patientMedicationList.csv');
+        if (data.length != 0) {
+          const csvData = objectToCsv(data);
+          download(csvData, 'patientMedicationList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }
     };
       
     const exportPatientVaccinationListFunc = async function() {
@@ -408,8 +438,18 @@
             remarks: row.remarks
         }));
       
-        const csvData = objectToCsv(data);
-        download(csvData, 'patientVaccinationList.csv');
+        if (data.length != 0) {
+          const csvData = objectToCsv(data);
+          download(csvData, 'patientVaccinationList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }
     };
       
     const exportPatientLabListFunc = async function() {
@@ -425,8 +465,18 @@
             remarks: row.remarks
         }));
       
-      const csvData = objectToCsv(data);
-      download(csvData, 'patientLabsList.csv');
+        if (data.length != 0) {
+          const csvData = objectToCsv(data);
+          download(csvData, 'patientLabsList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }  
       };
       
       const exportPatientImagingListFunc = async function() {
@@ -441,8 +491,18 @@
         remarks: row.remarks
       }));
       
-      const csvData = objectToCsv(data);
-      download(csvData, 'patientImagingList.csv');
+        if (data.length != 0) {
+          const csvData = objectToCsv(data);
+          download(csvData, 'patientImagingList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }  
       };
       
       const exportPatientProcedureListFunc = async function() {
@@ -450,15 +510,25 @@
         let res = await fetch(url);
         let json = await res.json();
         console.log(json)
-      const data = json.map( row => ({        
-        dateCreated: row.dateCreated,
-        firstName: row.patient.firstName,
-        lastName: row.patient.lastName,
-        remarks: row.remarks
-      }));
-      
-      const csvData = objectToCsv(data);
-      download(csvData, 'patientProcedureList.csv');
+        const data = json.map( row => ({        
+          dateCreated: row.dateCreated,
+          firstName: row.patient.firstName,
+          lastName: row.patient.lastName,
+          remarks: row.remarks
+        }));
+          
+        if (data.length != 0) {
+            const csvData = objectToCsv(data);
+            download(csvData, 'patientProcedureList.csv');
+        } else {
+            swal({
+                title: "Data Unavailable!",
+                text: "There is no available data to be exported",
+                icon: "warning",
+                buttons: false,
+                timer: 2500,
+            })
+        }
       };
       
     $(document).ready(function() {
