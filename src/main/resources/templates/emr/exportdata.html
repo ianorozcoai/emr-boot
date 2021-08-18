@@ -291,10 +291,10 @@
         //loop over the rows
         for(var row of data){
           const values = headers.map(header => {
-            //const escaped = (''+row[header]).replace(/"/g, '\\"');
-            //console.log('row header: ' + escaped);
-            //return `"${row[header]}"`;
-            return row[header];
+            const escaped = (''+row[header]).replace(/"/g, '\\"');
+            console.log('row header: ' + escaped);
+            return `"${row[header]}"`;
+            //return row[header];
           });
           csvRows.push(values.join(','));
         }
