@@ -33,7 +33,7 @@
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 
-							<form id="uploadProcedureForm" th:action="@{/upload/emrpatientProcedure}" method="post" enctype="multipart/form-data" th:object="${EMRPatientProcedure}">
+							<form id="uploadProcedureForm" th:action="@{/emrpatientProcedure}" method="post" enctype="multipart/form-data" th:object="${EMRPatientProcedure}">
 								<input type="hidden" name="id" id="id" th:value="${id}" />
 				   				<input type="hidden" name="patient.id" th:value="${patient.id}" />
 								<div class="modal-body">

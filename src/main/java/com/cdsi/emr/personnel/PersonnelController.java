@@ -162,14 +162,41 @@ public class PersonnelController {
 
     private void updateLoggedInDoctor(Personnel doctor, Personnel fromDto) {
         // TODO compare fields, if doctor is different from Dto, update personnel
-        if (!doctor.getFirstName().equalsIgnoreCase(fromDto.getFirstName())) {
+    	if (!doctor.getFirstName().equalsIgnoreCase(fromDto.getFirstName())) {
             doctor.setFirstName(fromDto.getFirstName());
         }
         if (!doctor.getLastName().equalsIgnoreCase(fromDto.getLastName())) {
             doctor.setLastName(fromDto.getLastName());
         }
+        if (!doctor.getLastName().equalsIgnoreCase(fromDto.getLastName())) {
+            doctor.setLastName(fromDto.getLastName());
+        }
+        if (!doctor.getGender().equalsIgnoreCase(fromDto.getGender())) {
+            doctor.setGender(fromDto.getGender());
+        }
+        if (!doctor.getContactNumber().equalsIgnoreCase(fromDto.getContactNumber())) {
+            doctor.setContactNumber(fromDto.getContactNumber());
+        }
+        if (!doctor.getEmail().equalsIgnoreCase(fromDto.getEmail())) {
+            doctor.setEmail(fromDto.getEmail());
+        }
+        if (!doctor.getAddress().equalsIgnoreCase(fromDto.getAddress())) {
+            doctor.setAddress(fromDto.getAddress());
+        }
+        if (!doctor.getCredentials().equalsIgnoreCase(fromDto.getCredentials())) {
+            doctor.setCredentials(fromDto.getCredentials());
+        }
         if (!doctor.getSpecialization().equalsIgnoreCase(fromDto.getSpecialization())) {
             doctor.setSpecialization(fromDto.getSpecialization());
+        }
+        if (!doctor.getLicenseNumber().equalsIgnoreCase(fromDto.getLicenseNumber())) {
+            doctor.setLicenseNumber(fromDto.getLicenseNumber());
+        }
+        if (!doctor.getPtrNumber().equalsIgnoreCase(fromDto.getPtrNumber())) {
+            doctor.setPtrNumber(fromDto.getPtrNumber());
+        }
+        if (!doctor.getSNumber().equalsIgnoreCase(fromDto.getSNumber())) {
+            doctor.setSNumber(fromDto.getSNumber());
         }
     }
 

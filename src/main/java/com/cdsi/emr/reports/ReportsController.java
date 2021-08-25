@@ -379,7 +379,7 @@ public class ReportsController {
 			if(ctr == 1){
 				map.put("CLINIC_NAME", clinic.getName());
 				map.put("DOCTOR_ADDRESS", clinic.getAddress());
-				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
+				map.put("DOCTOR_CONTACT_NO", clinic.getContactNumber());				
 			} else {
 				break;
 			}
