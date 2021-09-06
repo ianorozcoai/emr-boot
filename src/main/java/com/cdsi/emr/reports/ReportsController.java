@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.cdsi.emr.medicalreports.EMRMedicalCertificate;
 import com.cdsi.emr.medicalreports.EMRMedicalCertificateRepository;
+import com.cdsi.emr.medicalrequest.EMRMedicalRequest;
+import com.cdsi.emr.medicalrequest.EMRMedicalRequestRepository;
 import com.cdsi.emr.medicalrequest.EMRPatientMedicalRequest;
 import com.cdsi.emr.medicalrequest.EMRPatientMedicalRequestItem;
 import com.cdsi.emr.medicalrequest.EMRPatientMedicalRequestRepository;
@@ -45,13 +47,15 @@ public class ReportsController {
 	private EMRMedicalCertificateRepository emrMedicalCertificateRepository;
 	private FileStorageProperties fileStorageProperties;
 	private EMRPatientMedicalRequestRepository emrPatientMedicalRequestRepository;
+	private EMRMedicalRequestRepository emrMedicalRequestRepository;
 	
 	public ReportsController (PatientRepository patientRepository, 
 			EMRPatientMedicationRepository emrPatientMedicationRepository,
 			ClinicRepository clinicRepository,
 			EMRMedicalCertificateRepository emrMedicalCertificateRepository,
 			FileStorageProperties fileStorageProperties,
-			EMRPatientMedicalRequestRepository emrPatientMedicalRequestRepository) {
+			EMRPatientMedicalRequestRepository emrPatientMedicalRequestRepository,
+			EMRMedicalRequestRepository emrMedicalRequestRepository) {
 	    	
 		this.emrPatientMedicationRepository = emrPatientMedicationRepository;		
 		this.patientRepository = patientRepository;
@@ -59,6 +63,7 @@ public class ReportsController {
 		this.emrMedicalCertificateRepository = emrMedicalCertificateRepository;
 		this.fileStorageProperties = fileStorageProperties;
 		this.emrPatientMedicalRequestRepository = emrPatientMedicalRequestRepository;
+		this.emrMedicalRequestRepository = emrMedicalRequestRepository;
 		
 	}
 	
@@ -280,15 +285,24 @@ public class ReportsController {
 		int x = 1;
 //		for(int x = 1; x <= 30; x++) {		
 		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
+			String grpName = "";
+			
+			if(medItem.getRequestName() != null) {
+				EMRMedicalRequest emrMedRqst = emrMedicalRequestRepository.findByMedicalRequestNameAndDoctorId(medItem.getRequestName(), patient.getDoctor().getId());
+				if(emrMedRqst != null && emrMedRqst.getEmrMedicalRequestGroup() != null) {
+					grpName = " (" + emrMedRqst.getEmrMedicalRequestGroup().getMedicalRequestGroupName() + ") ";
+				}
+			}
+			
 			if(x > 10 && x <= 20) {
 				//medicalRequestItems2.append(x + ".) Item " + x + "\n");
-				medicalRequestItems2.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + "\n" : "");
+				medicalRequestItems2.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");
 			} else if (x > 20) {
 				//medicalRequestItems3.append(x + ".) Item " + x + "\n");
-				medicalRequestItems3.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + "\n" : "");
+				medicalRequestItems3.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");
 			} else {
 				//medicalRequestItems.append(x + ".) Item " + x + "\n");
-				medicalRequestItems.append(medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + "\n" : "");		
+				medicalRequestItems.append(medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");		
 			}
 			x++;
 		}
