@@ -35,7 +35,7 @@ public class CalendarController {
         
         List<EmrConsultation> emrConsultations =
                 emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(),
-                        DateUtil.getCurrentDateMinusMonths(6), DateUtil.getCurrentDatePlusMonths(6));
+                        DateUtil.getCurrentDateMinusMonths(24), DateUtil.getCurrentDatePlusMonths(24));
 
         model.addAttribute("eventCalendarDtoList", toCalendarDto(emrConsultations, request));
 
