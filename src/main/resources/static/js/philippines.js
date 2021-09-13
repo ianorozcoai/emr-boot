@@ -7,6 +7,17 @@ function loadProvinces(elementId) {
     });
 }
 
+function getProvinceName(code) {
+	var provinceName = "";
+	provinces.forEach(province => {
+        if(code === province.key){
+        	provinceName = province.name;
+        }
+    });
+	
+	return provinceName;
+}
+
 function loadCities(elementId, province) {
     let cityDropdown = document.getElementById(elementId)
     cityDropdown.innerHTML = '';

@@ -48,7 +48,7 @@ public class DataExportController {
     @GetMapping("/exportdata/patients")
     @Cacheable
     List<Patient> allPatientsByDoctorId(@AuthenticationPrincipal Personnel doctor) {
-        return this.patientRepo.findAllByDoctorId(doctor.getId());
+        return this.patientRepo.findAllByDoctorIdOrderByLastName(doctor.getId());
     }
 
     @GetMapping("/exportdata/consultations")

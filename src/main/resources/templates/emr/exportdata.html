@@ -320,29 +320,29 @@
         console.log(json)
         const data = json.map( row => ({
             //id: row.id,
-            firstName: row.firstName,
-            lastName: row.lastName,
-            gender: row.gender,
+            lastName: row.lastName.trim(),
+            firstName: row.firstName,            
+            gender: row.gender != null ? row.gender : "",
             birthdate: row.birthdate,
-            street: row.street,
-            city: row.city,
-            province: row.province,
-            contactNumber: row.contactNumber,
-            emailAddress: row.email,
-            emergencyContactName: row.emergencyContactName,
-            emergencyContactAddress: row.emergencyContactAddress,
-            emergencyContactNumber: row.emergencyContactNumber,
-            maritalStatus: row.maritalStatus,
-            profession: row.profession,
-            seniorCitizenNumber: row.seniorCitizenNumber,
-            notes: row.notes,
-            patientPhoto: row.patientPhoto,
-            mothersname: row.mothersname,
-            mothersoccupation: row.mothersoccupation,
-            mothersmobile: row.mothersmobile,
-            fathersname: row.fathersname,
-            fathersoccupation: row.fathersoccupation,
-            fathersmobile: row.fathersmobile,
+            street: row.street != null ? row.street : "",
+            city: row.city != null ? row.city : "",
+            province: row.province != null ? getProvinceName(row.province) : "",
+            contactNumber: row.contactNumber != null ? row.contactNumber : "",
+            emailAddress: row.email != null ? row.email : "",
+            emergencyContactName: row.emergencyContactName != null ? row.emergencyContactName : "",
+            emergencyContactAddress: row.emergencyContactAddress != null ? row.emergencyContactAddress : "",
+            emergencyContactNumber: row.emergencyContactNumber != null ? row.emergencyContactNumber : "",
+            maritalStatus: row.maritalStatus != null ? row.maritalStatus : "",
+            profession: row.profession != null ? row.profession : "",
+            seniorCitizenNumber: row.seniorCitizenNumber != null ? row.seniorCitizenNumber : "",
+            notes: row.notes != null ? row.notes : "",
+            patientPhoto: row.patientPhoto != null ? row.patientPhoto : "",
+            mothersname: row.mothersname != null ? row.mothersname : "",
+            mothersoccupation: row.mothersoccupation != null ? row.mothersoccupation : "",
+            mothersmobile: row.mothersmobile != null ? row.mothersmobile : "",
+            fathersname: row.fathersname != null ? row.fathersname : "",
+            fathersoccupation: row.fathersoccupation != null ? row.fathersoccupation : "",
+            fathersmobile: row.fathersmobile != null ? row.fathersmobile : "",
         }));
         console.log(data);
         if (data.length != 0) {
@@ -366,16 +366,19 @@
         console.log(json)
         const data = json.map( row => ({        
             consultationDate: row.consultationDate,
-            firstName: row.patient.firstName,
             lastName: row.patient.lastName,
+            firstName: row.patient.firstName,            
             consultationStatus: row.consultationStatus,
             paymentType: row.paymentType,
-            consultationFee: row.consultationFee,
-            hmoName: row.hmoName,
-            complaints: row.symptoms,
-            physicalExamination: row.physical,
-            diagnosis: row.diagnosis,
-            intervention: row.intervention,
+            consultationFee: row.consultationFee != null ? row.consultationFee : "",
+            hmoName: row.hmoName != null ? row.hmoName : "",
+            complaints: row.symptoms != null ? row.symptoms : "",
+            physicalExamination: row.physical != null ? row.physical : "",
+            diagnosisICD: row.diagnosis.map(d => {
+                return `(${d.code} - ${d.description}),`
+            }),
+            diagnosis: row.diagnosisTxt != null ? row.diagnosisTxt : "",
+            intervention: row.intervention != null ? row.intervention : "",
             height: row.height,
             weight: row.weight,
             temperature: row.temperature,
@@ -403,8 +406,8 @@
         console.log(json)
         const data = json.map( row => ({        
           dateCreated: row.emrPatientMedication.dateCreated,
-          firstName: row.emrPatientMedication.patient.firstName,
           lastName: row.emrPatientMedication.patient.lastName,
+          firstName: row.emrPatientMedication.patient.firstName,          
           genericName: row.genericName,
           brandName: row.brandName,
           dosage: row.dosage,
@@ -432,8 +435,8 @@
         console.log(json)
         const data = json.map( row => ({        
             dateCreated: row.dateCreated,
-            firstName: row.patient.firstName,
             lastName: row.patient.lastName,
+            firstName: row.patient.firstName,            
             vaccineName: row.vaccineName,
             remarks: row.remarks
         }));
@@ -460,8 +463,9 @@
         console.log(json)
         const data = json.map( row => ({        
             dateCreated: row.dateCreated,
-            firstName: row.patient.firstName,
             lastName: row.patient.lastName,
+            firstName: row.patient.firstName,
+            labType: row.emrPatientLaboratoryType.labTypeName,
             remarks: row.remarks
         }));
       
@@ -486,8 +490,9 @@
         console.log(json)
       const data = json.map( row => ({        
         dateCreated: row.dateCreated,
-        firstName: row.patient.firstName,
         lastName: row.patient.lastName,
+        firstName: row.patient.firstName,
+        imagingType: row.emrPatientImagingType.imagingTypeName,
         remarks: row.remarks
       }));
       
@@ -512,8 +517,9 @@
         console.log(json)
         const data = json.map( row => ({        
           dateCreated: row.dateCreated,
-          firstName: row.patient.firstName,
           lastName: row.patient.lastName,
+          firstName: row.patient.firstName,
+          procedureType: row.emrPatientProcedureType.procedureTypeName, 
           remarks: row.remarks
         }));
           
@@ -535,7 +541,8 @@
     	$(".nav-item-submenu").removeClass("nav-item-expanded nav-item-open");
 		$("#fileMaintenanceNav").addClass("nav-item-expanded nav-item-open");
 		$("#exportData2ndNav").addClass("active");
-    	
+		
+		    	
         let exportPatientMasterListButton = document.getElementById('exportPatientMasterList');
         let exportPatientConsultationListButton = document.getElementById('exportPatientConsultationList');
         let exportPatientMedicationListButton = document.getElementById('exportPatientMedicationList');
@@ -553,6 +560,8 @@
         exportPatientProcedureListButton.addEventListener('click', exportPatientProcedureListFunc);
               
     });
+    
+    
         
     </script>
 </body>
