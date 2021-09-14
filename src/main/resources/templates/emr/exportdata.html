@@ -320,8 +320,8 @@
         console.log(json)
         const data = json.map( row => ({
             //id: row.id,
-            lastName: row.lastName.trim(),
-            firstName: row.firstName,            
+            lastName: row.lastName.trim().toUpperCase(),
+            firstName: row.firstName.trim().toUpperCase(),            
             gender: row.gender != null ? row.gender : "",
             birthdate: row.birthdate,
             street: row.street != null ? row.street : "",
@@ -337,10 +337,10 @@
             seniorCitizenNumber: row.seniorCitizenNumber != null ? row.seniorCitizenNumber : "",
             notes: row.notes != null ? row.notes : "",
             patientPhoto: row.patientPhoto != null ? row.patientPhoto : "",
-            mothersname: row.mothersname != null ? row.mothersname : "",
+            mothersname: row.mothersname != null ? row.mothersname.trim().toUpperCase() : "",
             mothersoccupation: row.mothersoccupation != null ? row.mothersoccupation : "",
             mothersmobile: row.mothersmobile != null ? row.mothersmobile : "",
-            fathersname: row.fathersname != null ? row.fathersname : "",
+            fathersname: row.fathersname != null ? row.fathersname.trim().toUpperCase() : "",
             fathersoccupation: row.fathersoccupation != null ? row.fathersoccupation : "",
             fathersmobile: row.fathersmobile != null ? row.fathersmobile : "",
         }));
@@ -366,12 +366,12 @@
         console.log(json)
         const data = json.map( row => ({        
             consultationDate: row.consultationDate,
-            lastName: row.patient.lastName,
-            firstName: row.patient.firstName,            
+            lastName: row.patient.lastName.trim().toUpperCase(),
+            firstName: row.patient.firstName.trim().toUpperCase(),            
             consultationStatus: row.consultationStatus,
             paymentType: row.paymentType,
             consultationFee: row.consultationFee != null ? row.consultationFee : "",
-            hmoName: row.hmoName != null ? row.hmoName : "",
+            hmoName: row.paymentType != 'HMO' ? "NONE" : row.paymentType != null ? row.hmoName : "",
             complaints: row.symptoms != null ? row.symptoms : "",
             physicalExamination: row.physical != null ? row.physical : "",
             diagnosisICD: row.diagnosis.map(d => {
@@ -406,8 +406,8 @@
         console.log(json)
         const data = json.map( row => ({        
           dateCreated: row.emrPatientMedication.dateCreated,
-          lastName: row.emrPatientMedication.patient.lastName,
-          firstName: row.emrPatientMedication.patient.firstName,          
+          lastName: row.emrPatientMedication.patient.lastName.trim().toUpperCase(),
+          firstName: row.emrPatientMedication.patient.firstName.trim().toUpperCase(),          
           genericName: row.genericName,
           brandName: row.brandName,
           dosage: row.dosage,
@@ -435,8 +435,8 @@
         console.log(json)
         const data = json.map( row => ({        
             dateCreated: row.dateCreated,
-            lastName: row.patient.lastName,
-            firstName: row.patient.firstName,            
+            lastName: row.patient.lastName.trim().toUpperCase(),
+            firstName: row.patient.firstName.trim().toUpperCase(),            
             vaccineName: row.vaccineName,
             remarks: row.remarks
         }));
@@ -463,8 +463,8 @@
         console.log(json)
         const data = json.map( row => ({        
             dateCreated: row.dateCreated,
-            lastName: row.patient.lastName,
-            firstName: row.patient.firstName,
+            lastName: row.patient.lastName.trim().toUpperCase(),
+            firstName: row.patient.firstName.trim().toUpperCase(),
             labType: row.emrPatientLaboratoryType.labTypeName,
             remarks: row.remarks
         }));
@@ -490,8 +490,8 @@
         console.log(json)
       const data = json.map( row => ({        
         dateCreated: row.dateCreated,
-        lastName: row.patient.lastName,
-        firstName: row.patient.firstName,
+        lastName: row.patient.lastName.trim().toUpperCase(),
+        firstName: row.patient.firstName.trim().toUpperCase(),
         imagingType: row.emrPatientImagingType.imagingTypeName,
         remarks: row.remarks
       }));
@@ -517,8 +517,8 @@
         console.log(json)
         const data = json.map( row => ({        
           dateCreated: row.dateCreated,
-          lastName: row.patient.lastName,
-          firstName: row.patient.firstName,
+          lastName: row.patient.lastName.trim().toUpperCase(),
+          firstName: row.patient.firstName.trim().toUpperCase(),
           procedureType: row.emrPatientProcedureType.procedureTypeName, 
           remarks: row.remarks
         }));

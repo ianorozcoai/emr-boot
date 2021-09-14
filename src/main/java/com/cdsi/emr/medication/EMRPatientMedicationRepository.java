@@ -14,4 +14,8 @@ public interface EMRPatientMedicationRepository extends JpaRepository<EMRPatient
     @Query(nativeQuery = true,
             value = "select * from emrpatient_medication where patient_id in ?1")
     List<EMRPatientMedication> findAllByDoctorId(List<Long> ids);
+    
+    @Query(nativeQuery = true,
+            value = "select * from emrpatient_medication where patient_id in ?1 order by date_created")
+    List<EMRPatientMedication> findAllByPatientIdOrderByDateCreated(List<Long> ids);
 }

@@ -53,7 +53,7 @@ public class DataExportController {
 
     @GetMapping("/exportdata/consultations")
     List<EmrConsultation> allConsultationsByDoctorId(@AuthenticationPrincipal Personnel doctor) {
-        return this.consultationRepo.findAllByPersonnelId(doctor.getId());
+        return this.consultationRepo.findAllByPersonnelIdOrderByConsultationDate(doctor.getId());
     }
 
     @GetMapping("/exportdata/imagings")
@@ -62,7 +62,7 @@ public class DataExportController {
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        return this.imagingRepo.findAllByDoctorId(patientIds);
+        return this.imagingRepo.findAllByPatientIdOrderByDateCreated(patientIds);
     }
 
     @GetMapping("/exportdata/labs")
@@ -71,7 +71,7 @@ public class DataExportController {
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        return this.labsRepo.findAllByDoctorId(patientIds);
+        return this.labsRepo.findAllByPatientIdOrderByDateCreated(patientIds);
     }
 
     @GetMapping("/exportdata/medications")
@@ -80,7 +80,7 @@ public class DataExportController {
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        List<Long> medicationIds = this.medicationRepo.findAllByDoctorId(patientIds).stream()
+        List<Long> medicationIds = this.medicationRepo.findAllByPatientIdOrderByDateCreated(patientIds).stream()
                 .map(EMRPatientMedication::getId)
                 .collect(toList());
         List<EMRPatientMedicationItem> result = this.medicationItemRepo.findAllByDoctorId(medicationIds);
@@ -93,7 +93,7 @@ public class DataExportController {
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        return this.othersRepo.findAllByDoctorId(patientIds);
+        return this.othersRepo.findAllByPatientIdOrderByDateCreated(patientIds);
     }
 
     @GetMapping("/exportdata/procedures")
@@ -102,7 +102,7 @@ public class DataExportController {
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        return this.procedureRepo.findAllByDoctorId(patientIds);
+        return this.procedureRepo.findAllByPatientIdOrderByDateCreated(patientIds);
     }
 
     @GetMapping("/exportdata/vaccinations")
@@ -111,6 +111,6 @@ public class DataExportController {
         List<Long> patientIds = patients.stream()
                 .map(Patient::getId)
                 .collect(toList());
-        return this.vaccinationRepo.findAllByDoctorId(patientIds);
+        return this.vaccinationRepo.findAllByPatientIdOrderByDateCreated(patientIds);
     }
 }

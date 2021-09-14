@@ -15,5 +15,9 @@ public interface EMRPatientImagingRepository extends JpaRepository<EMRPatientIma
     @Query(nativeQuery = true,
             value= "select * from emrpatient_imaging where patient_id in ?1")
     List<EMRPatientImaging> findAllByDoctorId(List<Long> ids);
+    
+    @Query(nativeQuery = true,
+            value= "select * from emrpatient_imaging where patient_id in ?1 order by date_created")
+    List<EMRPatientImaging> findAllByPatientIdOrderByDateCreated(List<Long> ids);
 
 }

@@ -14,5 +14,9 @@ public interface EMRPatientVaccinationRepository extends JpaRepository<EMRPatien
     @Query(nativeQuery = true,
             value = "select * from emrpatient_vaccination where patient_id in ?1")
     List<EMRPatientVaccination> findAllByDoctorId(List<Long> ids);
+    
+    @Query(nativeQuery = true,
+            value = "select * from emrpatient_vaccination where patient_id in ?1 order by date_created")
+    List<EMRPatientVaccination> findAllByPatientIdOrderByDateCreated(List<Long> ids);
 
 }
