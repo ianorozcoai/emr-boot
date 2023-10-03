@@ -1,5 +1,7 @@
 package com.cdsi.emr.medication;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cdsi.emr.consultation.EmrConsultation;
+import com.cdsi.emr.consultation.EmrConsultationRepository;
 import com.cdsi.emr.imaging.EMRPatientImaging;
 import com.cdsi.emr.imaging.EMRPatientImagingRepository;
 import com.cdsi.emr.labs.EMRPatientLaboratory;
@@ -30,6 +34,8 @@ import com.cdsi.emr.util.UXMessage;
 
 @Controller
 public class EMRPatientMedicationController {
+	
+	private EmrConsultationRepository emrConsultationRepository;
     private EMRPatientMedicationRepository emrPatientMedicationRepository;
     private EMRPatientMedicationItemRepository emrPatientMedicationItemRepository;
 	private PatientRepository patientRepository;
@@ -45,6 +51,7 @@ public class EMRPatientMedicationController {
 	    ,EMRPatientLaboratoryRepository emrPatientLaboratoryRepository
 		,EMRPatientImagingRepository emrPatientImagingRepository
 		,EMRPatientProcedureRepository emrPatientProcedureRepository
+		,EmrConsultationRepository emrConsultationRepository
 			) {
 	    this.emrPatientMedicationRepository = emrPatientMedicationRepository;
 		this.patientRepository = patientRepository;
@@ -53,6 +60,7 @@ public class EMRPatientMedicationController {
 		this.emrPatientLaboratoryRepository = emrPatientLaboratoryRepository;
 		this.emrPatientImagingRepository = emrPatientImagingRepository;
 		this.emrPatientProcedureRepository = emrPatientProcedureRepository;
+		this.emrConsultationRepository = emrConsultationRepository;
 	}
 
 	@GetMapping("/emrPatientMedication/{patientId}")
@@ -60,9 +68,25 @@ public class EMRPatientMedicationController {
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();
 		
+		List<EmrConsultation> emrConsultations = this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(patientId);
+		
 		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		
+		String lastWeight = "0.00";
+		DecimalFormat decimalFormat = new DecimalFormat("##0.00");
+		
+		LocalDate localDateToday = LocalDate.now();
+		
+		for(EmrConsultation consultation : emrConsultations) {
+			if(consultation.getConsultationDate().equals(localDateToday)) {
+				lastWeight = decimalFormat.format(consultation.getWeight());
+				if(lastWeight.length() > 0 && !lastWeight.equals("0.00")) {
+					break;
+				}
+			}			
+		}
 		
 		int totalNewLab = 0;
 		int totalNewImaging = 0;
@@ -106,6 +130,7 @@ public class EMRPatientMedicationController {
 		model.addAttribute("emrGenericsLookupList", emrGenericsLookupList);
 		model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
 		model.addAttribute("dosages", EHRConstants.DOSAGE);
+		model.addAttribute("lastWeight", lastWeight);
 
 		return "emr/emr_patient_medication";
 	}

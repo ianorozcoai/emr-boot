@@ -284,6 +284,7 @@
 								<li class="nav-item"><a th:href="@{/emrMedicalRequest}" class="nav-link" id="medicalRequest2ndNav"><i class="icon-download7"></i> Medical Request</a></li>						
 								<li class="nav-item"><a th:href="@{/patientImagingTypes}" class="nav-link" id="imagingType2ndNav"><i class="icon-camera"></i> Imaging Type</a></li>
 								<li class="nav-item"><a th:href="@{/patientProcedureTypes}" class="nav-link" id="procedureType2ndNav"><i class="icon-equalizer2"></i> Procedure Type</a></li>
+								<li class="nav-item"><a th:href="@{/patientTherapyTypes}" class="nav-link" id="therapyType2ndNav"><i class="icon-theater"></i> Therapy Type</a></li>
 								<li class="nav-item"><a th:href="@{/patientLaboratoryTypes}" class="nav-link" id="labType2ndNav"><i class="icon-lab"></i> Laboratory Type</a></li>
 								
                                 <li class="nav-item"><a th:href="@{/exportdata}" class="nav-link" id="exportData2ndNav"><i class="icon-folder-download"></i> Export Data</a></li>	
@@ -389,7 +390,7 @@
 				<h6 class="font-weight-semibold mb-0 mt-1" th:text="*{fullName}">Hanna Dorman</h6>				
 			</div>						
 			<div class="card-img-actions d-inline-block mb-3 ">									
-				<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">
+				<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null || patientPhoto == '' ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">
 										
 				<div class="card-img-actions-overlay card-img rounded-circle">
 					<button id="fileSelect" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
@@ -412,7 +413,9 @@
 				<span class="memberDetails"><i class="fas fa-birthday-cake mr-2"></i> B-day: <th:block th:text="*{#temporals.format(birthdate,'MMM d, yyyy')}">January 27, 1982</th:block></span><br>	
 				<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 				<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
-				<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+				<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span><br>
+				<span class="memberDetails"><i class="icon-graduation2 mr-2"></i> Occupation: <th:block th:text="*{profession}">profession</th:block></span>
+				<span class="memberDetails"><i class="icon-svg mr-2"></i> Allergies: <th:block th:text="*{allergy}">allergy</th:block></span>										
 			</div>
 		</div>
 	</div>
@@ -425,7 +428,7 @@
 				<h6 class="font-weight-semibold mb-0 mt-1" th:text="*{fullName}">Hanna Dorman</h6>				
 			</div>						
 			<div class="card-img-actions d-inline-block mb-3 ">									
-				<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">									
+				<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null || patientPhoto == '' ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">									
 			</div>									
 		</div>
 								
@@ -436,7 +439,9 @@
 				<span class="memberDetails"><i class="fas fa-birthday-cake mr-2"></i> B-day: <th:block th:text="*{#temporals.format(birthdate,'MMM d, yyyy')}">January 27, 1982</th:block></span><br>	
 				<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 				<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
-				<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+				<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span><br>
+				<span class="memberDetails"><i class="icon-graduation2 mr-2"></i> Occupation: <th:block th:text="*{profession}">profession</th:block></span>
+				<span class="memberDetails"><i class="icon-svg mr-2"></i> Allergies: <th:block th:text="*{allergy}">allergy</th:block></span>										
 			</div>
 		</div>
 	</div>
@@ -457,7 +462,7 @@
 										<span class="d-block text-muted" th:text="*{profession}">UX/UI designer</span>
 									</div>						
 									<div class="card-img-actions d-inline-block mb-3 ">									
-										<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">
+										<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null || patientPhoto == '' ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">
 										
 										<div class="card-img-actions-overlay card-img rounded-circle">
 											<button id="fileSelect" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
@@ -480,7 +485,9 @@
 										<span class="memberDetails"><i class="icon-gift mr-2"></i> Birthday: <th:block th:text="*{birthdate}">January 27, 1982</th:block></span><br>	
 										<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 										<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
-										<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+										<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span><br>
+										<span class="memberDetails"><i class="icon-graduation2 mr-2"></i> Occupation: <th:block th:text="*{profession}">profession</th:block></span>
+										<span class="memberDetails"><i class="icon-svg mr-2"></i> Allergies: <th:block th:text="*{allergy}">allergy</th:block></span>										
 									</div>
 								</div>
 							</div>
@@ -573,7 +580,15 @@
 						<i class="icon-archive mr-2"></i>
 						Medication
 					</a>
-				</li>               
+				</li> 
+				
+				<li class="nav-item bg-violet">
+					<a th:href="|@{/emrpatientTherapy}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientTherapy2ndNav">
+						<i class="icon-archive mr-2"></i>
+						Therapy
+					</a>
+				</li> 
+				              
                 <li class="nav-item bg-slate">
                     <a th:href="|@{/emrpatientOthers}/*{id}|" class="navbar-nav-link whiteText" id="emrPatientOthers2ndNav">
                         <i class="icon-archive mr-2"></i>
@@ -605,7 +620,7 @@
 						<span class="d-block text-muted" th:text="*{profession}">UX/UI designer</span>
 					</div>						
 					<div class="card-img-actions d-inline-block mb-3 ">				
-						<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">															
+						<img id="photoPreview" class="img-fluid rounded-circle card-img-top" th:src="|@{*{patientPhoto == null || patientPhoto == '' ? '/images/avatar.png' : patientPhoto}}|" width="150" height="150" alt="">															
 					</div>									
 				</div>
 																
@@ -615,7 +630,9 @@
 						<span class="memberDetails"><i class="icon-gift mr-2"></i> Birthday: <th:block th:text="*{birthdate}">January 27, 1982</th:block></span><br>
 						<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 						<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
-						<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+						<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span><br>
+						<span class="memberDetails"><i class="icon-graduation2 mr-2"></i> Occupation: <th:block th:text="*{profession}">profession</th:block></span>	
+						<span class="memberDetails"><i class="icon-svg mr-2"></i> Allergies: <th:block th:text="*{allergy}">allergy</th:block></span>									
 					</div>
 				</div>
 			</div>

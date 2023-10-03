@@ -1,17 +1,19 @@
 package com.cdsi.emr.config.data;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import java.util.Date;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter(AccessLevel.PROTECTED)
@@ -26,7 +28,7 @@ public class Auditable
 
     @CreatedDate
     @Column(name = "created_date")
-    private Date createdDate;
+    private LocalDate createdDate;
 
     @LastModifiedBy
     @Column(name = "last_modified_by")
@@ -34,5 +36,5 @@ public class Auditable
 
     @LastModifiedDate
     @Column(name = "last_modified_date")
-    private Date lastModifiedDate;
+    private LocalDate lastModifiedDate;
 }

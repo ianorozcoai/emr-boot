@@ -37,16 +37,48 @@ public class StorageController {
             @RequestParam("profilePhoto") MultipartFile file
             ,@RequestParam("patientId") long patientId
             ) throws Exception {
-        log.info("REST request to upload file");
-        //upload files
-        Patient patient = this.patientRepository.findById(patientId)
-                .orElseGet(Patient::new);
-//        String fileName = "patient_" + patient.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String fileName = "patient_" + patient.getDoctor().getId() + "_" + patient.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        FileDTO fileDTO = this.storageService.uploadFile(file, fileName);
-        patient.setPatientPhoto(fileDTO.getDownloadUri());
-        this.patientRepository.save(patient);
-        return new ResponseEntity<>(fileDTO, null, HttpStatus.OK);
+        
+        // LOG 1: Check if request reaches here and print file details
+        log.info("REST request to upload profilePhoto for patientId: {}", patientId);
+        log.info("File Name: {}, Content-Type: {}, Size: {}", 
+                 file.getOriginalFilename(), 
+                 file.getContentType(), 
+                 file.getSize());
+
+        try {
+            Patient patient = this.patientRepository.findById(patientId)
+                    .orElseGet(Patient::new);
+
+            // --- SAFE EXTENSION HANDLING START ---
+            String originalFilename = file.getOriginalFilename();
+            String extension = ".jpg"; // Default if extension is missing
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            // LOG 2: Verify the extension logic worked
+            log.info("Computed file extension: {}", extension);
+            // --- SAFE EXTENSION HANDLING END ---
+
+            // Construct the new filename safely
+            String fileName = "patient_" + patient.getDoctor().getId() + "_" + patient.getId() + extension;
+            log.info("Generated target filename: {}", fileName);
+
+            FileDTO fileDTO = this.storageService.uploadFile(file, fileName);
+            
+            // LOG 3: Confirm storage service success
+            log.info("StorageService upload successful. Download URI: {}", fileDTO.getDownloadUri());
+
+            patient.setPatientPhoto(fileDTO.getDownloadUri());
+            this.patientRepository.save(patient);
+            
+            return new ResponseEntity<>(fileDTO, null, HttpStatus.OK);
+
+        } catch (Exception e) {
+            // LOG 4: Catch any crash, print the FULL error, and re-throw so the frontend gets the error
+            log.error("CRITICAL ERROR during file upload", e);
+            throw e;
+        }
     }
 
     @PostMapping("/upload/cliniclogo")
@@ -55,26 +87,31 @@ public class StorageController {
             @RequestParam("clinicLogo") MultipartFile logo
             ,@AuthenticationPrincipal Personnel doctor
             ) throws Exception {
-        String filename = "clinic_logo_" + doctor.getId() + logo.getOriginalFilename().substring(logo.getOriginalFilename().lastIndexOf("."));
-        FileDTO fileDTO = this.storageService.uploadFile(logo, filename);
-        doctor.setClinicLogoUrl(fileDTO.getDownloadUri());
-        this.personnelRepository.save(doctor);
-        return new ResponseEntity<>(fileDTO, null, HttpStatus.OK);
+        
+        log.info("REST request to upload clinicLogo for doctor: {}", doctor.getId());
+
+        try {
+            // --- SAFE EXTENSION HANDLING START ---
+            String originalFilename = logo.getOriginalFilename();
+            String extension = ".jpg"; 
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            // --- SAFE EXTENSION HANDLING END ---
+
+            String filename = "clinic_logo_" + doctor.getId() + extension;
+            
+            FileDTO fileDTO = this.storageService.uploadFile(logo, filename);
+            doctor.setClinicLogoUrl(fileDTO.getDownloadUri());
+            this.personnelRepository.save(doctor);
+            return new ResponseEntity<>(fileDTO, null, HttpStatus.OK);
+            
+        } catch (Exception e) {
+            log.error("CRITICAL ERROR during clinic logo upload", e);
+            throw e;
+        }
     }
-
-
-    /*private FileInfo toFileInfo(FileDTO fileDTO, String username, long productId) {
-		return new FileInfo(0L,
-				fileDTO.getFilename(),
-				fileDTO.getContentType(),
-				fileDTO.getDownloadUri(),
-				fileDTO.getFileSize(),
-				LocalDate.now(),
-				username,
-				productId
-				);
-	}*/
-
 
     @GetMapping("/download/{fileName:.+}")
     public ResponseEntity<Object> downloadFile(@PathVariable String fileName, HttpServletRequest request) throws Exception {

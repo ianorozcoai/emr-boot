@@ -9,5 +9,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface EmrIcdRepository extends JpaRepository<EmrIcd, Long> {
 	
 	List<EmrIcd> findAllByDescriptionContaining(String keyword);
+	List<EmrIcd> findAllByDescriptionContainingOrCodeContaining(String keyword, String keyword2);
 	
 }

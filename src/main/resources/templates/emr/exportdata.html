@@ -466,6 +466,7 @@
             lastName: row.patient.lastName.trim().toUpperCase(),
             firstName: row.patient.firstName.trim().toUpperCase(),
             labType: row.emrPatientLaboratoryType.labTypeName,
+            labResult: row.labResult != null ? row.labResult : "",
             remarks: row.remarks
         }));
       

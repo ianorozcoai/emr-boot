@@ -167,8 +167,7 @@ public class EmrConsultationController {
 		
 		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		
-		List<EmrConsultation> emrConsultations = emrConsultationRepository
-				.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dto.getDateFrom(), dto.getDateTo().plusDays(1));
+		List<EmrConsultation> emrConsultations = emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dto.getDateFrom().plusDays(1), dto.getDateTo().plusDays(1));
 		
 		Consumer<EmrConsultation> fetchDiagnosis = ec -> {
 			List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();

@@ -27,7 +27,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Data public class Patient extends Auditable {
+@Data 
+public class Patient extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,6 +72,9 @@ import lombok.NoArgsConstructor;
 	private String fathersoccupation;
 	private String mothersmobile;
 	private String fathersmobile;
+//	private String zipCode;	
+	
+	private String allergy;
 	
 	@Transient
 	private MultipartFile photoFile;

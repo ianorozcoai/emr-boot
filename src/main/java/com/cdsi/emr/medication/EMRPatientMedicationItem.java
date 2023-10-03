@@ -27,9 +27,10 @@ public class EMRPatientMedicationItem {
     private String genericName = "genericName";
 
     private String brandName;
-
-    @NotBlank(message = " is mandatory.")
+    
     private String dosage = "dosage";
+    
+    private String unitOfMeasure;
 
 //    @NotBlank(message = " is mandatory.")
     private String remarks;

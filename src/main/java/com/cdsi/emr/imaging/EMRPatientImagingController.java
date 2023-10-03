@@ -62,11 +62,11 @@ public class EMRPatientImagingController {
     public String listAll(Model model, @PathVariable long patientId
             ,@AuthenticationPrincipal Personnel doctor
             ) {
-    	Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);
+    	Optional<Patient> optionalPatient = patientRepository.findById(patientId);
         Patient patient = optionalPatient.get();
         
     	List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		
 		int totalNewLab = 0;
@@ -120,21 +120,28 @@ public class EMRPatientImagingController {
         long patientId = emrPatientImaging.getPatient().getId();
 
         if (errors.hasErrors()) {
-            List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-            List<EMRPatientImagingType> emrPatientImagingTypeList = this.emrPatientImagingTypeRepository.findAll();
-            Optional<Patient> optionalPatient = this.patientRepository.findById(patientId);
+            List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+            List<EMRPatientImagingType> emrPatientImagingTypeList = emrPatientImagingTypeRepository.findAll();
+            Optional<Patient> optionalPatient = patientRepository.findById(patientId);
             Patient patient = optionalPatient.get();
             model.addAttribute("patient", patient);
             model.addAttribute("emrPatientImagingList", emrPatientImagingList);
             model.addAttribute("allImagingTypes", emrPatientImagingTypeList);
             model.addAttribute(new EMRPatientImaging());
-            model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+            
+            if(emrPatientImaging.getEmrPatientImagingType() != null) {
+            	model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+            } else {
+            	model.addAttribute("uxmessage", new UXMessage("ERROR", "Imaging Type is a mandatory field."));
+            }
+            
+            
             return "emr/emr_patient_imaging";
         }
 
         MultipartFile[] files = emrPatientImaging.getImgFiles();
         if(files.length > 0 && files[0].getOriginalFilename().isEmpty()) {
-            EMRPatientImaging emrImg = this.emrPatientImagingRepository.findById(emrPatientImaging.getId())
+            EMRPatientImaging emrImg = emrPatientImagingRepository.findById(emrPatientImaging.getId())
                     .orElseGet(EMRPatientImaging::new);
             imgFileUrls = emrImg.getImgFileUrls();
         } else {
@@ -173,7 +180,7 @@ public class EMRPatientImagingController {
         long patientId = emrPatientImaging.getPatient().getId();
         MultipartFile[] files = emrPatientImaging.getImgFiles();
         if(files.length > 0 && files[0].getOriginalFilename().isEmpty()) {
-            EMRPatientImaging emrImg = this.emrPatientImagingRepository.findById(emrPatientImaging.getId())
+            EMRPatientImaging emrImg = emrPatientImagingRepository.findById(emrPatientImaging.getId())
                     .orElseGet(EMRPatientImaging::new);
             imgFileUrls = emrImg.getImgFileUrls();
         } else {
@@ -201,7 +208,14 @@ public class EMRPatientImagingController {
         emrPatientImaging.setImgFileUrls(imgFileUrls);
         Patient patient = this.patientRepository.findById(patientId).orElseGet(Patient::new);
         emrPatientImaging.setPatient(patient);
-        this.emrPatientImagingRepository.save(emrPatientImaging);
+        
+        if(emrPatientImaging.getEmrPatientImagingType() != null) {
+        	this.emrPatientImagingRepository.save(emrPatientImaging);
+        } else {
+        	response.setError("Imaging Type is a mandatory field.");
+        }
+        
+        
 
         response.setInitialPreview(initialPreview);
         response.setInitialPreviewConfig(initialPreviewConfig);

@@ -4,7 +4,6 @@
 <head>
 	<th:block th:replace="fragments/common::header-meta"></th:block>
 
-    <!-- common import of css & js goes here -->
     <th:block th:replace="fragments/common::header-import-css"></th:block>
     
     <th:block th:replace="fragments/common::header-import-js"></th:block>
@@ -35,30 +34,20 @@
 
 <body>
 
-	<!-- Main Navbar -->
 	<div th:replace="fragments/common::main-navbar-patient-record-emr"></div>
-	<!-- /Main Navbar -->
-	
-	<!-- Secondary navbar -->
 	<div th:replace="fragments/common::emr-secondary-navbar-patient-record"></div>
-	<!-- /secondary navbar -->
-					
-	<!-- Page content -->
 	<div class="page-content">	
 
 
-		<!-- Main content -->
 		<div class="content-wrapper">
 
-			<!-- Content area -->
 			<div class="content">
 				<div class="row">
 					<div class="col-xl-2">
 						<div th:replace="fragments/common::new_emr-left-side-patient-profile"></div>
 					</div>
 					<div class="col-xl-10">
-						<!-- Patient Profile Content -->
-							<div class="row">
+						<div class="row">
 								<div class="col-md-12">
 									<div class="card">
 										<div class="card-header header-elements-inline bg-violet-600">
@@ -143,8 +132,8 @@
 																<div class="form-group">
 																	<div class="row">    
 														                    <div class="col-sm-6">
-														                        <label for="profession">Profession</label>
-														                        <input type="text" class="form-control" name="profession" th:field="*{profession}" id="profession" placeholder="Profession" />
+														                        <label for="profession">Occupation</label>
+														                        <input type="text" class="form-control" name="profession" th:field="*{profession}" id="profession" placeholder="Occupation" />
 														                    </div>
 														                    
 														                    <div class="col-sm-6">
@@ -212,6 +201,15 @@
 																</div>	
 																
 																<div class="form-group">
+																	<div class="row">         
+														                    <div class="col-sm-12">
+														                        <label for="allergy">Allergies</label>
+														                        <input id="allergy" name="allergy" th:field="*{allergy}" placeholder="Allergies" type="text" class="form-control" >
+														                    </div>
+																	</div>
+																</div>
+																
+																<div class="form-group">
 																	<div class="row">    
 														                    <div class="col-sm-6">
 														                        <label for="mothersname">Mother&apos;s Name</label>
@@ -255,19 +253,9 @@
 										
 
 			</div>
-			<!-- /content area -->
-
-
-			<!-- Footer -->
 			<div th:replace="fragments/common::footer"></div>
-			<!-- /Footer -->
-
+			</div>
 		</div>
-		<!-- /main content -->
-
-	</div>
-	<!-- /page content -->
-	
 	<script th:inline="javascript">
 	
 	    $(document).ready(function() {	 
@@ -326,26 +314,52 @@
 		    	e.preventDefault();
 		    	let fd = new FormData(fileUploadForm);
 		    	fd.append(/*[[${_csrf.parameterName}]]*/'_csrf',/*[[${_csrf.token}]]*/'_csrf_token')
-		    	let response = await fetch(uploadUrl, {
-		    		method: 'POST',
-		    		body: fd
-		    	});
 		    	
-		    	if(response.ok){
+		    	try {
+			    	let response = await fetch(uploadUrl, {
+			    		method: 'POST',
+			    		body: fd
+			    	});
+			    	
+			    	if(response.ok){
+			    		swal({
+							title: "Success!",
+							text: "Patient Photo successfully saved.",
+							icon: "success",
+							buttons: false,
+				            timer: 2000,
+						}).then(() => window.location.reload());
+			    	} else {
+                        // --- DEBUGGING: GET FILE SIZE ---
+                        let fileInput = document.getElementById('profilePhoto');
+                        let fileSizeMB = "Unknown";
+                        if(fileInput && fileInput.files && fileInput.files[0]){
+                            // Convert bytes to MB (2 decimal places)
+                            fileSizeMB = (fileInput.files[0].size / (1024 * 1024)).toFixed(2);
+                        }
+
+                        let status = response.status;
+			    		let errorBody = await response.text();
+                        
+                        // --- CONSTRUCT DEBUG MESSAGE ---
+                        let debugMsg = "File Size: " + fileSizeMB + " MB\n" +
+                                       "Status: " + status + "\n" +
+                                       "Server Response: " + errorBody.substring(0, 100) + "...";
+
+			    		swal({
+							title: "Upload Failed (" + status + ")",
+							text: debugMsg,
+							icon: "error",
+							buttons: true, 
+                            timer: null
+						});
+			    	}
+		    	} catch (err) {
 		    		swal({
-						title: "Success!",
-						text: "Patient Photo successfully saved.",
-						icon: "success",
-						buttons: false,
-			            timer: 2000,
-					}).then(() => window.location.reload());
-		    	} else {
-		    		swal({
-						title: "Upload Failure!",
-						text: "Patient Photo not uploaded successfully.",
+						title: "Network Error!",
+						text: "Could not reach server: " + err,
 						icon: "error",
-						buttons: false,
-			            timer: 2000,
+                        buttons: true
 					});
 		    	}
 		    };

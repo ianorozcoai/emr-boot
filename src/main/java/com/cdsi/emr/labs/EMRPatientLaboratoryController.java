@@ -89,7 +89,7 @@ public class EMRPatientLaboratoryController {
 		Patient patient = optionalPatient.get();
 		
 		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		
 		int totalNewLab = 0;
@@ -247,7 +247,18 @@ public class EMRPatientLaboratoryController {
             model.addAttribute("emrPatientLaboratoryList", emrPatientLaboratoryList);
             model.addAttribute("allLaboratoryTypes", emrPatientLaboratoryTypeList);
             model.addAttribute("emrPatientLaboratory", emrPatientLaboratory);
-            model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
+            
+            if(emrPatientLaboratory.getEmrPatientLaboratoryType() != null && emrPatientLaboratory.getEmrPatientLaboratoryType().getLabTypeName() != null) {
+            	if(emrPatientLaboratory.getLabResult() != null) {
+            		model.addAttribute("uxmessage", new UXMessage("ERROR", "Please double check mandatory fields."));
+            	} else {
+            		model.addAttribute("uxmessage", new UXMessage("ERROR", "Lab Results is a mandatory field."));
+            	}
+            } else {
+            	model.addAttribute("uxmessage", new UXMessage("ERROR", "Laboratory Type is a mandatory field."));
+            }
+            
+            
             return "emr/emr_patient_lab";
         }
 

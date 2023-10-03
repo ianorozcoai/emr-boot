@@ -55,11 +55,16 @@
                 <div class="modal-body" id="medicineFormContainer">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-8">
                                 <label for="dateCreated">Date</label>
                                 <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedication.dateCreated')}" th:errors="*{emrPatientMedication.dateCreated}"></span>
                                 <input id="dateCreated" name="dateCreated" th:field="*{emrPatientMedication.dateCreated}" placeholder="Date" type="datetime-local" class="form-control" >
                             </div>
+                            <div class="col-sm-4">
+                                <label for="weight">Weight(Kg)</label>                                
+                                <input id="weight" th:value="${lastWeight}" type="text" class="form-control" readonly="readonly">
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -80,16 +85,15 @@
                                     <datalist th:id="|brandNameDatalist${i.index}|"></datalist>
                                     <input th:id="|brandName${i.index}|" th:list="|brandNameDatalist${i.index}|" name="brandName" th:field="*{emrPatientMedicationItems[__${i.index}__].brandName}" class="form-control brandName">
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-2">
                                     <label th:for="|dosage${i.index}|">Dosage</label>
                                     <span class="validationError text-danger" th:if="${#fields.hasErrors('emrPatientMedicationItems[__${i.index}__].dosage')}"
-                                          th:errors="*{emrPatientMedicationItems[__${i.index}__].dosage}"></span>
-                                    <select th:id="|dosage${i.index}|" name="dosage" th:field="*{emrPatientMedicationItems[__${i.index}__].dosage}" class="form-control dosage" >
-                                        <option value=''>- Select Dosage -</option>
-                                        <option th:each="d : ${dosages}"
-                                                th:value="${d}"
-                                                th:text="${d}">Dosage</option>
-                                    </select>
+                                          th:errors="*{emrPatientMedicationItems[__${i.index}__].dosage}"></span>                                    
+									 <input th:id="|dosage${i.index}|" name="dosage" th:field="*{emrPatientMedicationItems[__${i.index}__].dosage}" class="form-control dosage">
+                                </div>
+                                <div class="col-sm-2">
+                                    <label th:for="|unitOfMeasure${i.index}|">Unit of Measure</label>                                    
+                                    <input th:id="|unitOfMeasure${i.index}|" name="unitOfMeasure" th:field="*{emrPatientMedicationItems[__${i.index}__].unitOfMeasure}" class="form-control unitOfMeasure">
                                 </div>
                             </div>
                         </div>
@@ -97,7 +101,7 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <label for="remarks0">Prescription Notes</label>
+                                    <label for="remarks0">Prescription Notes(Max 500 chars)</label>
                                     <textarea id="remarks0" name="remarks" th:field="*{emrPatientMedicationItems[__${i.index}__].remarks}" class="form-control remarks" rows="4"></textarea>
                                 </div>
                             </div>
@@ -184,7 +188,7 @@
                                                 <td>
                                                     <div th:each="med : ${emrPatientMedication.emrPatientMedicationItems}">
                                                         <ul>
-                                                            <li th:text="${med.genericName}+' ('+${med.brandName}+') - '+${med.dosage} + ' ml'"></li>
+                                                            <li th:text="${med.genericName} + (${med.brandName != '' && med.brandName != null} ? ' (' + ${med.brandName} + ') ' : '') + (${med.dosage != ''} ? ' - '+${med.dosage} + ' '  : '') + ' ' + (${med.unitOfMeasure != null} ? ${med.unitOfMeasure} : '')"></li>
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -341,18 +345,24 @@
 	    function addMedicine() {
 
 			 let generics = /*[[${emrGenericsLookupList}]]*/[];
+			 let lastWeight = /*[[${lastWeight}]]*/[];
+			 
+			 if(lastWeight == "0.00"){
+				 swal({
+						title: "No Weight Entered!",
+						text: "No weight value has been entered for todays consultation.",
+						icon: "warning",
+						button: true,
+			            timer: 4000,
+					});
+			 }
 
 			 var options = generics.reduce(
 				(a,g) => a+=`<option value="${g}">${g}</option>`
                	, ''
 			 )
-
-			 let dosages = /*[[${dosages}]]*/[];
-
-			 var dosageOptions = dosages.reduce(
-				(a,d) => a+=`<option value="${d}">${d}</option>`
-               	, ''
-			 )
+			
+			
 
 			 var medicationFormRowWrapper =
 				 $(`
@@ -381,13 +391,18 @@
 								</div>
 
 								<!-- Dosage -->
-								<div class="col-sm-4">
+								<div class="col-sm-2">
 									<div class="form-group">
-										<label for="emrPatientMedicationItems[`+i+`].dosage">Dosage</label>
-										<select name="emrPatientMedicationItems[`+i+`].dosage" id="dosage`+i+`" class="form-control dosage" >
-											<option value=''>- Select Dosage -</option>
-											${dosageOptions}
-										</select>
+										<label for="emrPatientMedicationItems[`+i+`].dosage">Dosage</label>										
+										<input name="emrPatientMedicationItems[`+i+`].dosage" id="dosage`+i+`" class="form-control dosage">
+									</div>
+								</div>
+								
+								<!-- Unit of Measure -->
+								<div class="col-sm-2">
+									<div class="form-group">
+										<label for="emrPatientMedicationItems[`+i+`].unitOfMeasure">Unit of Measure</label>
+										<input name="emrPatientMedicationItems[`+i+`].unitOfMeasure" id="unitOfMeasure`+i+`" class="form-control unitOfMeasure">
 									</div>
 								</div>
 							</div>
@@ -397,7 +412,7 @@
 						<div class="form-group">
 							<div class="row">
 								<div class="col-sm-12">
-									<label for="emrPatientMedicationItems[`+i+`].remarks">Prescription Notes</label>
+									<label for="emrPatientMedicationItems[`+i+`].remarks">Prescription Notes(Max 500 chars)</label>
 									<textarea name="emrPatientMedicationItems[`+i+`].remarks" id="remarks`+i+`" class="form-control remarks" rows="4"></textarea>
 								</div>
 							</div>

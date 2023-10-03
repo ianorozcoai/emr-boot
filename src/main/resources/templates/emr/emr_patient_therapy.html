@@ -28,12 +28,12 @@
 				<div id="modal_form_vertical" class="modal fade" tabindex="-1">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
-							<div class="modal-header bg-teal">
-								<h5 class="modal-title">Procedure Information</h5>
+							<div class="modal-header bg-violet">
+								<h5 class="modal-title">Therapy Information</h5>
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 
-							<form id="uploadProcedureForm" th:action="@{/emrpatientProcedure}" method="post" enctype="multipart/form-data" th:object="${EMRPatientProcedure}">
+							<form id="uploadTherapyForm" th:action="@{/emrpatientTherapy}" method="post" enctype="multipart/form-data" th:object="${EMRPatientTherapy}">
 								<input type="hidden" name="id" id="id" th:value="${id}" />
 				   				<input type="hidden" name="patient.id" th:value="${patient.id}" />
 								<div class="modal-body">
@@ -44,11 +44,11 @@
 												<input id="dateCreated" name="dateCreated" placeholder="Date" type="datetime-local" class="form-control" >
 											</div>	
 											<div class="col-sm-6">
-												<label for="procedure_type_id">Type</label>
-												<span class="validationError" th:if="${#fields.hasErrors('emrPatientProcedureType')}" th:errors="*{emrPatientProcedureType}"></span>
-												<select id="procedure_type_id" name="emrPatientProcedureType.id" class="form-control" th:field="*{emrPatientProcedureType}">
-							                        <option value="0">- Select Procedure Type -</option>
-							                        <option th:each="procedureType : ${allProcedureTypes}" th:value="${procedureType.id}" th:text="${procedureType.procedureTypeName}">
+												<label for="therapy_type_id">Type</label>
+												<span class="validationError" th:if="${#fields.hasErrors('emrPatientTherapyType')}" th:errors="*{emrPatientTherapyType}"></span>
+												<select id="therapy_type_id" name="emrPatientTherapyType.id" class="form-control" th:field="*{emrPatientTherapyType}">
+							                        <option value="0">- Select Therapy Type -</option>
+							                        <option th:each="therapyType : ${allTherapyTypes}" th:value="${therapyType.id}" th:text="${therapyType.therapyTypeName}">
 							                    </select>
 											</div>								
 							            </div>
@@ -66,7 +66,7 @@
 											<div class="col-sm-12">
 													<div class="form-group row">												
 														<div class="col-lg-12">
-															<input type="file" class="file-input-preview-ian" id="procedureFiles" name="procedureFiles" multiple="multiple" accept="image/*">
+															<input type="file" class="file-input-preview-ian" id="therapyFiles" name="therapyFiles" multiple="multiple" accept="image/*">
 															<span class="form-text text-muted">Upload Reminders: All Newly Uploaded Files will override the previous files uploaded.</span>
 														</div>
 													</div>											
@@ -80,7 +80,7 @@
 
 								<div class="modal-footer">
 									<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-									<button type="submit" class="btn bg-teal">Save Info</button>
+									<button type="submit" class="btn bg-violet">Save Info</button>
 								</div>
 							</form>
 						</div>
@@ -106,19 +106,19 @@
 						<div th:replace="fragments/common::no_upload_pic_emr-left-side-patient-profile"></div>
 					</div>
 					<div class="col-xl-10">
-						<!-- Procedure datatable -->
+						<!-- Therapy datatable -->
 						<div class="card">
-							<div class="card-header header-elements-inline bg-teal">
-								<h5 class="card-title">Procedure List</h5>
+							<div class="card-header header-elements-inline bg-violet">
+								<h5 class="card-title">Therapy List</h5>
 								<div class="header-elements">
 									<div class="list-icons">				                				
-						           		<button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addProcedureButton">Add Procedure</button>		                		
+						           		<button type="button" class="btn btn-outline" style="color: white; border: 1px solid white;" data-toggle="modal" data-target="#modal_form_vertical" id="addTherapyButton">Add Therapy</button>		                		
 						           	</div>
 						       	</div>
 							</div>
 					
 							<div class="card-body">
-								<table class="table table-bordered table-hover" id="procedure-list">
+								<table class="table table-bordered table-hover" id="therapy-list">
 									<thead>
 										<tr>
 											<th><i class="icon-search4"></i></th>
@@ -129,33 +129,33 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="procedure : ${emrPatientProcedureList}">
+										<tr th:each="therapy : ${emrPatientTherapyList}">
 											<td  width="5px;" title="View Record">
-												<a class="list-icons-item" th:id="|editprocedureButton${procedure.id}|"
+												<a class="list-icons-item" th:id="|edittherapyButton${therapy.id}|"
 												    data-toggle="modal" data-target="#modal_form_vertical"
-												    th:onclick="|editPatientProcedure('${procedure.id}')|"><i class="icon-search4"></i></a>
+												    th:onclick="|editPatientTherapy('${therapy.id}')|"><i class="icon-search4"></i></a>
 											</td>
 											<!-- 
 											<td class="text-center">
-												<button id="|editprocedureButton${procedure.id}|" class="btn bg-teal"
+												<button id="|edittherapyButton${therapy.id}|" class="btn bg-teal"
 												    data-toggle="modal" data-target="#modal_form_vertical"
-												    th:onclick="|editPatientProcedure('${procedure.id}')|"
+												    th:onclick="|editPatientTherapy('${therapy.id}')|"
 												    >View Record</button>
 											</td>
 											 -->
-											<td th:text="${#temporals.format(procedure.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
+											<td th:text="${#temporals.format(therapy.dateCreated,'MMM d, yyyy hh:mm a')}">Date</td>
 											<td width="5px;">																			
-												<span th:if="!${#lists.isEmpty(procedure.procedureFileUrls)}"><i class="fas fa-paperclip"></i></span>
-												<span th:unless="${procedure.procedureFileUrls != ''}">&nbsp;</span>
+												<span th:if="!${#lists.isEmpty(therapy.therapyFileUrls)}"><i class="fas fa-paperclip"></i></span>
+												<span th:unless="${therapy.therapyFileUrls != ''}">&nbsp;</span>
 											</td>
-											<td th:text="${procedure.emrPatientProcedureType.procedureTypeName}">procedureTypeName</td>								
-											<td th:text="${procedure.remarks}">Remarks</td>								
+											<td th:text="${therapy.emrPatientTherapyType.therapyTypeName}">therapyTypeName</td>								
+											<td th:text="${therapy.remarks}">Remarks</td>								
 										</tr>								
 									</tbody>
 								</table>
 							</div>									
 						</div>
-						<!-- /Procedure datatable -->	
+						<!-- /Therapy datatable -->	
 					</div>
 				</div>
 			
@@ -177,14 +177,14 @@
 	
 	    $(document).ready(function() {	    		 
 	    	
-	    	$('#procedure-list').DataTable({
+	    	$('#therapy-list').DataTable({
 				"lengthMenu": [10, 25, 50],
 				"ordering": false, 
 				"scrollX": true,
 			});
 			
 	    	//$(".navbar-nav-link").removeClass("bg-slate-300");		
-			//$("#emrPatientProcedure2ndNav").addClass("bg-slate-300");
+			//$("#emrPatientTherapy2ndNav").addClass("bg-slate-300");
 	    	
 			FileUpload.init();
 	    });	    
@@ -194,18 +194,19 @@
 	<!-- Start of Javascript -->
 	<script th:inline="javascript">
 	    let contextRoot = /*[[${#httpServletRequest.getContextPath()}]]*/'';
-	    let uploadProcedureForm = document.getElementById('uploadProcedureForm');
-	    uploadProcedureForm.addEventListener('submit', (e) => {
+	    let uploadTherapyForm = document.getElementById('uploadTherapyForm');
+	    uploadTherapyForm.addEventListener('submit', (e) => {
 	    	e.preventDefault();
 	    	
-	    	let promise = fetch(contextRoot + '/upload/emrpatientProcedure', {
+	    	let promise = fetch(contextRoot + '/upload/emrpatientTherapy', {
 	    		method: 'POST',
-	    		body: new FormData(uploadProcedureForm)
+	    		body: new FormData(uploadTherapyForm)
 	    	})
 	    	.then(res => res.json())
 	    	.then(data => {
 	    		console.log(data);
-	    		if(data.error === 'Procedure Type is a mandatory field.'){
+	    		
+	    		if(data.error === 'Therapy Type is a mandatory field.'){
 	    			swal({
 						title: "Error!",
 						text: data.error,
@@ -222,32 +223,33 @@
 			            timer: 2000,
 					}).then(() => window.location.reload());
 	    		}
+	    		
 	    			
 	    	})
 	    	.catch(err => console.log(err));	    	
 	    });		
 		
 	   
-	    function editPatientProcedure(id) {
-	        let editLabButton = document.getElementById('editProcedureButton'+id);
-	    	let lab = fetch(contextRoot + '/api/patientProcedure/'+id)
+	    function editPatientTherapy(id) {
+	        let editLabButton = document.getElementById('editTherapyButton'+id);
+	    	let lab = fetch(contextRoot + '/api/patientTherapy/'+id)
 	    	    .then(res => res.json())
 	    	    .then(data => {
 	    	    	console.log(data);
 	    	    	document.getElementById('id').value = data.id;
 	    	    	document.getElementById('dateCreated').value = data.dateCreated;
 	    	    	document.getElementById('remarks').value = data.remarks;
-	    	    	document.getElementById('procedure_type_id').value = data.emrPatientProcedureType.id;
+	    	    	document.getElementById('therapy_type_id').value = data.emrPatientTherapyType.id;
 
-	    	    	let fiOpts = $('#procedureFiles').data('fileinput');
-	    	    	$('#procedureFiles').fileinput('destroy').fileinput({
+	    	    	let fiOpts = $('#therapyFiles').data('fileinput');
+	    	    	$('#therapyFiles').fileinput('destroy').fileinput({
 	    	    		showUpload: false,
 	                    showRemove: false,
 	                    showBrowse: false,
 	                    showCaption: false,
 	                    browseOnZoneClick: true,
 	                    allowedFileExtensions: ['jpg', 'png', 'gif', 'pdf', 'txt'],
-	                    initialPreview: data.procedureFileUrls.map(u => contextRoot+u),
+	                    initialPreview: data.therapyFileUrls.map(u => contextRoot+u),
 	                    initialPreviewConfig: [],
 	                    initialPreviewAsData: true,
 	                    deleteUrl: '',
@@ -326,7 +328,7 @@
                indicatorLoading: '<i class="icon-spinner2 spinner text-muted"></i>'
            };
            
-           $('#procedureFiles').fileinput({
+           $('#therapyFiles').fileinput({
         	   showUpload: false,
                showRemove: false,
                showBrowse: false,
@@ -375,12 +377,12 @@
 
 
 
-        $('#addProcedureButton').click((e) => {
+        $('#addTherapyButton').click((e) => {
         	//clear values in form
         	$('#id').val(0);
         	$('#dateCreated').val(moment(new Date()).format('YYYY-MM-DDTHH:mm'));
         	$('#remarks').val('');
-        	$('#procedureFiles').fileinput('refresh');
+        	$('#therapyFiles').fileinput('refresh');
         });
     </script>
 </body>

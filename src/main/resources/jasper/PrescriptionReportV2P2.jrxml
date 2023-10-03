@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PrescriptionReportV2P2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="ee630330-85bb-49d3-9734-0ada293e7a77">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="inventorydai"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<parameter name="DOCTOR_NAME" class="java.lang.String"/>
+	<parameter name="SPECIALIZATION" class="java.lang.String"/>
+	<parameter name="CREDENTIALS2" class="java.lang.String"/>
+	<parameter name="CLINIC_NAME" class="java.lang.String"/>
+	<parameter name="DOCTOR_ADDRESS" class="java.lang.String"/>
+	<parameter name="DOCTOR_CONTACT_NO" class="java.lang.String"/>
+	<parameter name="CLINIC_NAME2" class="java.lang.String"/>
+	<parameter name="DOCTOR_ADDRESS2" class="java.lang.String"/>
+	<parameter name="DOCTOR_CONTACT_NO2" class="java.lang.String"/>
+	<parameter name="DOCTOR_LICENSE_NO" class="java.lang.String"/>
+	<parameter name="DOCTOR_PTR_NO" class="java.lang.String"/>
+	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
+	<parameter name="RX_LOGO" class="java.lang.String"/>
+	<parameter name="CDSI_LOGO" class="java.lang.String"/>
+	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
+	<parameter name="PERIOD" class="java.lang.String"/>
+	<parameter name="PATIENT_NAME" class="java.lang.String"/>
+	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
+	<parameter name="PATIENT_GENDER" class="java.lang.String"/>
+	<parameter name="PATIENT_AGE" class="java.lang.String"/>
+	<parameter name="MEDICATION1" class="java.lang.String"/>
+	<parameter name="MEDICATION2" class="java.lang.String"/>
+	<parameter name="MEDICATION3" class="java.lang.String"/>
+	<parameter name="MEDICATION4" class="java.lang.String"/>
+	<parameter name="MEDICATION5" class="java.lang.String"/>
+	<parameter name="MEDICATION6" class="java.lang.String"/>
+	<parameter name="INSTRUCTION1" class="java.lang.String"/>
+	<parameter name="INSTRUCTION2" class="java.lang.String"/>
+	<parameter name="INSTRUCTION3" class="java.lang.String"/>
+	<parameter name="INSTRUCTION4" class="java.lang.String"/>
+	<parameter name="INSTRUCTION5" class="java.lang.String"/>
+	<parameter name="INSTRUCTION6" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="555" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="22" width="400" height="18" uuid="8c1ca850-add7-42b0-9ac3-031235ad22ba">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_NAME}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="0" y="40" width="400" height="14" uuid="070b2e8a-6c0f-4297-b162-39b9180bd964">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CREDENTIALS2}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="0" y="52" width="400" height="14" uuid="dbec2cf6-fcd5-468a-8986-5801701083e5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="96" width="182" height="49" uuid="738e9dad-905a-4ca3-99fd-e50d60191233"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="149" width="100" height="18" forecolor="#000000" uuid="061717d3-3a32-4ec1-b4a5-a44bca8d7cf3"/>
+				<box leftPadding="10"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patients Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="149" width="280" height="18" uuid="76f1ca0d-0cd2-4203-854c-fee05ee7c5cf"/>
+				<box leftPadding="5">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="171" width="60" height="18" uuid="994d583c-3643-4a3b-b936-e26f5bf89bbc"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="60" y="171" width="320" height="18" uuid="eb9a7f24-aa72-4256-ae91-e3a27eca9678"/>
+				<box leftPadding="5">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="193" width="60" height="18" uuid="6424795a-2c6e-4c38-a8d0-084dbd10efd5"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="60" y="193" width="50" height="18" uuid="baa87d78-3976-4b01-980f-b50477bb7e5b"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_GENDER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="110" y="193" width="30" height="18" uuid="0c83f560-76f5-4bfe-bdcb-43672f372975"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Age:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="136" y="193" width="104" height="18" uuid="72877c0a-8b35-43f0-9653-d8db3b28b5b9"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_AGE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="240" y="193" width="40" height="18" uuid="43639761-0b52-4b9b-8b67-fa56cdeafb66"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="281" y="193" width="99" height="18" uuid="1fafb28d-de4e-42a4-bb02-b19a50c1c0d5"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="10" y="224" width="70" height="70" uuid="388d3177-779f-4177-ae32-e2dcceac1f18"/>
+				<imageExpression><![CDATA[$P{RX_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="90" y="243" width="278" height="227" uuid="9d23a00d-4fdf-4ba5-b267-cedc5c1d8140"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{MEDICATION1} != null ? $P{MEDICATION1} : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="207" y="480" width="118" height="14" uuid="d2351acb-5a32-41d4-9a3f-c60de0764950"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="326" y="491" width="70" height="18" uuid="eb1f9f73-b5f8-465a-b1af-3e6021c58da2"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[License No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="207" y="491" width="118" height="18" uuid="90bef549-5898-444f-96e9-b2ac5d8d1a68"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_LICENSE_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="327" y="507" width="70" height="18" uuid="3baeff59-16b8-4694-afbb-051066da4263"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PTR No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="207" y="507" width="118" height="18" uuid="8f4a28e5-ad5b-46a7-bee0-31b2c1c8cfa0"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_PTR_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="327" y="523" width="70" height="18" uuid="a25c3239-10d2-44ec-a758-5286a0b7bb67"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S2 No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="207" y="523" width="118" height="18" uuid="9485cf60-6f56-481d-bd95-15f9839f2636"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_S_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="73" width="182" height="26" uuid="bb9cb5bd-e494-43a9-b8a5-37c635f957e9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="73" width="182" height="26" uuid="aa72522a-3f20-4eb4-bb04-2ea247018aa9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="96" width="182" height="49" uuid="22399a3d-da95-472b-af50-77af0d757889"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS2}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="4" y="502" width="150" height="50" uuid="cbdc37f1-40d2-4855-a04b-1aa2229617a8"/>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="9" y="6" width="70" height="70" uuid="9b1e204e-a43b-474c-9c62-a9d6c42f6349"/>
+				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
+			</image>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="398" y="22" width="400" height="18" uuid="2a233c5c-15eb-4069-897a-e3e2ab283375">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_NAME}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="398" y="40" width="400" height="14" uuid="04f5d95a-49da-451a-aa44-545575669167">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CREDENTIALS2}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="398" y="52" width="400" height="14" uuid="171ada5c-2292-41a3-b0d6-f92eb2711d70">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="408" y="96" width="182" height="49" uuid="6a56c816-943d-4130-a668-80745133e6e0"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="398" y="149" width="100" height="18" forecolor="#000000" uuid="319d8d6d-5f3d-4d2c-86fa-a9cf211f9c7b"/>
+				<box leftPadding="10"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patients Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="498" y="149" width="280" height="18" uuid="1a22f6f7-6f3d-43e0-8b21-99b7bcec8add"/>
+				<box leftPadding="5">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="398" y="171" width="60" height="18" uuid="7af19d1e-3e1a-45ef-9def-c21693e51275"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="458" y="171" width="320" height="18" uuid="7aef7c53-f5f0-488d-9ffe-73009a004768"/>
+				<box leftPadding="5">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="398" y="193" width="60" height="18" uuid="f9deeb5a-b496-4595-a165-900e3548a4d8"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="458" y="193" width="50" height="18" uuid="32fbc29b-21fb-44a6-9d31-13710b5f58a0"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_GENDER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="508" y="193" width="30" height="18" uuid="3270a2b8-e9c9-4258-8afd-1e3f363c361a"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Age:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="534" y="193" width="104" height="18" uuid="e14cc9c0-1108-463d-a404-2db370ca2676"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PATIENT_AGE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="638" y="193" width="40" height="18" uuid="16d96f01-1dee-424f-80ad-623605c30c6d"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="679" y="193" width="99" height="18" uuid="3282d533-6b39-4b39-925b-844dfb949b8e"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="408" y="224" width="70" height="70" uuid="64236a34-1aec-40d8-a531-d1471b57fdd9"/>
+				<imageExpression><![CDATA[$P{RX_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="488" y="243" width="278" height="227" uuid="be40d1a9-29e8-48f7-9737-241e0e0ecb18"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{MEDICATION2} != null ? $P{MEDICATION2} : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="605" y="480" width="118" height="14" uuid="1d1d0634-0002-4574-9554-fa6df1825c5a"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="724" y="491" width="70" height="18" uuid="1be9e426-b854-4ac6-ac67-779ad63721fc"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[License No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="605" y="491" width="118" height="18" uuid="ff71d5b9-356d-477d-bc64-0ba602d9e83f"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_LICENSE_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="725" y="507" width="70" height="18" uuid="277bf960-f7f8-46fc-8b40-bf7d9b31bb7e"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PTR No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="605" y="507" width="118" height="18" uuid="563c68c3-7a85-41e2-9c7e-34a84337a0db"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_PTR_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="725" y="523" width="70" height="18" uuid="e0910de1-5bf8-4c89-b41c-82588417d7ca"/>
+				<box leftPadding="10"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S2 No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="605" y="523" width="118" height="18" uuid="aa2fd02a-43fc-436d-a1e5-1b6a41fc1adb"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_S_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="408" y="73" width="182" height="26" uuid="900a1ad9-bf60-4ac1-8429-7494523571cb"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="595" y="73" width="182" height="26" uuid="3de01e1f-44bf-4846-a5d7-0e4b3fdb0e73"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="595" y="96" width="182" height="49" uuid="545b66c3-0d59-4c69-90fa-31853cb61aeb"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS2}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="402" y="502" width="150" height="50" uuid="a6f5ace1-4b0e-436b-b6ff-07fef5bf2a43"/>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="407" y="6" width="70" height="70" uuid="7b967444-eb86-475e-a131-50dae9b1c3a7"/>
+				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+</jasperReport>

@@ -2,6 +2,8 @@ package com.cdsi.emr.consultation;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmrConsultationRepository extends JpaRepository<EmrConsultation, Long> {
@@ -29,5 +31,10 @@ public interface EmrConsultationRepository extends JpaRepository<EmrConsultation
 	List<EmrConsultation> findAllByPersonnelIdAndPaymentTypeOrderByConsultationDate(long doctorId, String paymentType);
 
 	List<EmrConsultation> findAllByIdInAndPaymentType(List<Long> consultationIds, String paymentType);
+	
+	// Add this to your EmrConsultationRepository interface
+	Optional<EmrConsultation> findFirstByPatientIdAndPersonnelIdAndConsultationDateOrderByCreatedDateDesc(long patientId, long doctorId, LocalDate consultationDate);
 
+	// Simplified method to verify connectivity
+	List<EmrConsultation> findAllByPatientIdAndAndConsultationDate(long patientId, LocalDate consultationDate);
 }

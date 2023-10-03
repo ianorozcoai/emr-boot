@@ -3,7 +3,6 @@ package com.cdsi.emr.consultation;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -16,17 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.cdsi.emr.clinic.Clinic;
 import com.cdsi.emr.config.data.Auditable;
 import com.cdsi.emr.patient.Patient;
 import com.cdsi.emr.personnel.Personnel;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -59,6 +53,11 @@ import lombok.NoArgsConstructor;
 	private String physical;
 	private String intervention;
 	private String diagnosisTxt;
+	private String otherNotes;
+	
+	private String consultationTime;
+	private String pulseRate;
+	private String spo;
 
 	@ElementCollection
 	private List<EmrConsultationDiagnosis> diagnosis;

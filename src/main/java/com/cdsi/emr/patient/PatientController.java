@@ -116,7 +116,7 @@ public class PatientController {
 		Patient patient = optionalPatient.get();
 		
 		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		
 		int totalNewLab = 0;
@@ -172,6 +172,11 @@ public class PatientController {
 		
 		List<EmrConsultationDiagnosis> allDiagnosis = new ArrayList<EmrConsultationDiagnosis>();
 		
+		long latestConsultationId = 0;
+		if (!emrConsultations.isEmpty() && emrConsultations.size() > 0) {
+			latestConsultationId = emrConsultations.get(0).getId();
+		}
+		
 		for(EmrConsultation consultation : emrConsultations) {
 			allDiagnosis.addAll(consultation.getDiagnosis());
 		}
@@ -185,6 +190,7 @@ public class PatientController {
 		model.addAttribute("hmos", hmoRepository.findAllByOrderByHmoName());
 		model.addAttribute("allClinics", clinicList);
 		model.addAttribute("selectedConsultationId", 0);
+		model.addAttribute("latestConsultationId", latestConsultationId);
 		model.addAttribute("mode", "N");
 		
 		return "emr/emr_patient_record";
@@ -200,7 +206,7 @@ public class PatientController {
         Patient patient = optionalPatient.get();
 		
 		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		
 		int totalNewLab = 0;
@@ -259,6 +265,11 @@ public class PatientController {
 		
 		String mode = "E";
 		
+		long latestConsultationId = 0;
+		if (!emrConsultations.isEmpty() && emrConsultations.size() > 0) {
+			latestConsultationId = emrConsultations.get(0).getId();
+		}
+		
 		for(EmrConsultation consultation : emrConsultations) {			
 			if(consultationId == 0 && !consultation.getDiagnosis().isEmpty()) {
 				consultationId = consultation.getId();
@@ -283,7 +294,8 @@ public class PatientController {
         model.addAttribute("emrPatientMedicationForm", emrPatientMedicationForm);
         model.addAttribute("dosages", EHRConstants.DOSAGE);
         model.addAttribute("allClinics", clinicRepository.findAllByDoctorId(doctor.getId()));
-        model.addAttribute("selectedConsultationId", consultationId);        
+        model.addAttribute("selectedConsultationId", consultationId);
+        model.addAttribute("latestConsultationId", latestConsultationId);
         model.addAttribute("emrConsultation", emrConsultation);        
         model.addAttribute("mode", mode);
         
@@ -296,7 +308,7 @@ public class PatientController {
 		Patient patient = optionalPatient.get();
 				
 		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		
 		int totalNewLab = 0;
@@ -344,7 +356,7 @@ public class PatientController {
         Patient patient = optionalPatient.get();
 		
 		List<EMRPatientLaboratory> emrPatientLaboratoryList = emrPatientLaboratoryRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-		List<EMRPatientImaging> emrPatientImagingList = this.emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+		List<EMRPatientImaging> emrPatientImagingList = emrPatientImagingRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
 		
 		int totalNewLab = 0;

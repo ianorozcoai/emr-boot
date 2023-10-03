@@ -83,7 +83,7 @@ public class IcdController {
 //        List<Icd> result = this.icdRepository.findAllByDescriptionContaining(keyword);
 //        return ResponseEntity.ok().body(new FlexDatalistResult(result));
         
-        List<EmrIcd> result = this.emrIcdRepository.findAllByDescriptionContaining(keyword);
+        List<EmrIcd> result = this.emrIcdRepository.findAllByDescriptionContainingOrCodeContaining(keyword, keyword);
         return ResponseEntity.ok().body(new FlexDatalistResult(result));
     }
 }

@@ -81,7 +81,9 @@
 														<span class="memberDetails"><i class="fas fa-birthday-cake mr-2"></i> Birthday: <th:block th:text="*{#temporals.format(birthdate,'MMM d, yyyy')}">January 27, 1982</th:block></span><br>	
 														<span class="memberDetails"><i class="icon-calendar mr-2"></i> Age: <th:block th:text="*{ageStr}">38 years and 10 months</th:block></span><br>									
 														<span class="memberDetails"><i class="icon-man-woman mr-2"></i> Gender: <th:block th:text="*{gender}">Gender: MALE</th:block></span><br>
-														<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span>										
+														<span class="memberDetails"><i class="icon-mobile mr-2"></i> Mobile No: <th:block th:text="*{contactNumber}">0933-44480501</th:block></span><br>
+														<span class="memberDetails"><i class="icon-graduation2 mr-2"></i> Occupation: <th:block th:text="*{profession}">profession</th:block></span><br>	
+														<span class="memberDetails"><i class="icon-svg mr-2"></i> Allergies: <th:block th:text="*{allergy}">allergy</th:block></span>									
 												</div>
 												<div class="col-sm-5">
 														<button type="button" class="btn bg-violet-400" style="width: 200px; margin-bottom: 5px;" onclick="clearConsultationModalFields()" id="submitNewButton">Add New Consultation</button>		
@@ -104,21 +106,18 @@
 										<div class="modal-body">
 											<div class="form-group">
 												<div class="row">
-													<div class="col-sm-5">
+													<div class="col-sm-4">
 														<label for="consultationDate">Consultation Date (dd/mm/yyyy)</label>
 														<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationDate')}" th:errors="*{consultationDate}"></span>
 														<input id="consultationDate" th:field="*{consultationDate}" placeholder="Consultation Date" type="date" class="form-control" >
 													</div>
 													<div class="col-sm-3">
-														<label for="paymentType">Payment Type</label>
-														<select th:field="*{paymentType}" id="paymentType" class="form-control">
-															<option value='CASH'>CASH</option>
-															<option value='GCASH'>GCASH</option>
-															<option value='HMO'>HMO</option>
-															<option value='PAYMAYA'>PAYMAYA</option>
-														</select>
+														<label for="consultationTime">Consultation Time</label>
+														<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationTime')}" th:errors="*{consultationTime}"></span>
+														<input id="consultationTime" th:field="*{consultationTime}" placeholder="Consultation Time" type="text" class="form-control" >
 													</div>
-													<div class="col-sm-4">
+													
+													<div class="col-sm-5">
 														<label for="clinic_id">Clinic</label>
 														<select id="clinic_id" name="clinic.id" class="form-control">
 															<option th:each="clinic : ${allClinics}" th:value="${clinic.id}" th:text="${clinic.name}">
@@ -129,7 +128,21 @@
 						
 											<div class="form-group">
 												<div class="row">
-													<div class="col-sm-8">
+													<div class="col-sm-4">
+														<label for="paymentType">Payment Type</label>
+														<select th:field="*{paymentType}" id="paymentType" class="form-control">
+															<option value='CASH'>CASH</option>
+															<option value='GCASH'>GCASH</option>
+															<option value='HMO'>HMO</option>
+															<option value='PAYMAYA'>PAYMAYA</option>
+														</select>
+													</div>
+													<div class="col-sm-3">
+														<label for="consultationFee">Consultation Fee</label>
+														<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></span>
+														<input id="consultationFee" th:field="*{consultationFee}" placeholder="Consultation Fee" type="text" class="form-control" >
+													</div>
+													<div class="col-sm-5">
 														<label for="hmoName">HMO Name</label>
 														<select th:field="*{hmoName}" id="hmoName" class="form-control">
 															<option value=''>- Select Service Provider -</option>
@@ -138,34 +151,42 @@
 																	th:text="${hmo.hmoName}"
 																	th:selected="${hmo.hmoName==emrConsultation.hmoName}">HMO</option>
 														</select>
-													</div>
-													<div class="col-sm-4">
-														<label for="consultationFee">Consultation Fee</label>
-														<span class="validationError text-danger" th:if="${#fields.hasErrors('consultationFee')}" th:errors="*{consultationFee}"></span>
-														<input id="consultationFee" th:field="*{consultationFee}" placeholder="Consultation Fee" type="text" class="form-control" >
-													</div>
+													</div>												
 												</div>
 											</div>
 						
 											<div class="form-group">
 												<div class="row">
-													<div class="col-sm-3">
+													<div class="col-sm-4">
 														<label for="temperature">Temp (&deg;C)</label>
 														<input id="temperature" th:field="*{temperature}" placeholder="0.0" type="number" class="form-control" >
 													</div>
-													<div class="col-sm-3">
+													<div class="col-sm-4">
 														<label for="weight">Weight (Kg)</label>
 														<span class="validationError text-danger" th:if="${#fields.hasErrors('weight')}">Invalid Value</span>
 														<input id="weight" th:field="*{weight}" placeholder="0.0" type="number" class="form-control" >
 													</div>
-													<div class="col-sm-3">
+													<div class="col-sm-4">
 														<label for="height">Height (cm)</label>
 														<span class="validationError text-danger" th:if="${#fields.hasErrors('height')}">Invalid Value</span>
 														<input id="height" th:field="*{height}" placeholder="0.0" type="number" class="form-control" >
 													</div>
-													<div class="col-sm-3">
+													
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-4">
 														<label for="bloodPressure">BP (Ex: 100/80)</label>
 														<input id="bloodPressure" th:field="*{bloodPressure}"  placeholder="Blood Pressure" type="text" class="form-control" >
+													</div>
+													<div class="col-sm-4">
+														<label for="pulseRate">Pulse Rate</label>
+														<input id="pulseRate" th:field="*{pulseRate}"  placeholder="Pulse Rate" type="text" class="form-control" >
+													</div>
+													<div class="col-sm-4">
+														<label for="spo">SpO2</label>
+														<input id="spo" th:field="*{spo}"  placeholder="SpO2" type="text" class="form-control" >
 													</div>
 												</div>
 											</div>
@@ -194,9 +215,9 @@
 														<label for="diagnosis">Diagnosis ICD Code</label>
 														<!-- <textarea rows="3" class="form-control" th:field="*{diagnosis}" id="diagnosis" placeholder="Diagnosis" cols="50" maxlength="950" ></textarea> -->
 														<input type="text" class="form-control flexdatalist" id="diagnosisArea" th:field="*{diagnosisJSON}" placeholder="Diagnosis"															   
-															   data-search-in='["description","groupDescription","code"]'
+															   data-search-in='["code", "description","groupDescription"]'
 															   data-search-by-word="true"
-															   data-min-length="3"
+															   data-min-length="2"
 															   multiple="multiple"
 															   data-selection-required="true"
 															   data-visible-properties='["code","description", "groupDescription"]'
@@ -220,6 +241,15 @@
 													<div class="col-sm-12">
 														<label for="intervention">Intervention</label>
 														<textarea rows="3" class="form-control" th:field="*{intervention}" placeholder="Intervention" cols="50" maxlength="2450" ></textarea>
+													</div>
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-12">
+														<label for="otherNotes">Other Notes</label>
+														<textarea rows="3" class="form-control" th:field="*{otherNotes}" placeholder="otherNotes" cols="50" maxlength="2450" ></textarea>
 													</div>
 												</div>
 											</div>
@@ -281,7 +311,13 @@
 																				th:data-physical="${ec.physical}"
 																				th:data-intervention="${ec.intervention}"
 																				th:data-diagnosisTxt="${ec.diagnosisTxt}"
-																				th:data-diagnosisJSON="${ec.diagnosisJSON}"><i class="icon-search4"></i></a>
+																				th:data-otherNotes="${ec.otherNotes}"
+																				th:data-diagnosisJSON="${ec.diagnosisJSON}"
+																				th:data-consultationTime="${ec.consultationTime}"
+																				th:data-pulseRate="${ec.pulseRate}"
+																				th:data-spo="${ec.spo}"
+																				>																				
+																				<i class="icon-search4"></i></a>
 															</td>
 															<!-- 
 															<td class="text-center">
@@ -447,6 +483,7 @@
 		var brandNameArr = [];
 
 		let consultationId = /*[[${selectedConsultationId}]]*/0;
+		let latestConsultationId = /*[[${latestConsultationId}]]*/0;
 		let patient = /*[[${patient}]]*/0;
 
 		function resetRowNum() {
@@ -515,7 +552,7 @@
 	    	    let ctxpath = /*[[${#request.getContextPath()}]]*/'';
 	    	    let kw = e.target.value;
 	    	    
-	    	    if(kw.length >=3 ){
+	    	    if(kw.length >=2 ){
 	    	    	console.log("kw: " + kw);
 	    	    	$('.flexdatalist').flexdatalist('url', ctxpath+'/icd/datalist/'+kw);
 	    	    }
@@ -703,28 +740,19 @@
 		
 		function loadPrevDiagnosis() {
 			let consultationId = $('#emrConsultationId').val();
-			let contextPath = /*[[${#request.getContextPath()}]]*/'';			
+			let contextPath = /*[[${#request.getContextPath()}]]*/'';	
+			let latestConsultationId = /*[[${latestConsultationId}]]*/0;
 			
 			if(consultationId != "0"){
 				swal({
-					  title: "Question",
-					  text: "Loading old diagnosis is for new consultation only. Do you want to add a new record?",
+					  title: "Information",
+					  text: "Loading old diagnosis is for new consultation only. Please click Add New Consultation Button then Load Previous Diagnosis Button.",
 					  icon: "info",
-					  buttons: ["Yes", "No"],
-					  dangerMode: false,
-					})
-					.then((a) => {
-					  if (a) {
-						  // Go back to the form
-					  } else {
-						 // Yes
-						  window.location.href = contextPath + "/emrpatientrecord/" + patient.id + "/0";
-					  }			
-					});
-				
-				
+					  button: "Close",
+					});				
 			} else {
-				window.location.href = contextPath + "/emrpatientrecord/" + patient.id + "/0";
+				$('#mode').val('L');			
+				setValuesInForm(latestConsultationId);				
 			}
 			
 			
@@ -760,9 +788,15 @@
 			if(mode === 'L'){
 				let viewConsultationButton = document.querySelector('#viewConsultationButton'+id);
 				$('#emrConsultationId').val('0');
+				//$('#paymentType').val(viewConsultationButton.dataset.paymenttype);
+				//$('#hmoName').val(viewConsultationButton.dataset.hmoname === undefined ? '' : viewConsultationButton.dataset.hmoname);
+				//$('#consultationFee').val(viewConsultationButton.dataset.consultationfee === undefined ? '' : viewConsultationButton.dataset.consultationfee);
+				$('#symptoms').val(viewConsultationButton.dataset.symptoms === undefined ? '' : viewConsultationButton.dataset.symptoms);
+				
 				$('#physical').val(viewConsultationButton.dataset.physical === undefined ? '' : viewConsultationButton.dataset.physical);
 				$('#intervention').val(viewConsultationButton.dataset.intervention === undefined ? '' : viewConsultationButton.dataset.intervention);
 				$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt === undefined ? '' : viewConsultationButton.dataset.diagnosistxt);
+				$('#otherNotes').val(viewConsultationButton.dataset.otherNotes === undefined ? '' : viewConsultationButton.dataset.otherNotes);
 				$('#diagnosisArea').val(viewConsultationButton.dataset.diagnosisjson === undefined ? '' : viewConsultationButton.dataset.diagnosisjson);
 				$('#mode').val("N");
 			} else {
@@ -784,6 +818,7 @@
 				$('#physical').val(viewConsultationButton.dataset.physical === undefined ? '' : viewConsultationButton.dataset.physical);
 				$('#intervention').val(viewConsultationButton.dataset.intervention === undefined ? '' : viewConsultationButton.dataset.intervention);
 				$('#diagnosisTxt').val(viewConsultationButton.dataset.diagnosistxt === undefined ? '' : viewConsultationButton.dataset.diagnosistxt);
+				$('#otherNotes').val(viewConsultationButton.dataset.othernotes === undefined ? '' : viewConsultationButton.dataset.othernotes);
 				$('#diagnosisArea').val(viewConsultationButton.dataset.diagnosisjson === undefined ? '' : viewConsultationButton.dataset.diagnosisjson);
 				
 				//$('#diagnosisArea').val('[{"id":2992,"code":"E0810","description":"Diabetes mellitus due to underlying condition with ketoacidosis without coma","patientId":1}]');
@@ -794,6 +829,10 @@
 					$('#hmoName').val('');
 					$('#hmoName').prop('disabled', true);
 				}
+				
+				$('#consultationTime').val(viewConsultationButton.dataset.consultationtime === undefined ? '' : viewConsultationButton.dataset.consultationtime);
+				$('#pulseRate').val(viewConsultationButton.dataset.pulserate === undefined ? '' : viewConsultationButton.dataset.pulserate);
+				$('#spo').val(viewConsultationButton.dataset.spo === undefined ? '' : viewConsultationButton.dataset.spo);
 			}		
 			
 			swal({

@@ -1,4 +1,4 @@
-package com.cdsi.emr.procedures;
+package com.cdsi.emr.therapy;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,10 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.cdsi.emr.procedures.EMRPatientProcedureTypeRepository;
+import com.cdsi.emr.procedures.EMRPatientProcedureRepository;
 import com.cdsi.emr.procedures.EMRPatientProcedure;
-import com.cdsi.emr.procedures.EMRPatientProcedureType;
 import com.cdsi.emr.fileupload.FileDTO;
 import com.cdsi.emr.fileupload.FileInputInitialPreviewConfig;
 import com.cdsi.emr.fileupload.FileInputResponse;
@@ -39,28 +37,32 @@ import com.cdsi.emr.personnel.Personnel;
 import com.cdsi.emr.util.UXMessage;
 
 @Controller
-public class EMRPatientProcedureController {
+public class EMRPatientTherapyController {
     private StorageService storageService;
+    private EMRPatientTherapyRepository emrPatientTherapyRepository;
+    private EMRPatientTherapyTypeRepository emrPatientTherapyTypeRepository;
     private EMRPatientProcedureRepository emrPatientProcedureRepository;
-    private EMRPatientProcedureTypeRepository emrPatientProcedureTypeRepository;
 	private PatientRepository patientRepository;
 	private EMRPatientLaboratoryRepository emrPatientLaboratoryRepository;
 	private EMRPatientImagingRepository emrPatientImagingRepository;
 	
-	public EMRPatientProcedureController (EMRPatientProcedureRepository emrPatientProcedureRepository, PatientRepository patientRepository
-		, EMRPatientProcedureTypeRepository emrPatientProcedureTypeRepository, StorageService storageService
+	public EMRPatientTherapyController (EMRPatientProcedureRepository emrPatientProcedureRepository, PatientRepository patientRepository
+		,StorageService storageService
 		,EMRPatientLaboratoryRepository emrPatientLaboratoryRepository
 		,EMRPatientImagingRepository emrPatientImagingRepository
+		,EMRPatientTherapyRepository emrPatientTherapyRepository
+		,EMRPatientTherapyTypeRepository emrPatientTherapyTypeRepository
 			) {
 	    	this.storageService = storageService;
 	    	this.emrPatientProcedureRepository = emrPatientProcedureRepository;
-	    	this.emrPatientProcedureTypeRepository = emrPatientProcedureTypeRepository;
 	    	this.patientRepository = patientRepository;
 	    	this.emrPatientLaboratoryRepository = emrPatientLaboratoryRepository;
 			this.emrPatientImagingRepository = emrPatientImagingRepository;
+			this.emrPatientTherapyRepository = emrPatientTherapyRepository;
+			this.emrPatientTherapyTypeRepository = emrPatientTherapyTypeRepository;
 	}
 	
-	@GetMapping("/emrpatientProcedure/{patientId}")
+	@GetMapping("/emrpatientTherapy/{patientId}")
 	public String listAll(Model model, @PathVariable long patientId, @AuthenticationPrincipal Personnel doctor) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patientId);
 		Patient patient = optionalPatient.get();
@@ -100,53 +102,54 @@ public class EMRPatientProcedureController {
         patient.setTotalNewImaging(totalNewImaging);
         patient.setTotalNewProcedure(totalNewProcedure);
         
-        List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAllByDoctorId(doctor.getId());
+        List<EMRPatientTherapy> emrPatientTherapyList = emrPatientTherapyRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+        List<EMRPatientTherapyType> emrPatientTherapyTypeList = emrPatientTherapyTypeRepository.findAllByDoctorId(doctor.getId());
         
         model.addAttribute("patient", patient);
-        model.addAttribute("emrPatientProcedureList", emrPatientProcedureList);
-        model.addAttribute("allProcedureTypes", emrPatientProcedureTypeList);
-        model.addAttribute(new EMRPatientProcedure());
-        return "emr/emr_patient_procedure";
+        model.addAttribute("emrPatientTherapyList", emrPatientTherapyList);
+        model.addAttribute("allTherapyTypes", emrPatientTherapyTypeList);
+        model.addAttribute(new EMRPatientTherapy());
+        return "emr/emr_patient_therapy";
 	}	
 	
-	@PostMapping("/emrpatientProcedure")
-	public String savePatientProcedure(
-			@Valid EMRPatientProcedure emrPatientProcedure
+	@PostMapping("/emrpatientTherapy")
+	public String savePatientTherapy(
+			@Valid EMRPatientTherapy emrPatientTherapy
 			,Errors errors
 			,final RedirectAttributes redirect
 			,Model model
 			) {
 	    
-	        long patientId = emrPatientProcedure.getPatient().getId();
+	        long patientId = emrPatientTherapy.getPatient().getId();
 		if (errors.hasErrors()) {
-            List<EMRPatientProcedure> emrPatientProcedureList = emrPatientProcedureRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
-            List<EMRPatientProcedureType> emrPatientProcedureTypeList = emrPatientProcedureTypeRepository.findAll();
+            List<EMRPatientTherapy> emrPatientTherapyList = emrPatientTherapyRepository.findByPatientIdOrderByDateCreatedDesc(patientId);
+            List<EMRPatientTherapyType> emrPatientTherapyTypeList = emrPatientTherapyTypeRepository.findAll();
             Optional<Patient> optionalPatient = patientRepository.findById(patientId);
             Patient patient = optionalPatient.get();
             model.addAttribute("patient", patient);
-            model.addAttribute("emrPatientProcedureList", emrPatientProcedureList);
-            model.addAttribute("allProcedureTypes", emrPatientProcedureTypeList);
-            model.addAttribute(new EMRPatientProcedure());
+            model.addAttribute("emrPatientTherapyList", emrPatientTherapyList);
+            model.addAttribute("allTherapyTypes", emrPatientTherapyTypeList);
+            model.addAttribute(new EMRPatientTherapy());
             model.addAttribute("uxmessage", new UXMessage("ERROR", "Please check items marked in red."));
-            return "emr/emr_patient_procedure";
+            return "emr/emr_patient_therapy";
         }
-		emrPatientProcedureRepository.save(emrPatientProcedure);
-		return "redirect:/emrpatientProcedure";
+		emrPatientTherapyRepository.save(emrPatientTherapy);
+		return "redirect:/emrpatientTherapy";
 	}
 	
-	@GetMapping("/emrpatientProcedure/{id}/json")
-	public @ResponseBody EMRPatientProcedure editEmrPatientProcedure(
+	@GetMapping("/emrpatientTherapy/{id}/json")
+	public @ResponseBody EMRPatientTherapy editEmrPatientTherapy(
 			@PathVariable long id
 			) {
-		EMRPatientProcedure proc = emrPatientProcedureRepository.findById(id)
-				.orElseGet(() -> new EMRPatientProcedure());
+		EMRPatientTherapy proc = emrPatientTherapyRepository.findById(id)
+				.orElseGet(() -> new EMRPatientTherapy());
 		return proc;
 	}
 	
-	@PostMapping("/upload/emrpatientProcedure")
+	@PostMapping("/upload/emrpatientTherapy")
 	@Transactional
-	public ResponseEntity<FileInputResponse> saveEmrPatientProcedure(
-			@Valid EMRPatientProcedure emrPatientProcedure
+	public ResponseEntity<FileInputResponse> saveEmrPatientTherapy(
+			@Valid EMRPatientTherapy emrPatientTherapy
 			,Errors errors
 			,final RedirectAttributes redirect
 			,Model model
@@ -154,20 +157,20 @@ public class EMRPatientProcedureController {
 		FileInputResponse response = new FileInputResponse();
 		List<String> initialPreview = new ArrayList<>();
 		List<FileInputInitialPreviewConfig> initialPreviewConfig = new ArrayList<>();
-		List<String> procedureFileUrls = new ArrayList<>();
-		long patientId = emrPatientProcedure.getPatient().getId();
-		MultipartFile[] files = emrPatientProcedure.getProcedureFiles();
+		List<String> therapyFileUrls = new ArrayList<>();
+		long patientId = emrPatientTherapy.getPatient().getId();
+		MultipartFile[] files = emrPatientTherapy.getTherapyFiles();
 		if(files.length > 0 && files[0].getOriginalFilename().isEmpty()) {
-			EMRPatientProcedure emrImg = emrPatientProcedureRepository.findById(emrPatientProcedure.getId())
-					.orElseGet(() -> new EMRPatientProcedure());
-			procedureFileUrls = emrImg.getProcedureFileUrls();
+			EMRPatientTherapy emrImg = emrPatientTherapyRepository.findById(emrPatientTherapy.getId())
+					.orElseGet(() -> new EMRPatientTherapy());
+			therapyFileUrls = emrImg.getTherapyFileUrls();
 		} else {
 		    for (int i = 0; i < files.length; i++) {
 		    	try {
 		    		String fileExt = files[i].getOriginalFilename().substring(files[i].getOriginalFilename().lastIndexOf("."));
-		    		String fileName = "patient_procedurefile_" + patientId + '_' + i + "_" + System.currentTimeMillis() + fileExt;
+		    		String fileName = "patient_therapyfile_" + patientId + '_' + i + "_" + System.currentTimeMillis() + fileExt;
 		    		FileDTO fileDTO = storageService.uploadFile(files[i], fileName);
-		    		procedureFileUrls.add(fileDTO.getDownloadUri());
+		    		therapyFileUrls.add(fileDTO.getDownloadUri());
 		    		initialPreview.add(fileDTO.getDownloadUri());
 		    		FileInputInitialPreviewConfig config = new FileInputInitialPreviewConfig();
 		    		config.setKey(String.valueOf(i));
@@ -182,14 +185,15 @@ public class EMRPatientProcedureController {
 		    	}
 		    }
 		}
-		emrPatientProcedure.setProcedureFileUrls(procedureFileUrls);
+		emrPatientTherapy.setTherapyFileUrls(therapyFileUrls);
 		Patient patient = patientRepository.findById(patientId).orElseGet(() -> new Patient());
-		emrPatientProcedure.setPatient(patient);
+		emrPatientTherapy.setPatient(patient);
 		
-		if(emrPatientProcedure.getEmrPatientProcedureType() != null) {
-			emrPatientProcedureRepository.save(emrPatientProcedure);
+		if(emrPatientTherapy.emrPatientTherapyType != null) {
+			emrPatientTherapyRepository.save(emrPatientTherapy);
 		} else {
-			response.setError("Procedure Type is a mandatory field.");
+			//redirect.addFlashAttribute("uxmessage", new UXMessage("ERRORDELETE", "Clinic cannot be deleted. It has been used in other records."));
+			response.setError("Therapy Type is a mandatory field.");
 		}
 		
 		

@@ -1,7 +1,8 @@
-package com.cdsi.emr.imaging;
+package com.cdsi.emr.therapy;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,17 +13,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.cdsi.emr.config.data.Auditable;
 import com.cdsi.emr.patient.Patient;
+import com.cdsi.emr.therapy.EMRPatientTherapyType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Data public class EMRPatientImaging extends Auditable {
+@Data
+public class EMRPatientTherapy extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,17 +42,17 @@ import lombok.EqualsAndHashCode;
 	private String remarks;
 		
 	@ElementCollection
-	private List<String> imgFileUrls;
+	private List<String> therapyFileUrls;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "patient_id")
 	Patient patient;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "imaging_type_id")
-	@NotNull(message = " is mandatory.")
-	EMRPatientImagingType emrPatientImagingType;
+    @JoinColumn(name = "therapy_type_id")
+    @NotNull(message = " is mandatory.")
+    EMRPatientTherapyType emrPatientTherapyType;
 
 	@Transient
-	private MultipartFile[] imgFiles;
+	private MultipartFile[] therapyFiles;
 }
