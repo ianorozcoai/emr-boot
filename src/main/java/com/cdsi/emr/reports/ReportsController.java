@@ -324,26 +324,43 @@ public class ReportsController {
 //	    response.setContentType("application/pdf");
 //	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	    
-     // 1. Add a leading slash '/' to the paths
+     // 1. Prepare the path (using leading slash for JAR compatibility)
         String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
 
-        // 2. Use getClass().getResourceAsStream() directly
-        // This method is designed to find resources inside the JAR's internal classpath
+        // 2. DIAGNOSTIC LOGS: See exactly what is happening in Railway
+        System.out.println("--- DIAGNOSTIC START ---");
+        System.out.println("Attempting to load report from path: " + reportPath);
+        System.out.println("Current Class: " + getClass().getName());
+        System.out.println("Checking file existence via Stream...");
+
+        // 3. LOAD STREAM (The 'getClass()' method is best for Railway)
         InputStream reportStream = getClass().getResourceAsStream(reportPath);
 
-        // 3. Keep the validation to confirm the fix
         if (reportStream == null) {
-            throw new RuntimeException("Railway still cannot find the file at root: " + reportPath);
+            // If it fails, this log will tell us if the slash was the issue
+            System.out.println("FAILED: Stream is null for path: " + reportPath);
+            System.out.println("Fallback check: checking without leading slash...");
+            InputStream fallback = getClass().getResourceAsStream(reportPath.substring(1));
+            if (fallback != null) {
+                System.out.println("SUCCESS: Found file using fallback (no slash).");
+                reportStream = fallback;
+            }
         }
 
-        // 4. Declare the beanColDataSource clearly to avoid IDE errors
-        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+        if (reportStream == null) {
+            System.out.println("--- DIAGNOSTIC END (FAILED) ---");
+            throw new RuntimeException("CRITICAL ERROR: Cannot find " + reportPath + " in Railway JAR. Check folder name casing (jasper vs Jasper).");
+        }
 
-        // 5. Proceed with compilation and export
+        System.out.println("SUCCESS: Report stream loaded. Proceeding to compilation.");
+        System.out.println("--- DIAGNOSTIC END ---");
+
+        // 4. DATA SOURCE AND EXECUTION
+        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+        response.setContentType("application/pdf");
+
         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
-
-        response.setContentType("application/pdf");
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	}
 	
