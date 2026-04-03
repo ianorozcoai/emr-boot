@@ -257,18 +257,7 @@ public class ReportsController {
 //	    map.put("RX_LOGO", ResourceUtils.getFile("classpath:static/images/rx.jpg").getAbsolutePath());
 //	    map.put("CDSI_LOGO", ResourceUtils.getFile("classpath:static/images/poweredBy.png").getAbsolutePath());
 
-	 // Use this pattern to ensure it finds the resource inside the JAR
-	    InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
-	    if (rxStream == null) {
-	        rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
-	    }
-	    map.put("RX_LOGO", rxStream);
-
-	    InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
-	    if (cdsiStream == null) {
-	        cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
-	    }
-	    map.put("CDSI_LOGO", cdsiStream);
+	    
 	    
 	    // --- FETCH DIAGNOSIS ---
 	    String diagnosisText = "";
@@ -319,16 +308,43 @@ public class ReportsController {
 
 	    map.put("MEDICATION1", med1.toString());
 	    map.put("MEDICATION2", med2.toString());
+	    
+	 // 1. IMPROVED LOGO LOADING
+        // Try to load logos; if null, the report will just show a blank space instead of crashing
+        map.put("RX_LOGO", getClass().getResourceAsStream("/static/images/rx.jpg"));
+        map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
 
 	    // --- TEMPLATE SELECTION & COMPILATION ---
-	    String reportPath = (items.size() > 5) ? "jasper/PrescriptionReportV2P2.jrxml" : "jasper/PrescriptionReportV2P1.jrxml";
-
-	    InputStream reportStream = getClass().getClassLoader().getResourceAsStream(reportPath);
-	    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JRBeanCollectionDataSource(new ArrayList<>(java.util.Arrays.asList(new Patient()))));
+//	    String reportPath = (items.size() > 5) ? "jasper/PrescriptionReportV2P2.jrxml" : "jasper/PrescriptionReportV2P1.jrxml";
+//
+//	    InputStream reportStream = getClass().getClassLoader().getResourceAsStream(reportPath);
+//	    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+//	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JRBeanCollectionDataSource(new ArrayList<>(java.util.Arrays.asList(new Patient()))));
+//	    
+//	    response.setContentType("application/pdf");
+//	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	    
-	    response.setContentType("application/pdf");
-	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+     // 1. YOUR ORIGINAL PATH LOGIC (Fixed with a leading slash for Railway)
+        String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
+
+        // 2. THE RAILWAY FIX
+        // We use getClass().getResourceAsStream() instead of the ClassLoader.
+        // This is the standard way to find files inside a Spring Boot JAR.
+        InputStream reportStream = getClass().getResourceAsStream(reportPath);
+
+        if (reportStream == null) {
+            throw new RuntimeException("File not found at: " + reportPath);
+        }
+
+        // 3. YOUR ORIGINAL COMPILATION LOGIC
+        // Using 'items' directly in the DataSource instead of the dummy Patient list
+        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+        
+        JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+        
+        response.setContentType("application/pdf");
+        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	}
 	
 	
