@@ -1,6 +1,7 @@
 package com.cdsi.emr.reports;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -336,6 +337,29 @@ public class ReportsController {
      // CRITICAL: Pass the actual InputStream objects, not String paths
      map.put("RX_LOGO", rxLogoStream);
      map.put("CDSI_LOGO", cdsiLogoStream);
+     
+     String docLogo = doctor.getClinicLogoUrl();
+     if (docLogo != null && !docLogo.isEmpty()) {
+         try {
+             // 1. Get the filename from the URL
+             String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
+             
+             // 2. Create a File object pointing to your Railway Volume
+             File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
+             
+             if (logoFile.exists()) {
+                 // 3. Convert the file to a FileInputStream
+                 InputStream companyLogoStream = new FileInputStream(logoFile);
+                 
+                 // 4. Put the STREAM into the map, not the String path
+                 map.put("COMPANY_LOGO", companyLogoStream);
+             } else {
+                 System.out.println("Company logo file not found at: " + logoFile.getAbsolutePath());
+             }
+         } catch (Exception e) {
+             System.out.println("Error loading company logo: " + e.getMessage());
+         }
+     }
 
      // ... (your other map puts for doctor/patient) ...
 
