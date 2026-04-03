@@ -254,9 +254,13 @@ public class ReportsController {
 	    map.put("PERIOD", DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(emrPatientMedication.getDateCreated()));
 
 	    // --- LOGOS ---
-	    map.put("RX_LOGO", ResourceUtils.getFile("classpath:static/images/rx.jpg").getAbsolutePath());
-	    map.put("CDSI_LOGO", ResourceUtils.getFile("classpath:static/images/poweredBy.png").getAbsolutePath());
+//	    map.put("RX_LOGO", ResourceUtils.getFile("classpath:static/images/rx.jpg").getAbsolutePath());
+//	    map.put("CDSI_LOGO", ResourceUtils.getFile("classpath:static/images/poweredBy.png").getAbsolutePath());
 
+	 // These will WORK in Railway
+	    map.put("RX_LOGO", getClass().getResourceAsStream("/static/images/rx.jpg"));
+	    map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+	    
 	    // --- FETCH DIAGNOSIS ---
 	    String diagnosisText = "";
 	    List<EmrConsultation> consults = emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(patient.getId());
@@ -341,16 +345,28 @@ public class ReportsController {
 		String cdsiLogo = cdsiFile.getAbsolutePath();
 //		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));	
 		
-		String hospitalLogo = "";
-		
-		if(docLogo != null) {
-			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-		}
+//		String hospitalLogo = "";
+//		
+//		if(docLogo != null) {
+//			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+//		}
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		//map.put("RX_LOGO", rxLogo);
-		map.put("CDSI_LOGO", cdsiLogo);
-		map.put("COMPANY_LOGO", hospitalLogo);
+		map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+//		map.put("COMPANY_LOGO", hospitalLogo);
+		
+		// CURRENT (Broken in JAR/Railway):
+		// hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+
+		// FIXED:
+		if (docLogo != null && !docLogo.isEmpty()) {
+		    // If docLogo is a URL or relative path, it's better to load it as a stream
+		    // For now, ensure your 'file.upload-dir' in application-prod.properties 
+		    // points to a valid Railway Volume path like /app/uploads
+		    map.put("COMPANY_LOGO", fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/")));
+		}
+		
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
 		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
@@ -591,16 +607,24 @@ public class ReportsController {
 		String cdsiLogo = cdsiFile.getAbsolutePath();
 		
 		String docLogo = doctor.getClinicLogoUrl();
-		String hospitalLogo = "";
-		
-		if(docLogo != null) {
-			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-		}
+//		String hospitalLogo = "";
+//		
+//		if(docLogo != null) {
+//			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+//		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("RX_LOGO", rxLogo);
-		map.put("CDSI_LOGO", cdsiLogo);
-		map.put("COMPANY_LOGO", hospitalLogo);
+		map.put("RX_LOGO", getClass().getResourceAsStream("/static/images/rx.jpg"));
+		map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+//		map.put("COMPANY_LOGO", hospitalLogo);\
+		
+		// FIXED:
+		if (docLogo != null && !docLogo.isEmpty()) {
+		    // If docLogo is a URL or relative path, it's better to load it as a stream
+		    // For now, ensure your 'file.upload-dir' in application-prod.properties 
+		    // points to a valid Railway Volume path like /app/uploads
+		    map.put("COMPANY_LOGO", fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/")));
+		}
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
 		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
@@ -654,7 +678,7 @@ public class ReportsController {
 		
 		// Pointing to the .jrxml source file instead of the compiled .jasper
 		InputStream reportStream = getClass().getClassLoader().getResourceAsStream("jasper/MedicalCertReport.jrxml");
-				
+		
 		if(reportStream == null){
 			// Log error if file not found
 			System.out.println("MedicalCertReport.jrxml not found in classpath");
