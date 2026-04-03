@@ -212,6 +212,8 @@ public class ReportsController {
 	@GetMapping("/viewPrescription/{medicationId}")
 	public void listAll(Model model, @PathVariable long medicationId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
 	    
+		System.setProperty("java.awt.headless", "true");
+		
 	    Personnel doctor = (Personnel) auth.getPrincipal();
 	    Optional<EMRPatientMedication> oEMRPatientMedication = emrPatientMedicationRepository.findById(medicationId);
 	    EMRPatientMedication emrPatientMedication = oEMRPatientMedication.orElseGet(() -> new EMRPatientMedication());
@@ -453,11 +455,12 @@ public class ReportsController {
 		// hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
 
 		// FIXED:
-		if (docLogo != null && !docLogo.isEmpty()) {
-		    // If docLogo is a URL or relative path, it's better to load it as a stream
-		    // For now, ensure your 'file.upload-dir' in application-prod.properties 
-		    // points to a valid Railway Volume path like /app/uploads
-		    map.put("COMPANY_LOGO", fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/")));
+		String logoPath = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+		File logoFile = new File(logoPath);
+		if (logoFile.exists()) {
+		    map.put("COMPANY_LOGO", new FileInputStream(logoFile)); // This sends the STREAM
+		} else {
+		    map.put("COMPANY_LOGO", null); 
 		}
 		
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
@@ -722,11 +725,12 @@ public class ReportsController {
 //		map.put("COMPANY_LOGO", hospitalLogo);\
 		
 		// FIXED:
-		if (docLogo != null && !docLogo.isEmpty()) {
-		    // If docLogo is a URL or relative path, it's better to load it as a stream
-		    // For now, ensure your 'file.upload-dir' in application-prod.properties 
-		    // points to a valid Railway Volume path like /app/uploads
-		    map.put("COMPANY_LOGO", fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/")));
+		String logoPath = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+		File logoFile = new File(logoPath);
+		if (logoFile.exists()) {
+		    map.put("COMPANY_LOGO", new FileInputStream(logoFile)); // This sends the STREAM
+		} else {
+		    map.put("COMPANY_LOGO", null); 
 		}
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
