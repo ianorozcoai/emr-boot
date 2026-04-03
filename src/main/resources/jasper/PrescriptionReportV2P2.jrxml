@@ -17,7 +17,7 @@
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
 	<parameter name="RX_LOGO" class="java.io.InputStream"/>
 	<parameter name="CDSI_LOGO" class="java.io.InputStream"/>
-	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
+	<parameter name="COMPANY_LOGO" class="java.io.InputStream"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
