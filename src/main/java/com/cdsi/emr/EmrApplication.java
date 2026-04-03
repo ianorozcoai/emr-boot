@@ -1,5 +1,7 @@
 package com.cdsi.emr;
 
+import java.util.TimeZone; //
+import javax.annotation.PostConstruct; //
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -11,6 +13,13 @@ import com.cdsi.emr.fileupload.FileStorageProperties;
 @SpringBootApplication
 @EnableConfigurationProperties(FileStorageProperties.class)
 public class EmrApplication extends SpringBootServletInitializer {
+	
+	// This method runs once the application context is initialized
+    @PostConstruct
+    public void init() {
+        // Setting the default JVM timezone to Manila
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Manila"));
+    }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {

@@ -167,7 +167,10 @@ public class EmrConsultationController {
 		
 		Personnel loggedUser = (Personnel) auth.getPrincipal();
 		
-		List<EmrConsultation> emrConsultations = emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dto.getDateFrom().plusDays(1), dto.getDateTo().plusDays(1));
+//		List<EmrConsultation> emrConsultations = emrConsultationRepository.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc(loggedUser.getId(), dto.getDateFrom().plusDays(1), dto.getDateTo().plusDays(1));
+		List<EmrConsultation> emrConsultations = emrConsultationRepository
+				.findAllByPersonnelIdAndConsultationDateBetweenOrderByConsultationDateAsc
+				(loggedUser.getId(), dto.getDateFrom(), dto.getDateTo());
 		
 		Consumer<EmrConsultation> fetchDiagnosis = ec -> {
 			List<EmrConsultationDiagnosis> diagnosis = ec.getDiagnosis();
@@ -239,7 +242,7 @@ public class EmrConsultationController {
 			) {
 		
 		//Temporary Fix
-		emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().plusDays(1));
+		//emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().plusDays(1));
 		
 		Optional<Patient> optionalPatient = this.patientRepository.findById(emrConsultation.getPatient().getId());
 		Patient patient = optionalPatient.get();
@@ -251,7 +254,7 @@ public class EmrConsultationController {
 			model.addAttribute("patient", patient);
 			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(emrConsultation.getPatient().getId()));
 			model.addAttribute("hmos", hmoRepository.findAll());
-			emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
+			//emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
 			
 			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
 			model.addAttribute("allClinics", clinicList);
@@ -262,7 +265,8 @@ public class EmrConsultationController {
 		List<EmrConsultation> consultationList = this.emrConsultationRepository.findAllByPatientId(emrConsultation.getPatient().getId());
 		boolean isDateExisting =  false;
 		for(EmrConsultation con : consultationList) {
-			if(con.getConsultationDate().plusDays(1).compareTo(emrConsultation.getConsultationDate()) == 0) {
+			//if(con.getConsultationDate().plusDays(1).compareTo(emrConsultation.getConsultationDate()) == 0) {
+			if(con.getConsultationDate().compareTo(emrConsultation.getConsultationDate()) == 0) {
 				isDateExisting = true;
 				break;
 			}
@@ -273,7 +277,7 @@ public class EmrConsultationController {
 			model.addAttribute("patient", patient);
 			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(emrConsultation.getPatient().getId()));
 			model.addAttribute("hmos", hmoRepository.findAll());
-			emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
+			//emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
 			
 			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
 			model.addAttribute("allClinics", clinicList);
@@ -298,7 +302,7 @@ public class EmrConsultationController {
 			model.addAttribute("patient", patient);
 			model.addAttribute("emrConsultations", this.emrConsultationRepository.findAllByPatientIdOrderByConsultationDateDesc(emrConsultation.getPatient().getId()));
 			model.addAttribute("hmos", hmoRepository.findAll());
-			emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
+			//emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().minusDays(1));
 			
 			List<Clinic> clinicList = clinicRepository.findAllByDoctorId(loggedUser.getId());
 			model.addAttribute("allClinics", clinicList);

@@ -508,7 +508,8 @@ public class PatientController {
 			}
 		}
 		
-		patient.setBirthdate(patient.getBirthdate().plusDays(1));
+//		patient.setBirthdate(patient.getBirthdate().plusDays(1));
+		patient.setBirthdate(patient.getBirthdate());
 		
 		Patient dbPatient = patientRepository.save(patient);
 		

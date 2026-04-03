@@ -40,7 +40,7 @@ public class DashboardController {
         oEmrConsultation.ifPresent(emrConsultation -> {
             emrConsultation.setConsultationStatus(CANCELLED);
             //Temporary Fix
-    		emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().plusDays(1));
+    		//emrConsultation.setConsultationDate(emrConsultation.getConsultationDate().plusDays(1));
             this.emrConsultationRepository.saveAndFlush(emrConsultation);
         });
         redirect.addFlashAttribute("uxmessage", new UXMessage("SUCCESS", "Consultation Successfully Cancelled."));
@@ -55,14 +55,23 @@ public class DashboardController {
 
         List<EmrConsultation> emrConsultations = new ArrayList<>();
 
+//        List<EmrConsultation> emrConsultationProcessed = this.emrConsultationRepository
+//                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "PROCESSED");
+//
+//        List<EmrConsultation> emrConsultationPending = this.emrConsultationRepository
+//                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "ON QUEUE");
+//
+//        List<EmrConsultation> emrConsultationCancelled = this.emrConsultationRepository
+//                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "CANCELLED");
+        
         List<EmrConsultation> emrConsultationProcessed = this.emrConsultationRepository
-                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "PROCESSED");
+                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now(), loggedUser.getId(), "PROCESSED");
 
         List<EmrConsultation> emrConsultationPending = this.emrConsultationRepository
-                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "ON QUEUE");
+                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now(), loggedUser.getId(), "ON QUEUE");
 
         List<EmrConsultation> emrConsultationCancelled = this.emrConsultationRepository
-                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now().plusDays(1), loggedUser.getId(), "CANCELLED");
+                .findAllByConsultationDateAndPersonnelIdAndConsultationStatusOrderByConsultationDateDesc(LocalDate.now(), loggedUser.getId(), "CANCELLED");
 
         emrConsultations.addAll(emrConsultationPending);
         emrConsultations.addAll(emrConsultationProcessed);
