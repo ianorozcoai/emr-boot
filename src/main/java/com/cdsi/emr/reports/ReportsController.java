@@ -311,8 +311,26 @@ public class ReportsController {
 	    
 	 // 1. IMPROVED LOGO LOADING
         // Try to load logos; if null, the report will just show a blank space instead of crashing
-        map.put("RX_LOGO", getClass().getResourceAsStream("/static/images/rx.jpg"));
-        map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+	 // 1. USE STREAMS FOR LOGOS (This works inside the Railway JAR)
+	    InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+	    InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+
+	    // Pass the STREAMS, not the String paths
+	    map.put("RX_LOGO", rxLogoStream);
+	    map.put("CDSI_LOGO", cdsiLogoStream);
+
+	    // ... rest of your parameters (doctor, patient, etc.) ...
+
+	    // 2. DIAGNOSTIC LOGS (Easy to read)
+	    System.out.println("==========================================");
+	    System.out.println("   RAILWAY PDF GENERATION DIAGNOSTIC      ");
+	    System.out.println("==========================================");
+	    System.out.println("RX Logo Loaded: " + (rxLogoStream != null));
+	    System.out.println("CDSI Logo Loaded: " + (cdsiLogoStream != null));
+	    System.out.println("Items for Report: " + items.size());
+
+	    
+	    System.out.println("==========================================");
 
 	    // --- TEMPLATE SELECTION & COMPILATION ---
 //	    String reportPath = (items.size() > 5) ? "jasper/PrescriptionReportV2P2.jrxml" : "jasper/PrescriptionReportV2P1.jrxml";
