@@ -1,0 +1,9 @@
+[phases.setup]
+aptPkgs = ["...", "libfreetype6", "libfontconfig1"]
+
+[phases.build]
+cmds = ["...", "mvn -DskipTests clean package"]
+
+[variables]
+NIXPACKS_JDK_VERSION = "21"
+JAVA_TOOL_OPTIONS = "-Djava.awt.headless=true"

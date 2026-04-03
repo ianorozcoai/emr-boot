@@ -213,6 +213,7 @@ public class ReportsController {
 	public void listAll(Model model, @PathVariable long medicationId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
 	    
 		System.setProperty("java.awt.headless", "true");
+	    System.setProperty("net.sf.jasperreports.extension.registry.factory.fonts", "net.sf.jasperreports.engine.fonts.SimpleFontExtensionsRegistryFactory");
 		
 	    Personnel doctor = (Personnel) auth.getPrincipal();
 	    Optional<EMRPatientMedication> oEMRPatientMedication = emrPatientMedicationRepository.findById(medicationId);
