@@ -324,25 +324,26 @@ public class ReportsController {
 //	    response.setContentType("application/pdf");
 //	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	    
-     // 1. Ensure the paths start with a leading slash '/'
+     // 1. Add a leading slash '/' to the paths
         String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
 
-        // 2. Use getClass().getResourceAsStream() instead of the ClassLoader
-        // This is the most reliable way to access resources inside a Spring Boot JAR on Railway
+        // 2. Use getClass().getResourceAsStream() directly
+        // This method is designed to find resources inside the JAR's internal classpath
         InputStream reportStream = getClass().getResourceAsStream(reportPath);
 
-        // 3. Keep the validation check to catch any naming mismatches
+        // 3. Keep the validation to confirm the fix
         if (reportStream == null) {
-            throw new RuntimeException("CRITICAL ERROR: " + reportPath + " not found. Verify the file is in src/main/resources/jasper/");
+            throw new RuntimeException("Railway still cannot find the file at root: " + reportPath);
         }
 
-        // 4. Initialize the Data Source clearly before use to avoid IDE 'red line' errors
+        // 4. Declare the beanColDataSource clearly to avoid IDE errors
         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
 
-        // 5. Compile and Fill
-        response.setContentType("application/pdf");
+        // 5. Proceed with compilation and export
         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+
+        response.setContentType("application/pdf");
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	}
 	
