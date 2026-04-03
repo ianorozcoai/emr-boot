@@ -257,9 +257,18 @@ public class ReportsController {
 //	    map.put("RX_LOGO", ResourceUtils.getFile("classpath:static/images/rx.jpg").getAbsolutePath());
 //	    map.put("CDSI_LOGO", ResourceUtils.getFile("classpath:static/images/poweredBy.png").getAbsolutePath());
 
-	 // These will WORK in Railway
-	    map.put("RX_LOGO", getClass().getResourceAsStream("/static/images/rx.jpg"));
-	    map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+	 // Use this pattern to ensure it finds the resource inside the JAR
+	    InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+	    if (rxStream == null) {
+	        rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
+	    }
+	    map.put("RX_LOGO", rxStream);
+
+	    InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+	    if (cdsiStream == null) {
+	        cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
+	    }
+	    map.put("CDSI_LOGO", cdsiStream);
 	    
 	    // --- FETCH DIAGNOSIS ---
 	    String diagnosisText = "";
@@ -353,7 +362,21 @@ public class ReportsController {
 				
 		Map<String, Object> map = new HashMap<String, Object>();
 		//map.put("RX_LOGO", rxLogo);
-		map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+		//map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+		
+		// Use this pattern to ensure it finds the resource inside the JAR
+		InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+		if (rxStream == null) {
+		    rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
+		}
+		map.put("RX_LOGO", rxStream);
+
+		InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+		if (cdsiStream == null) {
+		    cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
+		}
+		map.put("CDSI_LOGO", cdsiStream);
+		
 //		map.put("COMPANY_LOGO", hospitalLogo);
 		
 		// CURRENT (Broken in JAR/Railway):
@@ -614,8 +637,18 @@ public class ReportsController {
 //		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("RX_LOGO", getClass().getResourceAsStream("/static/images/rx.jpg"));
-		map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+		// Use this pattern to ensure it finds the resource inside the JAR
+		InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+		if (rxStream == null) {
+		    rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
+		}
+		map.put("RX_LOGO", rxStream);
+
+		InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+		if (cdsiStream == null) {
+		    cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
+		}
+		map.put("CDSI_LOGO", cdsiStream);
 //		map.put("COMPANY_LOGO", hospitalLogo);\
 		
 		// FIXED:
