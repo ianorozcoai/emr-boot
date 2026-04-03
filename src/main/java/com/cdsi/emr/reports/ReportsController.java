@@ -324,38 +324,60 @@ public class ReportsController {
 //	    response.setContentType("application/pdf");
 //	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	    
-     // 1. Setup the Path
-        String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
-
-        // 2. HIGH-VISIBILITY LOGGING
+     // 1. DATA DIAGNOSTICS (Check if 'items' is the problem)
         System.out.println("=================================================");
-        System.out.println("       JASPER REPORT DIAGNOSTIC START            ");
+        System.out.println("       STEP 1: DATA SOURCE CHECK                 ");
         System.out.println("=================================================");
-        System.out.println("TARGET PATH: " + reportPath);
-
-        // 3. ATTEMPT LOAD
-        InputStream reportStream = getClass().getResourceAsStream(reportPath);
-
-        if (reportStream == null) {
-            System.out.println("!!! [ERROR] !!! FILE NOT FOUND IN CLASSPATH");
-            System.out.println("Check: src/main/resources" + reportPath);
-            System.out.println("=================================================");
-            
-            // Throwing a detailed exception ensures you see the path in the 500 error page too
-            throw new RuntimeException("Railway Error: Cannot find " + reportPath + ". Check folder casing (jasper vs Jasper).");
-        } else {
-            System.out.println(">>> [SUCCESS] <<< File Stream successfully opened.");
-            System.out.println("=================================================");
+        System.out.println("Item Count: " + (items != null ? items.size() : "NULL!!"));
+        if (items != null && items.size() > 0) {
+            System.out.println("First Item Generic Name: " + items.get(0).getGenericName());
         }
 
-        // 4. DATA SOURCE & COMPILATION
-        // Initialized here to avoid any scope/red-line errors in the IDE
-        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+        // 2. FILE DIAGNOSTICS (You said this is successful now)
+        String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
+        InputStream reportStream = getClass().getResourceAsStream(reportPath);
 
-        response.setContentType("application/pdf");
-        JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
-        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+        System.out.println("=================================================");
+        System.out.println("       STEP 2: COMPILATION START                 ");
+        System.out.println("=================================================");
+        System.out.println("Compiling: " + reportPath);
+
+        try {
+            // 3. COMPILE SOURCE
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+            System.out.println(">>> SUCCESS: Compilation Complete");
+
+            // 4. FILL REPORT
+            System.out.println("=================================================");
+            System.out.println("       STEP 3: FILLING REPORT                    ");
+            System.out.println("=================================================");
+            JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+            System.out.println(">>> SUCCESS: Report Filled");
+
+            // 5. EXPORT
+            System.out.println("=================================================");
+            System.out.println("       STEP 4: EXPORTING TO PDF                  ");
+            System.out.println("=================================================");
+            response.setContentType("application/pdf");
+            // This header helps some browsers handle the stream better
+            response.setHeader("Content-Disposition", "inline; filename=prescription.pdf");
+            
+            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+            response.getOutputStream().flush(); // Ensure data is actually sent
+            
+            System.out.println(">>> SUCCESS: PDF Streamed to Response");
+            System.out.println("=================================================");
+
+        } catch (Exception e) {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("ERROR AT STEP: " + e.getStackTrace()[0].getLineNumber());
+            System.out.println("ERROR TYPE: " + e.getClass().getName());
+            System.out.println("ERROR MSG: " + e.getMessage());
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            e.printStackTrace();
+            throw e;
+        }
 	}
 	
 	
