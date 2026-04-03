@@ -309,28 +309,7 @@ public class ReportsController {
 	    map.put("MEDICATION1", med1.toString());
 	    map.put("MEDICATION2", med2.toString());
 	    
-	 // 1. IMPROVED LOGO LOADING
-        // Try to load logos; if null, the report will just show a blank space instead of crashing
-	 // 1. USE STREAMS FOR LOGOS (This works inside the Railway JAR)
-	    InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
-	    InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
-
-	    // Pass the STREAMS, not the String paths
-	    map.put("RX_LOGO", rxLogoStream);
-	    map.put("CDSI_LOGO", cdsiLogoStream);
-
-	    // ... rest of your parameters (doctor, patient, etc.) ...
-
-	    // 2. DIAGNOSTIC LOGS (Easy to read)
-	    System.out.println("==========================================");
-	    System.out.println("   RAILWAY PDF GENERATION DIAGNOSTIC      ");
-	    System.out.println("==========================================");
-	    System.out.println("RX Logo Loaded: " + (rxLogoStream != null));
-	    System.out.println("CDSI Logo Loaded: " + (cdsiLogoStream != null));
-	    System.out.println("Items for Report: " + items.size());
-
-	    
-	    System.out.println("==========================================");
+	 
 
 	    // --- TEMPLATE SELECTION & COMPILATION ---
 //	    String reportPath = (items.size() > 5) ? "jasper/PrescriptionReportV2P2.jrxml" : "jasper/PrescriptionReportV2P1.jrxml";
@@ -342,60 +321,66 @@ public class ReportsController {
 //	    response.setContentType("application/pdf");
 //	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	    
-     // 1. DATA DIAGNOSTICS (Check if 'items' is the problem)
-        System.out.println("=================================================");
-        System.out.println("       STEP 1: DATA SOURCE CHECK                 ");
-        System.out.println("=================================================");
-        System.out.println("Item Count: " + (items != null ? items.size() : "NULL!!"));
-        if (items != null && items.size() > 0) {
-            System.out.println("First Item Generic Name: " + items.get(0).getGenericName());
-        }
+     // --- 1. LOGO FIX: LOAD AS STREAMS ---
+     // Using getClass().getResourceAsStream ensures it works inside the Railway JAR
+     InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+     InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
 
-        // 2. FILE DIAGNOSTICS (You said this is successful now)
-        String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
-        InputStream reportStream = getClass().getResourceAsStream(reportPath);
+     // DIAGNOSTIC LOGS FOR LOGOS
+     System.out.println("==========================================");
+     System.out.println("   LOGO DIAGNOSTIC                        ");
+     System.out.println("==========================================");
+     System.out.println("RX Logo Found: " + (rxLogoStream != null));
+     System.out.println("CDSI Logo Found: " + (cdsiLogoStream != null));
 
-        System.out.println("=================================================");
-        System.out.println("       STEP 2: COMPILATION START                 ");
-        System.out.println("=================================================");
-        System.out.println("Compiling: " + reportPath);
+     // CRITICAL: Pass the actual InputStream objects, not String paths
+     map.put("RX_LOGO", rxLogoStream);
+     map.put("CDSI_LOGO", cdsiLogoStream);
 
-        try {
-            // 3. COMPILE SOURCE
-            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-            System.out.println(">>> SUCCESS: Compilation Complete");
+     // ... (your other map puts for doctor/patient) ...
 
-            // 4. FILL REPORT
-            System.out.println("=================================================");
-            System.out.println("       STEP 3: FILLING REPORT                    ");
-            System.out.println("=================================================");
-            JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
-            System.out.println(">>> SUCCESS: Report Filled");
+     // --- 2. JRXML FIX: ABSOLUTE PATH ---
+     
+     // Ensure the leading slash '/' is present
+     String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
 
-            // 5. EXPORT
-            System.out.println("=================================================");
-            System.out.println("       STEP 4: EXPORTING TO PDF                  ");
-            System.out.println("=================================================");
-            response.setContentType("application/pdf");
-            // This header helps some browsers handle the stream better
-            response.setHeader("Content-Disposition", "inline; filename=prescription.pdf");
-            
-            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-            response.getOutputStream().flush(); // Ensure data is actually sent
-            
-            System.out.println(">>> SUCCESS: PDF Streamed to Response");
-            System.out.println("=================================================");
+     // DIAGNOSTIC LOGS FOR JRXML
+     System.out.println("==========================================");
+     System.out.println("   JRXML DIAGNOSTIC                       ");
+     System.out.println("==========================================");
+     System.out.println("Attempting to load: " + reportPath);
 
-        } catch (Exception e) {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println("ERROR AT STEP: " + e.getStackTrace()[0].getLineNumber());
-            System.out.println("ERROR TYPE: " + e.getClass().getName());
-            System.out.println("ERROR MSG: " + e.getMessage());
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            e.printStackTrace();
-            throw e;
-        }
+     InputStream reportStream = getClass().getResourceAsStream(reportPath);
+
+     if (reportStream == null) {
+         System.out.println("!!! ERROR: reportStream is NULL for " + reportPath);
+         throw new RuntimeException("File not found: " + reportPath);
+     } else {
+         System.out.println(">>> SUCCESS: File found and stream opened.");
+     }
+
+     // --- 3. COMPILATION AND FILLING ---
+     try {
+         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+         System.out.println(">>> SUCCESS: Compilation Complete");
+
+         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+         
+         // This is where it usually crashes if the Logos aren't InputStreams
+         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+         System.out.println(">>> SUCCESS: Report Filled");
+
+         response.setContentType("application/pdf");
+         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+         System.out.println(">>> SUCCESS: PDF Exported");
+         System.out.println("==========================================");
+
+     } catch (Exception e) {
+         System.out.println("!!! CRITICAL ERROR DURING JASPER PROCESS !!!");
+         System.out.println("Message: " + e.getMessage());
+         e.printStackTrace();
+         throw e;
+     }
 	}
 	
 	
