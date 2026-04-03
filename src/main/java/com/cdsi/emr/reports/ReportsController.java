@@ -341,23 +341,17 @@ public class ReportsController {
      String docLogo = doctor.getClinicLogoUrl();
      if (docLogo != null && !docLogo.isEmpty()) {
          try {
-             // 1. Get the filename from the URL
              String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
-             
-             // 2. Create a File object pointing to your Railway Volume
              File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
              
              if (logoFile.exists()) {
-                 // 3. Convert the file to a FileInputStream
-                 InputStream companyLogoStream = new FileInputStream(logoFile);
-                 
-                 // 4. Put the STREAM into the map, not the String path
-                 map.put("COMPANY_LOGO", companyLogoStream);
+                 // Send the FILE STREAM (Required by JRXML)
+                 map.put("COMPANY_LOGO", new FileInputStream(logoFile));
              } else {
-                 System.out.println("Company logo file not found at: " + logoFile.getAbsolutePath());
+                 map.put("COMPANY_LOGO", null);
              }
          } catch (Exception e) {
-             System.out.println("Error loading company logo: " + e.getMessage());
+             map.put("COMPANY_LOGO", null);
          }
      }
 
