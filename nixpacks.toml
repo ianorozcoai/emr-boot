@@ -1,8 +1,8 @@
 [phases.setup]
-aptPkgs = ["...", "libfreetype6", "libfontconfig1"]
+aptPkgs = ["libfreetype6", "libfontconfig1"]
 
 [phases.build]
-cmds = ["...", "mvn -DskipTests clean package"]
+cmds = ["mvn -DskipTests clean package"]
 
 [variables]
 NIXPACKS_JDK_VERSION = "21"
