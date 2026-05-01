@@ -51,6 +51,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @Controller
 public class ReportsController {
 	
+	public static final int PRESCRIPTION_LIMIT = 6;
 	public static final String EMR_RX_LOGO_URL = "/resources/static/images/rx.jpg";
     
 	private EMRPatientMedicationRepository emrPatientMedicationRepository;	
@@ -275,7 +276,7 @@ public class ReportsController {
 	    
 	    for (int i = 0; i < items.size(); i++) {
 	        EMRPatientMedicationItem medItem = items.get(i);
-	        StringBuilder current = (i < 5) ? med1 : med2;
+	        StringBuilder current = (i < PRESCRIPTION_LIMIT) ? med1 : med2;
 	        
 	        // Build the detailed medicine string (from the old version's logic)
 	        StringBuilder medicineDetail = new StringBuilder();
@@ -298,7 +299,7 @@ public class ReportsController {
 
 	    // --- DIAGNOSIS APPENDING (Follows last medicine) ---
 	    if (!diagnosisText.isEmpty()) {
-	        StringBuilder lastBlock = (items.size() > 5) ? med2 : med1;
+	        StringBuilder lastBlock = (items.size() > PRESCRIPTION_LIMIT) ? med2 : med1;
 	        lastBlock.append("\n");
 	        lastBlock.append("Diagnosis:      ").append(diagnosisText.trim());
 	    }
@@ -341,7 +342,7 @@ public class ReportsController {
 
      
 	     // Ensure the leading slash '/' is present
-	     String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
+	     String reportPath = (items.size() > PRESCRIPTION_LIMIT) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
 
 	     // DIAGNOSTIC LOGS FOR JRXML
 	     System.out.println("==========================================");
