@@ -18,9 +18,9 @@
 	<parameter name="DOCTOR_CONTACT_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_PTR_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
-	<parameter name="RX_LOGO" class="java.lang.String"/>
-	<parameter name="CDSI_LOGO" class="java.lang.String"/>
-	<parameter name="COMPANY_LOGO" class="java.lang.String"/>
+	<parameter name="RX_LOGO" class="java.io.InputStream"/>
+	<parameter name="CDSI_LOGO" class="java.io.InputStream"/>
+	<parameter name="COMPANY_LOGO" class="java.io.InputStream"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="DATE_REQUESTED" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>

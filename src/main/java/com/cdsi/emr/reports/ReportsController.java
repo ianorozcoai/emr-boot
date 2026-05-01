@@ -249,19 +249,12 @@ public class ReportsController {
 	        }
 	        ctr++;
 	    }
-
-	    // --- PATIENT DATA (Fixes 'null' labels) ---
+	    
 	    map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
 	    map.put("PATIENT_ADDRESS", (patient.getStreet() != null ? patient.getStreet() : "") + " " + (patient.getCity() != null ? patient.getCity() : ""));
 	    map.put("PATIENT_GENDER", patient.getGender());
 	    map.put("PATIENT_AGE", patient.getAgeStr());
-	    map.put("PERIOD", DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(emrPatientMedication.getDateCreated()));
-
-	    // --- LOGOS ---
-//	    map.put("RX_LOGO", ResourceUtils.getFile("classpath:static/images/rx.jpg").getAbsolutePath());
-//	    map.put("CDSI_LOGO", ResourceUtils.getFile("classpath:static/images/poweredBy.png").getAbsolutePath());
-
-	    
+	    map.put("PERIOD", DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(emrPatientMedication.getDateCreated()));	    
 	    
 	    // --- FETCH DIAGNOSIS ---
 	    String diagnosisText = "";
@@ -275,7 +268,7 @@ public class ReportsController {
 	    }
 
 	    // --- MEDICATION SPLIT LOGIC ---
-	 // --- MEDICATION SPLIT LOGIC (Restored with Brand, Dosage, and Units) ---
+	    // --- MEDICATION SPLIT LOGIC (Restored with Brand, Dosage, and Units) ---
 	    StringBuilder med1 = new StringBuilder();
 	    StringBuilder med2 = new StringBuilder();
 	    List<EMRPatientMedicationItem> items = emrPatientMedication.getEmrPatientMedicationItems();
@@ -313,276 +306,379 @@ public class ReportsController {
 	    map.put("MEDICATION1", med1.toString());
 	    map.put("MEDICATION2", med2.toString());
 	    
-	 
+	    // --- 1. LOGO FIX: LOAD AS STREAMS ---
+	    // Using getClass().getResourceAsStream ensures it works inside the Railway JAR
+	    InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+	    InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
 
-	    // --- TEMPLATE SELECTION & COMPILATION ---
-//	    String reportPath = (items.size() > 5) ? "jasper/PrescriptionReportV2P2.jrxml" : "jasper/PrescriptionReportV2P1.jrxml";
-//
-//	    InputStream reportStream = getClass().getClassLoader().getResourceAsStream(reportPath);
-//	    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-//	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JRBeanCollectionDataSource(new ArrayList<>(java.util.Arrays.asList(new Patient()))));
-//	    
-//	    response.setContentType("application/pdf");
-//	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-	    
-     // --- 1. LOGO FIX: LOAD AS STREAMS ---
-     // Using getClass().getResourceAsStream ensures it works inside the Railway JAR
-     InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
-     InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+	     // DIAGNOSTIC LOGS FOR LOGOS
+	     System.out.println("==========================================");
+	     System.out.println("   LOGO DIAGNOSTIC                        ");
+	     System.out.println("==========================================");
+	     System.out.println("RX Logo Found: " + (rxLogoStream != null));
+	     System.out.println("CDSI Logo Found: " + (cdsiLogoStream != null));
 
-     // DIAGNOSTIC LOGS FOR LOGOS
-     System.out.println("==========================================");
-     System.out.println("   LOGO DIAGNOSTIC                        ");
-     System.out.println("==========================================");
-     System.out.println("RX Logo Found: " + (rxLogoStream != null));
-     System.out.println("CDSI Logo Found: " + (cdsiLogoStream != null));
-
-     // CRITICAL: Pass the actual InputStream objects, not String paths
-     map.put("RX_LOGO", rxLogoStream);
-     map.put("CDSI_LOGO", cdsiLogoStream);
+	     // CRITICAL: Pass the actual InputStream objects, not String paths
+	     map.put("RX_LOGO", rxLogoStream);
+	     map.put("CDSI_LOGO", cdsiLogoStream);
      
-     String docLogo = doctor.getClinicLogoUrl();
-     if (docLogo != null && !docLogo.isEmpty()) {
-         try {
-             String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
-             File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
-             
-             if (logoFile.exists()) {
-                 // Send the FILE STREAM (Required by JRXML)
-                 map.put("COMPANY_LOGO", new FileInputStream(logoFile));
-             } else {
-                 map.put("COMPANY_LOGO", null);
-             }
-         } catch (Exception e) {
-             map.put("COMPANY_LOGO", null);
-         }
-     }
+	     String docLogo = doctor.getClinicLogoUrl();
+	     if (docLogo != null && !docLogo.isEmpty()) {
+	         try {
+	             String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
+	             File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
+	             
+	             if (logoFile.exists()) {
+	                 // Send the FILE STREAM (Required by JRXML)
+	                 map.put("COMPANY_LOGO", new FileInputStream(logoFile));
+	             } else {
+	                 map.put("COMPANY_LOGO", null);
+	             }
+	         } catch (Exception e) {
+	             map.put("COMPANY_LOGO", null);
+	         }
+	     }
 
-     // ... (your other map puts for doctor/patient) ...
-
-     // --- 2. JRXML FIX: ABSOLUTE PATH ---
      
-     // Ensure the leading slash '/' is present
-     String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
+	     // Ensure the leading slash '/' is present
+	     String reportPath = (items.size() > 5) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
 
-     // DIAGNOSTIC LOGS FOR JRXML
-     System.out.println("==========================================");
-     System.out.println("   JRXML DIAGNOSTIC                       ");
-     System.out.println("==========================================");
-     System.out.println("Attempting to load: " + reportPath);
+	     // DIAGNOSTIC LOGS FOR JRXML
+	     System.out.println("==========================================");
+	     System.out.println("   JRXML DIAGNOSTIC                       ");
+	     System.out.println("==========================================");
+	     System.out.println("Attempting to load: " + reportPath);
 
-     InputStream reportStream = getClass().getResourceAsStream(reportPath);
+	     InputStream reportStream = getClass().getResourceAsStream(reportPath);
 
-     if (reportStream == null) {
-         System.out.println("!!! ERROR: reportStream is NULL for " + reportPath);
-         throw new RuntimeException("File not found: " + reportPath);
-     } else {
-         System.out.println(">>> SUCCESS: File found and stream opened.");
-     }
+	     if (reportStream == null) {
+	         System.out.println("!!! ERROR: reportStream is NULL for " + reportPath);
+	         throw new RuntimeException("File not found: " + reportPath);
+	     } else {
+	         System.out.println(">>> SUCCESS: File found and stream opened.");
+	     }
 
-     // --- 3. COMPILATION AND FILLING ---
-     try {
-         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-         System.out.println(">>> SUCCESS: Compilation Complete");
-
-         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
-         
-         // This is where it usually crashes if the Logos aren't InputStreams
-         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
-         System.out.println(">>> SUCCESS: Report Filled");
-
-         response.setContentType("application/pdf");
-         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-         System.out.println(">>> SUCCESS: PDF Exported");
-         System.out.println("==========================================");
-
-     } catch (Exception e) {
-         System.out.println("!!! CRITICAL ERROR DURING JASPER PROCESS !!!");
-         System.out.println("Message: " + e.getMessage());
-         e.printStackTrace();
-         throw e;
-     }
-	}
+	     // --- 3. COMPILATION AND FILLING ---
+	     try {
+	         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+	         System.out.println(">>> SUCCESS: Compilation Complete");
 	
+	         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+	         
+	         // This is where it usually crashes if the Logos aren't InputStreams
+	         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+	         System.out.println(">>> SUCCESS: Report Filled");
+	
+	         response.setContentType("application/pdf");
+	         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+	         System.out.println(">>> SUCCESS: PDF Exported");
+	         System.out.println("==========================================");
+	
+	     } catch (Exception e) {
+	         System.out.println("!!! CRITICAL ERROR DURING JASPER PROCESS !!!");
+	         System.out.println("Message: " + e.getMessage());
+	         e.printStackTrace();
+	         throw e;
+	     }
+	}
 	
 	@GetMapping("/viewMedicalRequest/{requestId}")
 	public void viewMedicalRequest(Model model, @PathVariable long requestId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
-		
-		Personnel doctor = (Personnel) auth.getPrincipal();
-		
-		Optional<EMRPatientMedicalRequest> oEMRPatientMedicalRequest = emrPatientMedicalRequestRepository.findById(requestId);
-		EMRPatientMedicalRequest emrPatientMedicalRequest = oEMRPatientMedicalRequest.orElseGet(() -> new EMRPatientMedicalRequest());
-		
-		Optional<Patient> oPatient = patientRepository.findById(emrPatientMedicalRequest.getPatient().getId());
-		Patient patient = oPatient.orElseGet(() -> new Patient());
-		
-		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
-		
-		String docLogo = doctor.getClinicLogoUrl();
-		
-		//File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
-		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
-		
-		//String rxLogo = file.getAbsolutePath();
-		String cdsiLogo = cdsiFile.getAbsolutePath();
-//		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));	
-		
-//		String hospitalLogo = "";
-//		
-//		if(docLogo != null) {
-//			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-//		}
-				
-		Map<String, Object> map = new HashMap<String, Object>();
-		//map.put("RX_LOGO", rxLogo);
-		//map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
-		
-		// Use this pattern to ensure it finds the resource inside the JAR
-		InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
-		if (rxStream == null) {
-		    rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
-		}
-		map.put("RX_LOGO", rxStream);
+	    
+	    // Set headless mode for JasperReports in Linux/Cloud environments
+	    System.setProperty("java.awt.headless", "true");
 
-		InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
-		if (cdsiStream == null) {
-		    cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
-		}
-		map.put("CDSI_LOGO", cdsiStream);
-		
-//		map.put("COMPANY_LOGO", hospitalLogo);
-		
-		// CURRENT (Broken in JAR/Railway):
-		// hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+	    Personnel doctor = (Personnel) auth.getPrincipal();
+	    
+	    Optional<EMRPatientMedicalRequest> oEMRPatientMedicalRequest = emrPatientMedicalRequestRepository.findById(requestId);
+	    EMRPatientMedicalRequest emrPatientMedicalRequest = oEMRPatientMedicalRequest.orElseGet(() -> new EMRPatientMedicalRequest());
+	    
+	    Optional<Patient> oPatient = patientRepository.findById(emrPatientMedicalRequest.getPatient().getId());
+	    Patient patient = oPatient.orElseGet(() -> new Patient());
+	    
+	    List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+	    
+	    Map<String, Object> map = new HashMap<String, Object>();
 
-		// FIXED:
-		String logoPath = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-		File logoFile = new File(logoPath);
-		if (logoFile.exists()) {
-		    map.put("COMPANY_LOGO", new FileInputStream(logoFile)); // This sends the STREAM
-		} else {
-		    map.put("COMPANY_LOGO", null); 
-		}
-		
-		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
-		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
-		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
-		
-		map.put("CLINIC_NAME", "");
-		map.put("DOCTOR_ADDRESS", "");
-		map.put("DOCTOR_CONTACT_NO", "");	
-		
-		map.put("CLINIC_NAME2", "");
-		map.put("DOCTOR_ADDRESS2", "");
-		map.put("DOCTOR_CONTACT_NO2", "");
-		
-		int ctr = 1;
-		
-		for(Clinic clinic : clinicList){
-			
-			if(ctr == 1){
-				map.put("CLINIC_NAME", clinic.getName());
-				map.put("DOCTOR_ADDRESS", clinic.getAddress());
-				map.put("DOCTOR_ADDRESS", clinic.getScheduleRx());
-				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
-			} else if (ctr == 2) {
-				map.put("CLINIC_NAME2", clinic.getName());
-				map.put("DOCTOR_ADDRESS2", clinic.getAddress());
-				map.put("DOCTOR_ADDRESS2", clinic.getScheduleRx());
-				map.put("DOCTOR_CONTACT_NO2", "Contact No: " + clinic.getContactNumber());			
-			} else {
-				break;
-			}
-			
-			ctr++;
-		}
-		
-		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
-		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "");
-		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
-		map.put("PERIOD", formatter.format(emrPatientMedicalRequest.getDateCreated()));
-		
-		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
-		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
-		map.put("PATIENT_GENDER", patient.getGender());		
-		map.put("PATIENT_AGE", patient.getAgeStr());
-		
-				
-		StringBuffer medicalRequestItems = new StringBuffer();
-		StringBuffer medicalRequestItems2 = new StringBuffer();
-		StringBuffer medicalRequestItems3 = new StringBuffer();
-		
-		medicalRequestItems.append("");
-		medicalRequestItems2.append("");
-		medicalRequestItems3.append("");
-		
-//		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
-//			
-//			medicalRequestItems.append(medItem.getRequestName() != null ? "- " + medItem.getRequestName() + "\n" : "");		
-//			
-//		}
-		
-		int x = 1;
-//		for(int x = 1; x <= 30; x++) {		
-		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
-			String grpName = "";
-			
-			if(medItem.getRequestName() != null) {
-				EMRMedicalRequest emrMedRqst = emrMedicalRequestRepository.findByMedicalRequestNameAndDoctorId(medItem.getRequestName(), patient.getDoctor().getId());
-				if(emrMedRqst != null && emrMedRqst.getEmrMedicalRequestGroup() != null) {
-					grpName = " (" + emrMedRqst.getEmrMedicalRequestGroup().getMedicalRequestGroupName() + ") ";
-				}
-			}
-			
-			if(x > 10 && x <= 20) {
-				//medicalRequestItems2.append(x + ".) Item " + x + "\n");
-				medicalRequestItems2.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");
-			} else if (x > 20) {
-				//medicalRequestItems3.append(x + ".) Item " + x + "\n");
-				medicalRequestItems3.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");
-			} else {
-				//medicalRequestItems.append(x + ".) Item " + x + "\n");
-				medicalRequestItems.append(medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");		
-			}
-			x++;
-		}
-		
-		
-		map.put("DATE_REQUESTED", formatter.format(emrPatientMedicalRequest.getDateCreated()));
-		map.put("PATIENT_REQUEST", medicalRequestItems.toString());
-		map.put("PATIENT_REQUEST2", medicalRequestItems2.toString());
-		map.put("PATIENT_REQUEST3", medicalRequestItems3.toString());
-		map.put("PATIENT_INSTRUCTION", emrPatientMedicalRequest.getInstructions() != null ? emrPatientMedicalRequest.getInstructions() : "");
-		map.put("PATIENT_DIAGNOSIS", emrPatientMedicalRequest.getDiagnosis() != null ? emrPatientMedicalRequest.getDiagnosis() : "");
-		
-		List<Patient> dataList = new ArrayList<Patient>();	
-		
-		Patient dummyData = new Patient();
-		dummyData.setFirstName("test");
-		
-		dataList.add(dummyData);
-		
-		
-		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
-		
-		response.setContentType("application/pdf");
-		
-		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/MedicalRequestReport.jasper");
-		
-		
-		if(reportStream == null){
-			System.out.println("reportStream is NULL");
-		}
-		
-		if(response.getOutputStream() == null){
-			System.out.println("response.getOutputStream() is NULL");
-		}
-		
-		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
-		
+	    // --- 1. LOGO FIX: LOAD AS STREAMS (Same as viewPrescription) ---
+	    InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+	    InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+
+	    map.put("RX_LOGO", rxLogoStream);
+	    map.put("CDSI_LOGO", cdsiLogoStream);
+
+	    // --- 2. COMPANY LOGO FIX: LOAD EXTERNAL FILE AS STREAM ---
+	    String docLogo = doctor.getClinicLogoUrl();
+	    if (docLogo != null && !docLogo.isEmpty()) {
+	        try {
+	            String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
+	            File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
+	            if (logoFile.exists()) {
+	                map.put("COMPANY_LOGO", new FileInputStream(logoFile));
+	            } else {
+	                map.put("COMPANY_LOGO", null);
+	            }
+	        } catch (Exception e) {
+	            map.put("COMPANY_LOGO", null);
+	        }
+	    }
+
+	    // --- 3. DATA MAPPING ---
+	    map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
+	    map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
+	    map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
+	    
+	    map.put("CLINIC_NAME", ""); map.put("DOCTOR_ADDRESS", ""); map.put("DOCTOR_CONTACT_NO", "");	
+	    map.put("CLINIC_NAME2", ""); map.put("DOCTOR_ADDRESS2", ""); map.put("DOCTOR_CONTACT_NO2", "");
+	    
+	    int ctr = 1;
+	    for(Clinic clinic : clinicList){
+	        if(ctr == 1){
+	            map.put("CLINIC_NAME", clinic.getName());
+	            map.put("DOCTOR_ADDRESS", (clinic.getAddress() != null ? clinic.getAddress() : "") + "\n" + (clinic.getScheduleRx() != null ? clinic.getScheduleRx() : ""));
+	            map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
+	        } else if (ctr == 2) {
+	            map.put("CLINIC_NAME2", clinic.getName());
+	            map.put("DOCTOR_ADDRESS2", (clinic.getAddress() != null ? clinic.getAddress() : "") + "\n" + (clinic.getScheduleRx() != null ? clinic.getScheduleRx() : ""));
+	            map.put("DOCTOR_CONTACT_NO2", "Contact No: " + clinic.getContactNumber());			
+	        } else { break; }
+	        ctr++;
+	    }
+	    
+	    map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
+	    map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "");
+	    map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
+	    
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+	    map.put("PERIOD", formatter.format(emrPatientMedicalRequest.getDateCreated()));
+	    
+	    map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
+	    map.put("PATIENT_ADDRESS", (patient.getStreet() != null ? patient.getStreet() : "") + " " + (patient.getCity() != null ? patient.getCity() : ""));
+	    map.put("PATIENT_GENDER", patient.getGender());		
+	    map.put("PATIENT_AGE", patient.getAgeStr());
+	    
+	    // --- 4. MEDICAL REQUEST ITEM LOGIC ---
+	    StringBuilder req1 = new StringBuilder();
+	    StringBuilder req2 = new StringBuilder();
+	    StringBuilder req3 = new StringBuilder();
+	    
+	    int x = 1;
+	    for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
+	        String grpName = "";
+	        if(medItem.getRequestName() != null) {
+	            EMRMedicalRequest emrMedRqst = emrMedicalRequestRepository.findByMedicalRequestNameAndDoctorId(medItem.getRequestName(), patient.getDoctor().getId());
+	            if(emrMedRqst != null && emrMedRqst.getEmrMedicalRequestGroup() != null) {
+	                grpName = " (" + emrMedRqst.getEmrMedicalRequestGroup().getMedicalRequestGroupName() + ") ";
+	            }
+	            
+	            String itemText = x + ".) " + medItem.getRequestName() + " " + grpName + "\n";
+	            if(x <= 10) req1.append(itemText);
+	            else if (x <= 20) req2.append(itemText);
+	            else req3.append(itemText);
+	        }
+	        x++;
+	    }
+	    
+	    map.put("DATE_REQUESTED", formatter.format(emrPatientMedicalRequest.getDateCreated()));
+	    map.put("PATIENT_REQUEST", req1.toString());
+	    map.put("PATIENT_REQUEST2", req2.toString());
+	    map.put("PATIENT_REQUEST3", req3.toString());
+	    map.put("PATIENT_INSTRUCTION", emrPatientMedicalRequest.getInstructions() != null ? emrPatientMedicalRequest.getInstructions() : "");
+	    map.put("PATIENT_DIAGNOSIS", emrPatientMedicalRequest.getDiagnosis() != null ? emrPatientMedicalRequest.getDiagnosis() : "");
+	    
+	    // Dummy data source for Jasper
+	    List<Patient> dataList = new ArrayList<>();	
+	    Patient dummyData = new Patient();
+	    dummyData.setFirstName("test");
+	    dataList.add(dummyData);
+	    JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+	    
+	    // --- 5. REPORT GENERATION FIX (.jrxml + Compile) ---
+	    response.setContentType("application/pdf");
+	    String reportPath = "/jasper/MedicalRequestReport.jrxml";
+	    InputStream reportStream = getClass().getResourceAsStream(reportPath);
+
+	    if (reportStream == null) {
+	        throw new RuntimeException("Jasper file not found: " + reportPath);
+	    }
+
+	    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	}
+	
+//	@GetMapping("/viewMedicalRequest/{requestId}")
+//	public void viewMedicalRequest(Model model, @PathVariable long requestId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
+//		
+//		Personnel doctor = (Personnel) auth.getPrincipal();
+//		
+//		Optional<EMRPatientMedicalRequest> oEMRPatientMedicalRequest = emrPatientMedicalRequestRepository.findById(requestId);
+//		EMRPatientMedicalRequest emrPatientMedicalRequest = oEMRPatientMedicalRequest.orElseGet(() -> new EMRPatientMedicalRequest());
+//		
+//		Optional<Patient> oPatient = patientRepository.findById(emrPatientMedicalRequest.getPatient().getId());
+//		Patient patient = oPatient.orElseGet(() -> new Patient());
+//		
+//		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+//		
+//		String docLogo = doctor.getClinicLogoUrl();
+//		
+//		//File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
+//		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
+//		
+//		//String rxLogo = file.getAbsolutePath();
+//		String cdsiLogo = cdsiFile.getAbsolutePath();
+////		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));	
+//		
+////		String hospitalLogo = "";
+////		
+////		if(docLogo != null) {
+////			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+////		}
+//				
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		//map.put("RX_LOGO", rxLogo);
+//		//map.put("CDSI_LOGO", getClass().getResourceAsStream("/static/images/poweredBy.png"));
+//		
+//		InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+//	    InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+//
+//	     // CRITICAL: Pass the actual InputStream objects, not String paths
+//	    map.put("RX_LOGO", rxLogoStream);
+//	    map.put("CDSI_LOGO", cdsiLogoStream);
+//		
+////		map.put("COMPANY_LOGO", hospitalLogo);
+//		
+//		// CURRENT (Broken in JAR/Railway):
+//		// hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+//
+//		// FIXED:
+//		String logoPath = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+//		File logoFile = new File(logoPath);
+//		if (logoFile.exists()) {
+//		    map.put("COMPANY_LOGO", new FileInputStream(logoFile)); // This sends the STREAM
+//		} else {
+//		    map.put("COMPANY_LOGO", null); 
+//		}
+//		
+//		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
+//		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
+//		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
+//		
+//		map.put("CLINIC_NAME", "");
+//		map.put("DOCTOR_ADDRESS", "");
+//		map.put("DOCTOR_CONTACT_NO", "");	
+//		
+//		map.put("CLINIC_NAME2", "");
+//		map.put("DOCTOR_ADDRESS2", "");
+//		map.put("DOCTOR_CONTACT_NO2", "");
+//		
+//		int ctr = 1;
+//		
+//		for(Clinic clinic : clinicList){
+//			
+//			if(ctr == 1){
+//				map.put("CLINIC_NAME", clinic.getName());
+//				map.put("DOCTOR_ADDRESS", clinic.getAddress());
+//				map.put("DOCTOR_ADDRESS", clinic.getScheduleRx());
+//				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
+//			} else if (ctr == 2) {
+//				map.put("CLINIC_NAME2", clinic.getName());
+//				map.put("DOCTOR_ADDRESS2", clinic.getAddress());
+//				map.put("DOCTOR_ADDRESS2", clinic.getScheduleRx());
+//				map.put("DOCTOR_CONTACT_NO2", "Contact No: " + clinic.getContactNumber());			
+//			} else {
+//				break;
+//			}
+//			
+//			ctr++;
+//		}
+//		
+//		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
+//		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "");
+//		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
+//		
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+//		map.put("PERIOD", formatter.format(emrPatientMedicalRequest.getDateCreated()));
+//		
+//		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
+//		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
+//		map.put("PATIENT_GENDER", patient.getGender());		
+//		map.put("PATIENT_AGE", patient.getAgeStr());
+//		
+//				
+//		StringBuffer medicalRequestItems = new StringBuffer();
+//		StringBuffer medicalRequestItems2 = new StringBuffer();
+//		StringBuffer medicalRequestItems3 = new StringBuffer();
+//		
+//		medicalRequestItems.append("");
+//		medicalRequestItems2.append("");
+//		medicalRequestItems3.append("");
+//		
+////		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
+////			
+////			medicalRequestItems.append(medItem.getRequestName() != null ? "- " + medItem.getRequestName() + "\n" : "");		
+////			
+////		}
+//		
+//		int x = 1;
+////		for(int x = 1; x <= 30; x++) {		
+//		for(EMRPatientMedicalRequestItem medItem : emrPatientMedicalRequest.getEmrPatientMedicalRequestItems()) {
+//			String grpName = "";
+//			
+//			if(medItem.getRequestName() != null) {
+//				EMRMedicalRequest emrMedRqst = emrMedicalRequestRepository.findByMedicalRequestNameAndDoctorId(medItem.getRequestName(), patient.getDoctor().getId());
+//				if(emrMedRqst != null && emrMedRqst.getEmrMedicalRequestGroup() != null) {
+//					grpName = " (" + emrMedRqst.getEmrMedicalRequestGroup().getMedicalRequestGroupName() + ") ";
+//				}
+//			}
+//			
+//			if(x > 10 && x <= 20) {
+//				//medicalRequestItems2.append(x + ".) Item " + x + "\n");
+//				medicalRequestItems2.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");
+//			} else if (x > 20) {
+//				//medicalRequestItems3.append(x + ".) Item " + x + "\n");
+//				medicalRequestItems3.append(x + ".) " + medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");
+//			} else {
+//				//medicalRequestItems.append(x + ".) Item " + x + "\n");
+//				medicalRequestItems.append(medItem.getRequestName() != null ? x + ".) " + medItem.getRequestName() + " " + grpName + "\n" : "");		
+//			}
+//			x++;
+//		}
+//		
+//		
+//		map.put("DATE_REQUESTED", formatter.format(emrPatientMedicalRequest.getDateCreated()));
+//		map.put("PATIENT_REQUEST", medicalRequestItems.toString());
+//		map.put("PATIENT_REQUEST2", medicalRequestItems2.toString());
+//		map.put("PATIENT_REQUEST3", medicalRequestItems3.toString());
+//		map.put("PATIENT_INSTRUCTION", emrPatientMedicalRequest.getInstructions() != null ? emrPatientMedicalRequest.getInstructions() : "");
+//		map.put("PATIENT_DIAGNOSIS", emrPatientMedicalRequest.getDiagnosis() != null ? emrPatientMedicalRequest.getDiagnosis() : "");
+//		
+//		List<Patient> dataList = new ArrayList<Patient>();	
+//		
+//		Patient dummyData = new Patient();
+//		dummyData.setFirstName("test");
+//		
+//		dataList.add(dummyData);
+//		
+//		
+//		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+//		
+//		response.setContentType("application/pdf");
+//		
+//		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/MedicalRequestReport.jasper");
+//		
+//		
+//		if(reportStream == null){
+//			System.out.println("reportStream is NULL");
+//		}
+//		
+//		if(response.getOutputStream() == null){
+//			System.out.println("response.getOutputStream() is NULL");
+//		}
+//		
+//		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
+//		
+//	}
 	
 //	@GetMapping("/viewMedCert/{medCertId}")
 //	public void listAllMedCert(Model model, @PathVariable long medCertId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
