@@ -781,9 +781,130 @@ public class ReportsController {
 //		
 //	}
 	
+//	@GetMapping("/viewMedCert/{medCertId}")
+//	public void listAllMedCert(Model model, @PathVariable long medCertId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
+//		
+//		Personnel doctor = (Personnel) auth.getPrincipal();
+//		
+//		Optional<EMRMedicalCertificate> oEMRMedicalCertificate = emrMedicalCertificateRepository.findById(medCertId);
+//		EMRMedicalCertificate emrMedicalCertificate = oEMRMedicalCertificate.orElseGet(() -> new EMRMedicalCertificate());
+//		
+//		Optional<Patient> oPatient = patientRepository.findById(emrMedicalCertificate.getPatient().getId());
+//		Patient patient = oPatient.orElseGet(() -> new Patient());
+//		
+//		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
+//		
+//		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
+//		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
+//		
+//		String rxLogo = file.getAbsolutePath();
+//		String cdsiLogo = cdsiFile.getAbsolutePath();
+//		
+//		String docLogo = doctor.getClinicLogoUrl();
+////		String hospitalLogo = "";
+////		
+////		if(docLogo != null) {
+////			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+////		}
+//		
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		// Use this pattern to ensure it finds the resource inside the JAR
+//		InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+//		if (rxStream == null) {
+//		    rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
+//		}
+//		map.put("RX_LOGO", rxStream);
+//
+//		InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+//		if (cdsiStream == null) {
+//		    cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
+//		}
+//		map.put("CDSI_LOGO", cdsiStream);
+////		map.put("COMPANY_LOGO", hospitalLogo);\
+//		
+//		// FIXED:
+//		String logoPath = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
+//		File logoFile = new File(logoPath);
+//		if (logoFile.exists()) {
+//		    map.put("COMPANY_LOGO", new FileInputStream(logoFile)); // This sends the STREAM
+//		} else {
+//		    map.put("COMPANY_LOGO", null); 
+//		}
+//		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
+//		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
+//		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
+//		
+//		map.put("CLINIC_NAME", "");
+//		map.put("DOCTOR_ADDRESS", "");
+//		map.put("DOCTOR_CONTACT_NO", "");	
+//		
+//		map.put("CLINIC_NAME2", "");
+//		map.put("DOCTOR_ADDRESS2", "");
+//		map.put("DOCTOR_CONTACT_NO2", "");
+//		
+//		int ctr = 1;
+//		
+//		for(Clinic clinic : clinicList){
+//			if(ctr == 1){
+//				map.put("CLINIC_NAME", clinic.getName());
+//				map.put("DOCTOR_ADDRESS", clinic.getAddress());
+//				map.put("DOCTOR_CONTACT_NO", clinic.getContactNumber());				
+//			} else {
+//				break;
+//			}
+//			ctr++;
+//		}
+//		
+//		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
+//		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "" );
+//		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
+//		
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+//		map.put("PERIOD", formatter.format(emrMedicalCertificate.getDateRequested()));
+//		
+//		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
+//		map.put("PATIENT_ADDRESS", (patient.getStreet()  != null ? patient.getStreet() : "") + " " + (patient.getCity() != null ? patient.getCity() : ""));
+//		map.put("PATIENT_GENDER", patient.getGender());		
+//		map.put("PATIENT_AGE", patient.getAgeStr() + "");
+//		map.put("PATIENT_MEDICATION", emrMedicalCertificate.getMedication());
+//		map.put("PATIENT_RECOMMENDATION", emrMedicalCertificate.getRecommendation());
+//		map.put("PATIENT_DIAGNOSIS", emrMedicalCertificate.getDiagnosis());
+//		map.put("PATIENT_HISTORY", emrMedicalCertificate.getHistory());
+//		
+//		List<Patient> dataList = new ArrayList<Patient>();	
+//		Patient dummyData = new Patient();
+//		dummyData.setFirstName("test");
+//		dataList.add(dummyData);
+//		
+//		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+//		
+//		// --- UPDATED TO USE .jrxml AND COMPILATION ---
+//		response.setContentType("application/pdf");
+//		
+//		// Pointing to the .jrxml source file instead of the compiled .jasper
+//		InputStream reportStream = getClass().getClassLoader().getResourceAsStream("jasper/MedicalCertReport.jrxml");
+//		
+//		if(reportStream == null){
+//			// Log error if file not found
+//			System.out.println("MedicalCertReport.jrxml not found in classpath");
+//		} else {
+//			// 1. Compile the JRXML
+//			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+//			
+//			// 2. Fill the report with data
+//			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+//			
+//			// 3. Export to the response output stream
+//			JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+//		}
+//	}
+	
 	@GetMapping("/viewMedCert/{medCertId}")
 	public void listAllMedCert(Model model, @PathVariable long medCertId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
 		
+		// Set headless mode for JasperReports in Linux/Cloud environments
+		System.setProperty("java.awt.headless", "true");
+
 		Personnel doctor = (Personnel) auth.getPrincipal();
 		
 		Optional<EMRMedicalCertificate> oEMRMedicalCertificate = emrMedicalCertificateRepository.findById(medCertId);
@@ -794,42 +915,35 @@ public class ReportsController {
 		
 		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
 		
-		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
-		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
-		
-		String rxLogo = file.getAbsolutePath();
-		String cdsiLogo = cdsiFile.getAbsolutePath();
-		
-		String docLogo = doctor.getClinicLogoUrl();
-//		String hospitalLogo = "";
-//		
-//		if(docLogo != null) {
-//			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-//		}
-		
 		Map<String, Object> map = new HashMap<String, Object>();
-		// Use this pattern to ensure it finds the resource inside the JAR
-		InputStream rxStream = getClass().getResourceAsStream("/static/images/rx.jpg");
-		if (rxStream == null) {
-		    rxStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/rx.jpg");
-		}
-		map.put("RX_LOGO", rxStream);
-
-		InputStream cdsiStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
-		if (cdsiStream == null) {
-		    cdsiStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/images/poweredBy.png");
-		}
-		map.put("CDSI_LOGO", cdsiStream);
-//		map.put("COMPANY_LOGO", hospitalLogo);\
 		
-		// FIXED:
-		String logoPath = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-		File logoFile = new File(logoPath);
-		if (logoFile.exists()) {
-		    map.put("COMPANY_LOGO", new FileInputStream(logoFile)); // This sends the STREAM
+		// --- 1. LOGO FIX: LOAD AS STREAMS ---
+		// This ensures they are found inside the JAR/classpath
+		InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
+		InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
+
+		map.put("RX_LOGO", rxLogoStream);
+		map.put("CDSI_LOGO", cdsiLogoStream);
+
+		// --- 2. COMPANY LOGO FIX: LOAD EXTERNAL FILE AS STREAM ---
+		String docLogo = doctor.getClinicLogoUrl();
+		if (docLogo != null && !docLogo.isEmpty()) {
+			try {
+				String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
+				File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
+				if (logoFile.exists()) {
+					map.put("COMPANY_LOGO", new FileInputStream(logoFile));
+				} else {
+					map.put("COMPANY_LOGO", null);
+				}
+			} catch (Exception e) {
+				map.put("COMPANY_LOGO", null);
+			}
 		} else {
-		    map.put("COMPANY_LOGO", null); 
+			map.put("COMPANY_LOGO", null);
 		}
+
+		// --- 3. DOCTOR & CLINIC DATA ---
 		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
 		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
 		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
@@ -843,7 +957,6 @@ public class ReportsController {
 		map.put("DOCTOR_CONTACT_NO2", "");
 		
 		int ctr = 1;
-		
 		for(Clinic clinic : clinicList){
 			if(ctr == 1){
 				map.put("CLINIC_NAME", clinic.getName());
@@ -859,11 +972,12 @@ public class ReportsController {
 		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "" );
 		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
 		
+		// --- 4. PATIENT DATA ---
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 		map.put("PERIOD", formatter.format(emrMedicalCertificate.getDateRequested()));
 		
 		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
-		map.put("PATIENT_ADDRESS", (patient.getStreet()  != null ? patient.getStreet() : "") + " " + (patient.getCity() != null ? patient.getCity() : ""));
+		map.put("PATIENT_ADDRESS", (patient.getStreet() != null ? patient.getStreet() : "") + " " + (patient.getCity() != null ? patient.getCity() : ""));
 		map.put("PATIENT_GENDER", patient.getGender());		
 		map.put("PATIENT_AGE", patient.getAgeStr() + "");
 		map.put("PATIENT_MEDICATION", emrMedicalCertificate.getMedication());
@@ -871,31 +985,35 @@ public class ReportsController {
 		map.put("PATIENT_DIAGNOSIS", emrMedicalCertificate.getDiagnosis());
 		map.put("PATIENT_HISTORY", emrMedicalCertificate.getHistory());
 		
+		// --- 5. DATA SOURCE ---
 		List<Patient> dataList = new ArrayList<Patient>();	
 		Patient dummyData = new Patient();
 		dummyData.setFirstName("test");
 		dataList.add(dummyData);
-		
 		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
 		
-		// --- UPDATED TO USE .jrxml AND COMPILATION ---
+		// --- 6. REPORT GENERATION (.jrxml + Compile) ---
 		response.setContentType("application/pdf");
-		
-		// Pointing to the .jrxml source file instead of the compiled .jasper
-		InputStream reportStream = getClass().getClassLoader().getResourceAsStream("jasper/MedicalCertReport.jrxml");
-		
-		if(reportStream == null){
-			// Log error if file not found
-			System.out.println("MedicalCertReport.jrxml not found in classpath");
-		} else {
-			// 1. Compile the JRXML
+		String reportPath = "/jasper/MedicalCertReport.jrxml";
+		InputStream reportStream = getClass().getResourceAsStream(reportPath);
+
+		if (reportStream == null) {
+			System.out.println("!!! ERROR: MedicalCertReport.jrxml not found in " + reportPath);
+			throw new RuntimeException("Jasper file not found: " + reportPath);
+		}
+
+		try {
+			// Compile and fill report
 			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-			
-			// 2. Fill the report with data
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
 			
-			// 3. Export to the response output stream
+			// Export to response
 			JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+			System.out.println(">>> Medical Certificate PDF Exported Successfully");
+		} catch (Exception e) {
+			System.out.println("!!! Error generating Medical Certificate: " + e.getMessage());
+			e.printStackTrace();
+			throw e;
 		}
 	}
 	
