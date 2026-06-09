@@ -213,73 +213,85 @@
 	<!-- /page content -->
 	
 	<script th:inline="javascript">
-		
-		function preventDoubleSubmit(form) {
+    
+	    // 1. PREVENT DOUBLE SUBMIT FUNCTION
+	    function preventDoubleSubmit(form) {
 	        var btn = $('#submitBtn');
 	        
-	        // If it's already disabled, do nothing and block submission
+	        // If it's already disabled, stop right here and block the extra click
 	        if (btn.prop('disabled')) {
 	            return false;
 	        }
 	        
-	        // Disable the button and give visual feedback
+	        // Disable immediately and show feedback
 	        btn.prop('disabled', true);
 	        btn.text('Saving...');
 	        
 	        return true; // Allows the form to actually submit
 	    }
-		
-	    $(document).ready(function() {	    	
-	    	
-	    	$('#medcert-list').DataTable({
-				"lengthMenu": [10, 25, 50],
-				"ordering": false, 
-				"scrollX": false,
-			});
-			
-	    	//$(".navbar-nav-link").removeClass("bg-slate-300");		
-			//$("#emrPatientMedicalForms2ndNav").addClass("bg-slate-300");
-			
-			let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
-			let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
-			
-			if(msgCode === 'ERROR'){
-				$('#modal_form_vertical').modal('show');
-				swal({
-					title: "Error!",
-					text: msgDesc,
-					icon: "error",
-					buttons: false,
-		            timer: 2000,
-				});
-			} else if(msgCode === 'SUCCESS'){
-				swal({
-					title: "Success!",
-					text: "Medical Certificate Record successfully saved.",
-					icon: "success",
-					buttons: false,
-		            timer: 2000,
-				});
-			}
-			
-	    });	 
 	    
+	    $(document).ready(function() {            
+	        
+	        // Initialize DataTable
+	        $('#medcert-list').DataTable({
+	            "lengthMenu": [10, 25, 50],
+	            "ordering": false, 
+	            "scrollX": false,
+	        });
+	        
+	        // Read UX messages from Spring Controller
+	        let msgCode = /*[[${uxmessage == null ? '' : uxmessage.code} ]]*/'';
+	        let msgDesc = /*[[${uxmessage == null ? '' : uxmessage.message}]]*/'';
+	        
+	        if(msgCode === 'ERROR'){
+	            // 2. RESET ON ERROR: Re-enable button if validation failed on the server
+	            $('#submitBtn').prop('disabled', false).text('Save Info');
+	            
+	            $('#modal_form_vertical').modal('show');
+	            swal({
+	                title: "Error!",
+	                text: msgDesc,
+	                icon: "error",
+	                buttons: false,
+	                timer: 2000,
+	            });
+	        } else if(msgCode === 'SUCCESS'){
+	            swal({
+	                title: "Success!",
+	                text: "Medical Certificate Record successfully saved.",
+	                icon: "success",
+	                buttons: false,
+	                timer: 2000,
+	            });
+	        }
+	        
+	    });     
+	    
+	    // When clicking "View Record" to see details
 	    $(document).on("click", ".showMedicalCertificateDetails", function() {
-
-			var id = $(this).attr('data-row-id');
-			var history = $(this).attr('data-row-history');
-			var diagnosis = $(this).attr('data-row-diagnosis');
-			var recommendation = $(this).attr('data-row-recommendation');
-			var medication = $(this).attr('data-row-medication');
-			var dateRequested = $(this).attr('data-row-dateRequested');
-			
-			$("#modal_form_vertical").find("#id").val(id);
-			$("#modal_form_vertical").find("#history").val(history);
-			$("#modal_form_vertical").find("#diagnosis").val(diagnosis);
-			$("#modal_form_vertical").find("#recommendation").val(recommendation);
-			$("#modal_form_vertical").find("#medication").val(medication);
-			$("#modal_form_vertical").find("#dateRequested").val(dateRequested);
-		});
+	
+	        var id = $(this).attr('data-row-id');
+	        var history = $(this).attr('data-row-history');
+	        var diagnosis = $(this).attr('data-row-diagnosis');
+	        var recommendation = $(this).attr('data-row-recommendation');
+	        var medication = $(this).attr('data-row-medication');
+	        var dateRequested = $(this).attr('data-row-dateRequested');
+	        
+	        $("#modal_form_vertical").find("#id").val(id);
+	        $("#modal_form_vertical").find("#history").val(history);
+	        $("#modal_form_vertical").find("#diagnosis").val(diagnosis);
+	        $("#modal_form_vertical").find("#recommendation").val(recommendation);
+	        $("#modal_form_vertical").find("#medication").val(medication);
+	        $("#modal_form_vertical").find("#dateRequested").val(dateRequested);
+	        
+	        // 3. RESET ON VIEW: Ensure the button is crisp and active when viewing/editing an old record
+	        $('#submitBtn').prop('disabled', false).text('Save Info');
+	    });
+	    
+	    // 4. RESET ON NEW RECORD: Re-enable the button when clicking the main "Add Medical Certificate" button
+	    $(document).on("click", "#addImagingButton", function() {
+	        $('#submitBtn').prop('disabled', false).text('Save Info');
+	    });
 	    
 	</script>
 	
