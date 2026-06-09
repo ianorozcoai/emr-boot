@@ -302,7 +302,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[This medical certificate is issued upon the request of the patient and may not be used for medico-legal purposes.]]></text>
+				<text><![CDATA[This medical certificate is issued upon the request of the patient and must not be used for medico-legal purposes.]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="350" y="518" width="182" height="22" uuid="3aa035bb-1236-4c3d-866e-b00443e15794">

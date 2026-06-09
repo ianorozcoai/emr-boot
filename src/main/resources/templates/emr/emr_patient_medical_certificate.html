@@ -41,8 +41,10 @@
 								<h5 class="modal-title">Medical Certificate Information</h5>
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
-
+							<!--
 							<form id="uploadImgForm" th:action="@{/emrPatientMedicalCertificate}" method="post" enctype="multipart/form-data" th:object="${emrMedicalCertificate}">
+							-->
+							<form id="uploadImgForm" th:action="@{/emrPatientMedicalCertificate}" method="post" enctype="multipart/form-data" th:object="${emrMedicalCertificate}" onsubmit="return preventDoubleSubmit(this);">
 							    <input type="hidden" th:field="*{id}" id="id"/>
 							    <input type="hidden" name="patient.id" th:value="${patient.id}" />
 								<div class="modal-body">
@@ -211,6 +213,22 @@
 	<!-- /page content -->
 	
 	<script th:inline="javascript">
+		
+		function preventDoubleSubmit(form) {
+	        var btn = $('#submitBtn');
+	        
+	        // If it's already disabled, do nothing and block submission
+	        if (btn.prop('disabled')) {
+	            return false;
+	        }
+	        
+	        // Disable the button and give visual feedback
+	        btn.prop('disabled', true);
+	        btn.text('Saving...');
+	        
+	        return true; // Allows the form to actually submit
+	    }
+		
 	    $(document).ready(function() {	    	
 	    	
 	    	$('#medcert-list').DataTable({
