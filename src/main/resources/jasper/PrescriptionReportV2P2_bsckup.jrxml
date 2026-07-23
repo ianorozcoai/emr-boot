@@ -15,9 +15,9 @@
 	<parameter name="DOCTOR_LICENSE_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_PTR_NO" class="java.lang.String"/>
 	<parameter name="DOCTOR_S_NO" class="java.lang.String"/>
-	<parameter name="RX_LOGO" class="java.lang.Object"/>
-	<parameter name="CDSI_LOGO" class="java.lang.Object"/>
-	<parameter name="COMPANY_LOGO" class="java.lang.Object"/>
+	<parameter name="RX_LOGO" class="java.io.InputStream"/>
+	<parameter name="CDSI_LOGO" class="java.io.InputStream"/>
+	<parameter name="COMPANY_LOGO" class="java.io.InputStream"/>
 	<parameter name="PERIOD" class="java.lang.String"/>
 	<parameter name="PATIENT_NAME" class="java.lang.String"/>
 	<parameter name="PATIENT_ADDRESS" class="java.lang.String"/>
@@ -43,11 +43,6 @@
 	</background>
 	<pageHeader>
 		<band height="555" splitType="Stretch">
-			<!-- ================= PAGE 1 (LEFT SIDE) ================= -->
-			<image onErrorType="Blank">
-				<reportElement x="9" y="6" width="70" height="70" uuid="9b1e204e-a43b-474c-9c62-a9d6c42f6349"/>
-				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
-			</image>
 			<textField textAdjust="StretchHeight">
 				<reportElement x="0" y="22" width="400" height="18" uuid="8c1ca850-add7-42b0-9ac3-031235ad22ba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -75,33 +70,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="10" y="73" width="182" height="26" uuid="bb9cb5bd-e494-43a9-b8a5-37c635f957e9"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CLINIC_NAME}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="197" y="73" width="182" height="26" uuid="aa72522a-3f20-4eb4-bb04-2ea247018aa9"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CLINIC_NAME2}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
+			<textField>
 				<reportElement x="10" y="96" width="182" height="49" uuid="738e9dad-905a-4ca3-99fd-e50d60191233"/>
 				<textElement textAlignment="Left">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="197" y="96" width="182" height="49" uuid="22399a3d-da95-472b-af50-77af0d757889"/>
-				<textElement textAlignment="Left">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS2}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="149" width="100" height="18" forecolor="#000000" uuid="061717d3-3a32-4ec1-b4a5-a44bca8d7cf3"/>
@@ -182,16 +156,16 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
 			</textField>
-			<image onErrorType="Blank">
+			<image>
 				<reportElement x="10" y="224" width="70" height="70" uuid="388d3177-779f-4177-ae32-e2dcceac1f18"/>
-				<imageExpression><![CDATA[new java.io.ByteArrayInputStream((byte[])$P{RX_LOGO})]]></imageExpression>
+				<imageExpression><![CDATA[$P{RX_LOGO}]]></imageExpression>
 			</image>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="90" y="224" width="290" height="246" uuid="9d23a00d-4fdf-4ba5-b267-cedc5c1d8140"/>
+			<textField>
+				<reportElement x="90" y="243" width="278" height="227" uuid="9d23a00d-4fdf-4ba5-b267-cedc5c1d8140"/>
 				<textElement textAlignment="Left">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{MEDICATION1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{MEDICATION1} != null ? $P{MEDICATION1} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="207" y="480" width="118" height="14" uuid="d2351acb-5a32-41d4-9a3f-c60de0764950"/>
@@ -257,14 +231,33 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DOCTOR_S_NO}]]></textFieldExpression>
 			</textField>
-			<image onErrorType="Blank">
+			<textField>
+				<reportElement x="10" y="73" width="182" height="26" uuid="bb9cb5bd-e494-43a9-b8a5-37c635f957e9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="73" width="182" height="26" uuid="aa72522a-3f20-4eb4-bb04-2ea247018aa9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="96" width="182" height="49" uuid="22399a3d-da95-472b-af50-77af0d757889"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS2}]]></textFieldExpression>
+			</textField>
+			<image>
 				<reportElement x="4" y="502" width="150" height="50" uuid="cbdc37f1-40d2-4855-a04b-1aa2229617a8"/>
-				<imageExpression><![CDATA[new java.io.ByteArrayInputStream((byte[])$P{CDSI_LOGO})]]></imageExpression>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
 			</image>
-
-			<!-- ================= PAGE 2 (RIGHT SIDE) ================= -->
-			<image onErrorType="Blank">
-				<reportElement x="407" y="6" width="70" height="70" uuid="7b967444-eb86-475e-a131-50dae9b1c3a7"/>
+			<image>
+				<reportElement x="9" y="6" width="70" height="70" uuid="9b1e204e-a43b-474c-9c62-a9d6c42f6349"/>
 				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
 			</image>
 			<textField textAdjust="StretchHeight">
@@ -294,33 +287,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SPECIALIZATION}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="408" y="73" width="182" height="26" uuid="900a1ad9-bf60-4ac1-8429-7494523571cb"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CLINIC_NAME}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="595" y="73" width="182" height="26" uuid="3de01e1f-44bf-4846-a5d7-0e4b3fdb0e73"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CLINIC_NAME2}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
+			<textField>
 				<reportElement x="408" y="96" width="182" height="49" uuid="6a56c816-943d-4130-a668-80745133e6e0"/>
 				<textElement textAlignment="Left">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="595" y="96" width="182" height="49" uuid="545b66c3-0d59-4c69-90fa-31853cb61aeb"/>
-				<textElement textAlignment="Left">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS2}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="398" y="149" width="100" height="18" forecolor="#000000" uuid="319d8d6d-5f3d-4d2c-86fa-a9cf211f9c7b"/>
@@ -401,16 +373,16 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{PERIOD}]]></textFieldExpression>
 			</textField>
-			<image onErrorType="Blank">
+			<image>
 				<reportElement x="408" y="224" width="70" height="70" uuid="64236a34-1aec-40d8-a531-d1471b57fdd9"/>
-				<imageExpression><![CDATA[new java.io.ByteArrayInputStream((byte[])$P{RX_LOGO})]]></imageExpression>
+				<imageExpression><![CDATA[$P{RX_LOGO}]]></imageExpression>
 			</image>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="488" y="224" width="290" height="246" uuid="be40d1a9-29e8-48f7-9737-241e0e0ecb18"/>
+			<textField>
+				<reportElement x="488" y="243" width="278" height="227" uuid="be40d1a9-29e8-48f7-9737-241e0e0ecb18"/>
 				<textElement textAlignment="Left">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{MEDICATION2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{MEDICATION2} != null ? $P{MEDICATION2} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="605" y="480" width="118" height="14" uuid="1d1d0634-0002-4574-9554-fa6df1825c5a"/>
@@ -476,9 +448,34 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DOCTOR_S_NO}]]></textFieldExpression>
 			</textField>
-			<image onErrorType="Blank">
+			<textField>
+				<reportElement x="408" y="73" width="182" height="26" uuid="900a1ad9-bf60-4ac1-8429-7494523571cb"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="595" y="73" width="182" height="26" uuid="3de01e1f-44bf-4846-a5d7-0e4b3fdb0e73"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CLINIC_NAME2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="595" y="96" width="182" height="49" uuid="545b66c3-0d59-4c69-90fa-31853cb61aeb"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCTOR_ADDRESS2}]]></textFieldExpression>
+			</textField>
+			<image>
 				<reportElement x="402" y="502" width="150" height="50" uuid="a6f5ace1-4b0e-436b-b6ff-07fef5bf2a43"/>
-				<imageExpression><![CDATA[new java.io.ByteArrayInputStream((byte[])$P{CDSI_LOGO})]]></imageExpression>
+				<imageExpression><![CDATA[$P{CDSI_LOGO}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="407" y="6" width="70" height="70" uuid="7b967444-eb86-475e-a131-50dae9b1c3a7"/>
+				<imageExpression><![CDATA[$P{COMPANY_LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

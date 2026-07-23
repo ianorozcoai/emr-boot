@@ -1,5 +1,6 @@
 package com.cdsi.emr.reports;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -16,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -45,7 +45,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
@@ -53,6 +52,7 @@ public class ReportsController {
 	
 	public static final int PRESCRIPTION_LIMIT = 6;
 	public static final String EMR_RX_LOGO_URL = "/resources/static/images/rx.jpg";
+	public static final int MAX_MED1_CHARS = 500;
     
 	private EMRPatientMedicationRepository emrPatientMedicationRepository;	
 	private PatientRepository patientRepository;
@@ -83,133 +83,6 @@ public class ReportsController {
 		
 	}
 	
-//	@GetMapping("/viewPrescription/{medicationId}")
-//	public void listAll(Model model, @PathVariable long medicationId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
-//		
-//		Personnel doctor = (Personnel) auth.getPrincipal();
-//		
-//		Optional<EMRPatientMedication> oEMRPatientMedication = emrPatientMedicationRepository.findById(medicationId);
-//		EMRPatientMedication emrPatientMedication = oEMRPatientMedication.orElseGet(() -> new EMRPatientMedication());
-//		
-//		Optional<Patient> oPatient = patientRepository.findById(emrPatientMedication.getPatient().getId());
-//		Patient patient = oPatient.orElseGet(() -> new Patient());
-//		
-//		List<Clinic> clinicList = clinicRepository.findAllByDoctorId(doctor.getId());
-//		
-//		String docLogo = doctor.getClinicLogoUrl();
-//		
-//		File file = ResourceUtils.getFile("classpath:static/images/rx.jpg");
-//		File cdsiFile = ResourceUtils.getFile("classpath:static/images/poweredBy.png");
-//		
-//		String rxLogo = file.getAbsolutePath();
-//		String cdsiLogo = cdsiFile.getAbsolutePath();
-////		String hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));	
-//		
-//		String hospitalLogo = "";
-//		
-//		if(docLogo != null) {
-//			hospitalLogo = fileStorageProperties.getUploadDir() + docLogo.substring(docLogo.lastIndexOf("/"));
-//		}
-//				
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("RX_LOGO", rxLogo);
-//		map.put("CDSI_LOGO", cdsiLogo);
-//		map.put("COMPANY_LOGO", hospitalLogo);
-//		map.put("DOCTOR_NAME", doctor.getFirstName() + " " + doctor.getLastName());
-//		map.put("CREDENTIALS", doctor.getCredentials() != null ? doctor.getCredentials() : "");
-//		map.put("SPECIALIZATION", doctor.getSpecialization() != null ? doctor.getSpecialization() : "");
-//		
-//		map.put("CLINIC_NAME", "");
-//		map.put("DOCTOR_ADDRESS", "");
-//		map.put("DOCTOR_CONTACT_NO", "");	
-//		
-//		map.put("CLINIC_NAME2", "");
-//		map.put("DOCTOR_ADDRESS2", "");
-//		map.put("DOCTOR_CONTACT_NO2", "");
-//		
-//		int ctr = 1;
-//		
-//		for(Clinic clinic : clinicList){
-//			
-//			if(ctr == 1){
-//				map.put("CLINIC_NAME", clinic.getName());
-//				map.put("DOCTOR_ADDRESS", clinic.getAddress());
-//				map.put("DOCTOR_ADDRESS", clinic.getScheduleRx());
-//				map.put("DOCTOR_CONTACT_NO", "Contact No: " + clinic.getContactNumber());				
-//			} else if (ctr == 2) {
-//				map.put("CLINIC_NAME2", clinic.getName());
-//				map.put("DOCTOR_ADDRESS2", clinic.getAddress());
-//				map.put("DOCTOR_ADDRESS2", clinic.getScheduleRx());
-//				map.put("DOCTOR_CONTACT_NO2", "Contact No: " + clinic.getContactNumber());			
-//			} else {
-//				break;
-//			}
-//			
-//			ctr++;
-//		}
-//		
-//		map.put("DOCTOR_LICENSE_NO", doctor.getLicenseNumber());
-//		map.put("DOCTOR_PTR_NO", doctor.getPtrNumber() != null ? doctor.getPtrNumber() : "");
-//		map.put("DOCTOR_S_NO", doctor.getSNumber() != null ? doctor.getSNumber() : "");
-//		
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
-//		map.put("PERIOD", formatter.format(emrPatientMedication.getDateCreated()));
-//		
-//		map.put("PATIENT_NAME", patient.getLastName() + ", " + patient.getFirstName());
-//		map.put("PATIENT_ADDRESS", patient.getStreet()  != null ? patient.getStreet() : "" + " " + patient.getCity());
-//		map.put("PATIENT_GENDER", patient.getGender());		
-//		map.put("PATIENT_AGE", patient.getAgeStr());
-//		
-//		ctr = 1;
-//		
-//		for(EMRPatientMedicationItem medItem : emrPatientMedication.getEmrPatientMedicationItems()) {
-//			String medicine = "";
-//			medicine = medItem.getGenericName() != null ? medItem.getGenericName() : "";
-//			medicine = medicine + (medItem.getBrandName() != null && !medItem.getBrandName().isEmpty() ? " ( " + medItem.getBrandName() + " ) " : "");
-//			medicine = medicine + (medItem.getDosage() != null && !medItem.getDosage().isEmpty() ? " - " + medItem.getDosage() : "");
-//			medicine = medicine + (medItem.getUnitOfMeasure() != null && !medItem.getUnitOfMeasure().isEmpty() ? " " + medItem.getUnitOfMeasure() : "");
-//			
-//			map.put("MEDICATION"+ctr, medicine);
-//			map.put("INSTRUCTION"+ctr, medItem.getRemarks() != null ? medItem.getRemarks() : "");
-//			ctr++;
-//		}
-//		
-//		
-//		
-//		
-//		List<Patient> dataList = new ArrayList<Patient>();	
-//		
-//		Patient dummyData = new Patient();
-//		dummyData.setFirstName("test");
-//		
-//		dataList.add(dummyData);
-//		
-//		
-//		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
-//		
-//		response.setContentType("application/pdf");
-//		
-////		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/PrescriptionReport.jasper");
-//		InputStream reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/PrescriptionReportV2P1.jasper");
-//		
-//		//if(emrPatientMedication.getEmrPatientMedicationItems() != null && emrPatientMedication.getEmrPatientMedicationItems().size() > 3){
-//		if(emrPatientMedication.getEmrPatientMedicationItems() != null && emrPatientMedication.getEmrPatientMedicationItems().size() > 6){
-////			reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/PrescriptionReport2Page.jasper");
-//			reportStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "jasper/reports/PrescriptionReportV2P2.jasper");
-//		}		
-//		
-//		if(reportStream == null){
-//			System.out.println("reportStream is NULL");
-//		}
-//		
-//		if(response.getOutputStream() == null){
-//			System.out.println("response.getOutputStream() is NULL");
-//		}
-//		
-//		JasperRunManager.runReportToPdfStream(reportStream,	response.getOutputStream(), map, beanColDataSource);
-//		
-//	}	
-
 	@GetMapping("/viewPrescription/{medicationId}")
 	public void listAll(Model model, @PathVariable long medicationId, Authentication auth, HttpServletRequest request, HttpServletResponse response) throws JRException, Exception {
 	    
@@ -268,17 +141,23 @@ public class ReportsController {
 	        }
 	    }
 
-	    // --- MEDICATION SPLIT LOGIC ---
-	    // --- MEDICATION SPLIT LOGIC (Restored with Brand, Dosage, and Units) ---
+	    // --- MEDICATION SPLIT LOGIC (CHARACTER CAPACITY BASED) ---
 	    StringBuilder med1 = new StringBuilder();
 	    StringBuilder med2 = new StringBuilder();
 	    List<EMRPatientMedicationItem> items = emrPatientMedication.getEmrPatientMedicationItems();
 	    
+	    
+	    boolean forceOverflowToMed2 = false;
+
+	    System.out.println("==========================================");
+	    System.out.println("   MEDICATION CHARACTER SPLIT DEBUG       ");
+	    System.out.println("==========================================");
+	    System.out.println("Total Medication Items: " + items.size());
+
 	    for (int i = 0; i < items.size(); i++) {
 	        EMRPatientMedicationItem medItem = items.get(i);
-	        StringBuilder current = (i < PRESCRIPTION_LIMIT) ? med1 : med2;
 	        
-	        // Build the detailed medicine string (from the old version's logic)
+	        // Build the detailed medicine string
 	        StringBuilder medicineDetail = new StringBuilder();
 	        medicineDetail.append(medItem.getGenericName() != null ? medItem.getGenericName() : "");
 	        
@@ -292,95 +171,144 @@ public class ReportsController {
 	            medicineDetail.append(" ").append(medItem.getUnitOfMeasure());
 	        }
 
-	        // Append to the specific column (med1 or med2)
-	        current.append(i + 1).append(".  ").append(medicineDetail.toString());
-	        current.append("\n      ").append(medItem.getRemarks() != null ? medItem.getRemarks() : "").append("\n\n");
+	        // Format complete single item text (including number prefix and remarks with newlines)
+	        StringBuilder itemBlock = new StringBuilder();
+	        itemBlock.append(i + 1).append(".  ").append(medicineDetail.toString());
+	        itemBlock.append("\n      ").append(medItem.getRemarks() != null ? medItem.getRemarks() : "").append("\n\n");
+
+	        String itemString = itemBlock.toString();
+
+	        // Check character threshold before placing in med1
+	        if (!forceOverflowToMed2 && (med1.length() + itemString.length() <= MAX_MED1_CHARS)) {
+	            med1.append(itemString);
+	            System.out.println("Item " + (i + 1) + " -> MED1 | Block Chars: " + itemString.length() + " | Current MED1 Total: " + med1.length() + "/" + MAX_MED1_CHARS);
+	        } else {
+	            if (!forceOverflowToMed2) {
+	                System.out.println(">>> OVERFLOW TRIGGERED AT ITEM " + (i + 1) + "! (Adding " + itemString.length() + " chars to " + med1.length() + " chars exceeds " + MAX_MED1_CHARS + ")");
+	                forceOverflowToMed2 = true;
+	            }
+	            med2.append(itemString);
+	            System.out.println("Item " + (i + 1) + " -> MED2 | Block Chars: " + itemString.length() + " | Current MED2 Total: " + med2.length());
+	        }
 	    }
 
 	    // --- DIAGNOSIS APPENDING (Follows last medicine) ---
 	    if (!diagnosisText.isEmpty()) {
-	        StringBuilder lastBlock = (items.size() > PRESCRIPTION_LIMIT) ? med2 : med1;
-	        lastBlock.append("\n");
-	        lastBlock.append("Diagnosis:      ").append(diagnosisText.trim());
+	        String diagBlock = "\nDiagnosis:      " + diagnosisText.trim();
+	        if (!med2.toString().isEmpty()) {
+	            med2.append(diagBlock);
+	            System.out.println("Diagnosis appended to MED2");
+	        } else if (med1.length() + diagBlock.length() <= MAX_MED1_CHARS) {
+	            med1.append(diagBlock);
+	            System.out.println("Diagnosis appended to MED1");
+	        } else {
+	            med2.append(diagBlock);
+	            System.out.println("Diagnosis overflowed to MED2 due to size limit");
+	        }
 	    }
+
+	    System.out.println("------------------------------------------");
+	    System.out.println("FINAL MED1 Length: " + med1.length() + " chars");
+	    System.out.println("FINAL MED2 Length: " + med2.length() + " chars");
+	    System.out.println("==========================================");
 
 	    map.put("MEDICATION1", med1.toString());
 	    map.put("MEDICATION2", med2.toString());
 	    
 	    // --- 1. LOGO FIX: LOAD AS STREAMS ---
-	    // Using getClass().getResourceAsStream ensures it works inside the Railway JAR
 	    InputStream rxLogoStream = getClass().getResourceAsStream("/static/images/rx.jpg");
 	    InputStream cdsiLogoStream = getClass().getResourceAsStream("/static/images/poweredBy.png");
 
-	     // DIAGNOSTIC LOGS FOR LOGOS
-	     System.out.println("==========================================");
-	     System.out.println("   LOGO DIAGNOSTIC                        ");
-	     System.out.println("==========================================");
-	     System.out.println("RX Logo Found: " + (rxLogoStream != null));
-	     System.out.println("CDSI Logo Found: " + (cdsiLogoStream != null));
+	    map.put("RX_LOGO", toByteArray(rxLogoStream) );
+	    map.put("CDSI_LOGO", toByteArray(cdsiLogoStream));
+	    
+	    
+	    String docLogo = doctor.getClinicLogoUrl();
+	    if (docLogo != null && !docLogo.isEmpty()) {
+	        try {
+	            String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
+	            File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
+	            
+	            if (logoFile.exists()) {
+	                map.put("COMPANY_LOGO", new FileInputStream(logoFile));
+	            } else {
+	                map.put("COMPANY_LOGO", null);
+	            }
+	        } catch (Exception e) {
+	            map.put("COMPANY_LOGO", null);
+	        }
+	    }
 
-	     // CRITICAL: Pass the actual InputStream objects, not String paths
-	     map.put("RX_LOGO", rxLogoStream);
-	     map.put("CDSI_LOGO", cdsiLogoStream);
-     
-	     String docLogo = doctor.getClinicLogoUrl();
-	     if (docLogo != null && !docLogo.isEmpty()) {
-	         try {
-	             String fileName = docLogo.substring(docLogo.lastIndexOf("/"));
-	             File logoFile = new File(fileStorageProperties.getUploadDir() + fileName);
-	             
-	             if (logoFile.exists()) {
-	                 // Send the FILE STREAM (Required by JRXML)
-	                 map.put("COMPANY_LOGO", new FileInputStream(logoFile));
-	             } else {
-	                 map.put("COMPANY_LOGO", null);
-	             }
-	         } catch (Exception e) {
-	             map.put("COMPANY_LOGO", null);
-	         }
-	     }
+	    // Determine template: use 2-page template if MEDICATION2 has content
+	    boolean hasSecondPageContent = !med2.toString().trim().isEmpty();
+	    String reportPath = hasSecondPageContent ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
 
-     
-	     // Ensure the leading slash '/' is present
-	     String reportPath = (items.size() > PRESCRIPTION_LIMIT) ? "/jasper/PrescriptionReportV2P2.jrxml" : "/jasper/PrescriptionReportV2P1.jrxml";
+	    // --- DEBUG LOGS FOR MAP DATA PASSED TO JRXML ---
+	    System.out.println("==========================================");
+	    System.out.println("   JRXML PARAMETER MAP DEBUG              ");
+	    System.out.println("==========================================");
+	    for (Map.Entry<String, Object> entry : map.entrySet()) {
+	        String key = entry.getKey();
+	        Object value = entry.getValue();
 
-	     // DIAGNOSTIC LOGS FOR JRXML
-	     System.out.println("==========================================");
-	     System.out.println("   JRXML DIAGNOSTIC                       ");
-	     System.out.println("==========================================");
-	     System.out.println("Attempting to load: " + reportPath);
+	        if (value instanceof InputStream) {
+	            System.out.println(key + " -> [InputStream: " + (value != null ? "VALID STREAM" : "NULL") + "]");
+	        } else if (value instanceof String) {
+	            String strVal = (String) value;
+	            // Truncate long strings for cleaner console output while preserving insight
+	            if (strVal.length() > 100) {
+	                System.out.println(key + " -> (" + strVal.length() + " chars): " + strVal.replace("\n", "\\n").substring(0, 100) + "...");
+	            } else {
+	                System.out.println(key + " -> " + strVal.replace("\n", "\\n"));
+	            }
+	        } else {
+	            System.out.println(key + " -> " + value);
+	        }
+	    }
+	    System.out.println("==========================================");
 
-	     InputStream reportStream = getClass().getResourceAsStream(reportPath);
+	    // DIAGNOSTIC LOGS FOR JRXML
+	    System.out.println("==========================================");
+	    System.out.println("   JRXML LOAD DIAGNOSTIC                  ");
+	    System.out.println("==========================================");
+	    System.out.println("Has MED2 Content: " + hasSecondPageContent);
+	    System.out.println("Attempting to load: " + reportPath);
 
-	     if (reportStream == null) {
-	         System.out.println("!!! ERROR: reportStream is NULL for " + reportPath);
-	         throw new RuntimeException("File not found: " + reportPath);
-	     } else {
-	         System.out.println(">>> SUCCESS: File found and stream opened.");
-	     }
+	    InputStream reportStream = getClass().getResourceAsStream(reportPath);
 
-	     // --- 3. COMPILATION AND FILLING ---
-	     try {
-	         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-	         System.out.println(">>> SUCCESS: Compilation Complete");
+	    if (reportStream == null) {
+	        System.out.println("!!! ERROR: reportStream is NULL for " + reportPath);
+	        throw new RuntimeException("File not found: " + reportPath);
+	    } else {
+	        System.out.println(">>> SUCCESS: File found and stream opened.");
+	    }
+
+	    // --- 3. COMPILATION AND FILLING ---
+	    try {
+	        JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+	        System.out.println(">>> SUCCESS: Compilation Complete");
 	
-	         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
-	         
-	         // This is where it usually crashes if the Logos aren't InputStreams
-	         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
-	         System.out.println(">>> SUCCESS: Report Filled");
+	        // FIX: Use a single dummy patient item to prevent layout looping issues
+	        List<Patient> dataList = new ArrayList<Patient>();	
+	        Patient dummyData = new Patient();
+	        dummyData.setFirstName("test");
+	        dataList.add(dummyData);
+	        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+	        
+	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
+	        System.out.println(">>> SUCCESS: Report Filled");
 	
-	         response.setContentType("application/pdf");
-	         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-	         System.out.println(">>> SUCCESS: PDF Exported");
-	         System.out.println("==========================================");
+	        response.setContentType("application/pdf");
+	        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+	        System.out.println(">>> SUCCESS: PDF Exported");
+	        System.out.println("==========================================");
 	
-	     } catch (Exception e) {
-	         System.out.println("!!! CRITICAL ERROR DURING JASPER PROCESS !!!");
-	         System.out.println("Message: " + e.getMessage());
-	         e.printStackTrace();
-	         throw e;
-	     }
+	    } catch (Exception e) {
+	        System.out.println("!!! CRITICAL ERROR DURING JASPER PROCESS !!!");
+	        System.out.println("Message: " + e.getMessage());
+	        e.printStackTrace();
+	        throw e;
+	    }
 	}
 	
 	@GetMapping("/viewMedicalRequest/{requestId}")
@@ -506,6 +434,18 @@ public class ReportsController {
 	    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
 	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, beanColDataSource);
 	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+	}
+	
+	private byte[] toByteArray(InputStream is) throws Exception {
+	    if (is == null) return null;
+	    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	    int nRead;
+	    byte[] data = new byte[1024];
+	    while ((nRead = is.read(data, 0, data.length)) != -1) {
+	        buffer.write(data, 0, nRead);
+	    }
+	    buffer.flush();
+	    return buffer.toByteArray();
 	}
 	
 //	@GetMapping("/viewMedicalRequest/{requestId}")
